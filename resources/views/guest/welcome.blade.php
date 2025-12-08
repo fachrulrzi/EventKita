@@ -34,14 +34,16 @@
             <div class="container">
                 <h2 class="text-center mb-5 fw-bold">Telusuri Kategori</h2>
                 <div class="row text-center g-4">
-                    @foreach (['Musik', 'Seni', 'Kuliner', 'Olahraga', 'Teknologi', 'Komunitas'] as $kategori)
+                    @forelse ($categories as $category)
                         <div class="col-6 col-md-2 category-bubble">
-                            <a href="{{ route('kategori') }}">
-                                <img src="https://e7.pngegg.com/pngimages/589/452/png-clipart-apple-music-festival-itunes-computer-icons-music-icon-text-logo-thumbnail.png" class="rounded-circle mb-2" alt="{{ $kategori }}">
-                                <h6 class="kategori-title">{{ $kategori }}</h6>
+                            <a href="{{ route('kategori') }}" class="text-decoration-none">
+                                <img src="{{ $category->icon_path ? asset('storage/' . $category->icon_path) : 'https://via.placeholder.com/80?text=Icon' }}" class="rounded-circle mb-2" alt="{{ $category->name }}" width="80" height="80">
+                                <h6 class="kategori-title">{{ $category->name }}</h6>
                             </a>
                         </div>
-                    @endforeach
+                    @empty
+                        <p class="text-muted">Belum ada kategori yang tersedia.</p>
+                    @endforelse
                 </div>
             </div>
         </section>

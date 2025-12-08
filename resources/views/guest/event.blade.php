@@ -5,9 +5,13 @@
 @section('content')
 <section class="album-section bg-soft py-5">
     <div class="container">
+        @php
+            $kategoriAktif = isset($categories) && $categories->count() ? $categories->first()->name : 'Semua Kategori';
+        @endphp
+
         @if (!request()->is('kota'))
-            <h2 class="pb-2 border-bottom mb-3 fw-bold">Kategori: Seni</h2>
-            <p class="mb-4 text-secondary">Pameran, galeri, pertunjukan, dan semua event seni budaya ada di sini.</p>
+            <h2 class="pb-2 border-bottom mb-3 fw-bold">Kategori: {{ $kategoriAktif }}</h2>
+            <p class="mb-4 text-secondary">Temukan event sesuai kategori pilihanmu. Tambahkan kategori baru di panel admin untuk memperkaya pilihan pengguna.</p>
 
             <div class="row mb-4 g-3">
                 <div class="col-md-3">
@@ -32,6 +36,20 @@
 
         @if (!request()->is('kategory'))
             <h2 class="pb-2 border-bottom mb-4 fw-bold">Kota: Jakarta</h2>
+        @endif
+
+        @if(isset($categories) && $categories->count())
+            <div class="mb-4">
+                <h5 class="fw-bold mb-2">Semua Kategori</h5>
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach($categories as $category)
+                        <span class="badge bg-primary-subtle text-primary px-3 py-2 d-flex align-items-center gap-2">
+                            <img src="{{ $category->icon_path ? asset('storage/' . $category->icon_path) : 'https://via.placeholder.com/24?text=Icon' }}" alt="{{ $category->name }}" width="24" height="24" class="rounded-circle border">
+                            {{ $category->name }}
+                        </span>
+                    @endforeach
+                </div>
+            </div>
         @endif
 
         @php
