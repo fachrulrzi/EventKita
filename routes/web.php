@@ -9,18 +9,23 @@ Route::get('/', function () {
 
 Auth::routes();
 
- Route::get('admin/dashboard', function () {
+// Group Admin Routes
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('admin/dashboard', function () {
         return view('admin.dashboard'); 
     })->name('admin.dashboard');
- Route::get('admin/kategori', function () {
+    Route::get('admin/kategori', function () {
         return view('admin.kategori'); 
     })->name('admin.kategori');
+});
 
-
-    
- Route::get('user/dashboard', function () {
+// Group User Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('user/dashboard', function () {
         return view('user.dashboard'); 
     })->name('user.dashboard');
+});
+
  Route::get('kategori', function () {
         return view('guest.event'); 
     })->name('kategori');
