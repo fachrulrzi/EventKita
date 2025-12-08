@@ -22,6 +22,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
 // Group User Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('user/dashboard', function () {
+        // Jika admin mencoba akses dashboard user, lempar ke dashboard admin
+        if (Auth::user()->role == 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
         return view('user.dashboard'); 
     })->name('user.dashboard');
 });
