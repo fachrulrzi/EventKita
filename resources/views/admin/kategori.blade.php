@@ -42,7 +42,7 @@
                         <td>{{ $categories->firstItem() + $loop->index }}</td>
                         <td>
                             <div class="d-flex align-items-center gap-3">
-                                <img src="{{ $category->icon_path ? \Illuminate\Support\Facades\Storage::url($category->icon_path) : 'https://via.placeholder.com/48?text=Icon' }}" class="rounded-circle border" alt="{{ $category->name }}" width="48" height="48">
+                                <img src="{{ $category->icon_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($category->icon_path) : 'https://via.placeholder.com/48?text=Icon' }}" class="rounded-circle border" alt="{{ $category->name }}" width="48" height="48">
                                 <div>
                                     <div class="fw-semibold">{{ $category->name }}</div>
                                     <small class="text-muted">Slug: {{ $category->slug }}</small>
