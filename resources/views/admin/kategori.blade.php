@@ -25,6 +25,10 @@
     </div>
 @endif
 
+@php
+    $placeholderIcon = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='100%' height='100%' fill='%23e9ecef'/><text x='50%' y='55%' font-size='14' font-family='Arial' fill='%236c757d' text-anchor='middle'>ICON</text></svg>";
+@endphp
+
 <div class="card admin-data-card">
     <div class="card-body table-responsive">
         <table class="table table-hover align-middle text-nowrap mb-0">
@@ -48,7 +52,7 @@
                                         $iconUrl = \Illuminate\Support\Facades\Storage::disk('public')->url($category->icon_path);
                                     }
                                 @endphp
-                                <img src="{{ $iconUrl ?? 'https://via.placeholder.com/48?text=Icon' }}" class="rounded-circle border" alt="{{ $category->name }}" width="48" height="48">
+                                <img src="{{ $iconUrl ?? $placeholderIcon }}" class="rounded-circle border" alt="{{ $category->name }}" width="48" height="48">
                                 <div>
                                     <div class="fw-semibold">{{ $category->name }}</div>
                                     <small class="text-muted">Slug: {{ $category->slug }}</small>

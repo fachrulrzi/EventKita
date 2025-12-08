@@ -33,11 +33,14 @@
         <section class="py-5 bg-white">
             <div class="container">
                 <h2 class="text-center mb-5 fw-bold">Telusuri Kategori</h2>
+                @php
+                    $placeholderIcon = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><rect width='100%' height='100%' fill='%23e9ecef'/><text x='50%' y='55%' font-size='14' font-family='Arial' fill='%236c757d' text-anchor='middle'>ICON</text></svg>";
+                @endphp
                 <div class="row text-center g-4">
                     @forelse ($categories as $category)
                         <div class="col-6 col-md-2 category-bubble">
                             <a href="{{ route('kategori') }}" class="text-decoration-none">
-                                <img src="{{ $category->icon_path ? \Illuminate\Support\Facades\Storage::url($category->icon_path) : 'https://via.placeholder.com/80?text=Icon' }}" class="rounded-circle mb-2" alt="{{ $category->name }}" width="80" height="80">
+                                <img src="{{ $category->icon_path ? \Illuminate\Support\Facades\Storage::url($category->icon_path) : $placeholderIcon }}" class="rounded-circle mb-2" alt="{{ $category->name }}" width="80" height="80">
                                 <h6 class="kategori-title">{{ $category->name }}</h6>
                             </a>
                         </div>

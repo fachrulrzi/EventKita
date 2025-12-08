@@ -39,12 +39,15 @@
         @endif
 
         @if(isset($categories) && $categories->count())
+            @php
+                $placeholderIconSmall = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect width='100%' height='100%' fill='%23e9ecef'/><text x='50%' y='65%' font-size='10' font-family='Arial' fill='%236c757d' text-anchor='middle'>ICON</text></svg>";
+            @endphp
             <div class="mb-4">
                 <h5 class="fw-bold mb-2">Semua Kategori</h5>
                 <div class="d-flex flex-wrap gap-2">
                     @foreach($categories as $category)
                         <span class="badge bg-primary-subtle text-primary px-3 py-2 d-flex align-items-center gap-2">
-                            <img src="{{ $category->icon_path ? \Illuminate\Support\Facades\Storage::url($category->icon_path) : 'https://via.placeholder.com/24?text=Icon' }}" alt="{{ $category->name }}" width="24" height="24" class="rounded-circle border">
+                            <img src="{{ $category->icon_path ? \Illuminate\Support\Facades\Storage::url($category->icon_path) : $placeholderIconSmall }}" alt="{{ $category->name }}" width="24" height="24" class="rounded-circle border">
                             {{ $category->name }}
                         </span>
                     @endforeach
