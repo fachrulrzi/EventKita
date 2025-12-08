@@ -37,7 +37,7 @@
                     @forelse ($categories as $category)
                         <div class="col-6 col-md-2 category-bubble">
                             <a href="{{ route('kategori') }}" class="text-decoration-none">
-                                <img src="{{ $category->icon_path ? asset('storage/' . $category->icon_path) : 'https://via.placeholder.com/80?text=Icon' }}" class="rounded-circle mb-2" alt="{{ $category->name }}" width="80" height="80">
+                                <img src="{{ $category->icon_path ? \Illuminate\Support\Facades\Storage::url($category->icon_path) : 'https://via.placeholder.com/80?text=Icon' }}" class="rounded-circle mb-2" alt="{{ $category->name }}" width="80" height="80">
                                 <h6 class="kategori-title">{{ $category->name }}</h6>
                             </a>
                         </div>

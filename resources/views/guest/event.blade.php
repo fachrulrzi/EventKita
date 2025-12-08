@@ -44,7 +44,7 @@
                 <div class="d-flex flex-wrap gap-2">
                     @foreach($categories as $category)
                         <span class="badge bg-primary-subtle text-primary px-3 py-2 d-flex align-items-center gap-2">
-                            <img src="{{ $category->icon_path ? asset('storage/' . $category->icon_path) : 'https://via.placeholder.com/24?text=Icon' }}" alt="{{ $category->name }}" width="24" height="24" class="rounded-circle border">
+                            <img src="{{ $category->icon_path ? \Illuminate\Support\Facades\Storage::url($category->icon_path) : 'https://via.placeholder.com/24?text=Icon' }}" alt="{{ $category->name }}" width="24" height="24" class="rounded-circle border">
                             {{ $category->name }}
                         </span>
                     @endforeach
