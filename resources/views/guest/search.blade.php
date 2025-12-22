@@ -122,11 +122,13 @@
                             <div class="card-img-container">
                                 @if($event->image_path)
                                     @php
-                                        $searchImgUrl = (str_starts_with($event->image_path, 'http')) 
-                                            ? $event->image_path 
-                                            : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $event->image_path;
+                                        $searchImgUrl = $event->image_path
+                                            ? (str_starts_with($event->image_path, 'http')
+                                                ? $event->image_path
+                                                : \App\Helpers\StorageHelper::url($event->image_path))
+                                            : null;
                                     @endphp
-                                    <img src="{{ $searchImgUrl }}" alt="{{ $event->title }}">
+                                    <img src="{{ $searchImgUrl ?? 'https://via.placeholder.com/400x300?text=EventKita' }}" alt="{{ $event->title }}">
                                 @else
                                     <img src="https://via.placeholder.com/400x300?text=EventKita" alt="{{ $event->title }}">
                                 @endif

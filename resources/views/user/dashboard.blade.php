@@ -168,11 +168,13 @@
                                         <div class="position-relative">
                                             @if($event->image_path)
                                                 @php
-                                                    $favImgUrl = (str_starts_with($event->image_path, 'http')) 
-                                                        ? $event->image_path 
-                                                        : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $event->image_path;
+                                                    $favImgUrl = $event->image_path
+                                                        ? (str_starts_with($event->image_path, 'http')
+                                                            ? $event->image_path
+                                                            : \App\Helpers\StorageHelper::url($event->image_path))
+                                                        : null;
                                                 @endphp
-                                                <img src="{{ $favImgUrl }}" class="card-img-top" alt="{{ $event->title }}" style="height: 200px; object-fit: cover;">
+                                                <img src="{{ $favImgUrl ?? 'https://via.placeholder.com/400x200?text=EventKita' }}" class="card-img-top" alt="{{ $event->title }}" style="height: 200px; object-fit: cover;">
                                             @else
                                                 <img src="https://via.placeholder.com/400x200?text=EventKita" class="card-img-top" alt="Placeholder">
                                             @endif
@@ -269,16 +271,18 @@
                                             <div class="row align-items-center">
                                                 {{-- Event Image --}}
                                                 <div class="col-md-2 mb-3 mb-md-0">
-                                                    @if($order->event->image_path)
-                                                        @php
-                                                            $activeOrderImgUrl = (str_starts_with($order->event->image_path, 'http')) 
-                                                                ? $order->event->image_path 
-                                                                : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $order->event->image_path;
-                                                        @endphp
-                                                        <img src="{{ $activeOrderImgUrl }}" 
-                                                             class="img-fluid rounded" 
-                                                             alt="{{ $order->event->title }}"
-                                                             style="height: 100px; width: 100%; object-fit: cover;">
+                                                            @if($order->event->image_path)
+                                                                @php
+                                                                    $activeOrderImgUrl = $order->event->image_path
+                                                                        ? (str_starts_with($order->event->image_path, 'http')
+                                                                            ? $order->event->image_path
+                                                                            : \App\Helpers\StorageHelper::url($order->event->image_path))
+                                                                        : null;
+                                                                @endphp
+                                                                <img src="{{ $activeOrderImgUrl ?? 'https://via.placeholder.com/150x100?text=Event' }}" 
+                                                                     class="img-fluid rounded" 
+                                                                     alt="{{ $order->event->title }}"
+                                                                     style="height: 100px; width: 100%; object-fit: cover;">
                                                     @else
                                                         <img src="https://via.placeholder.com/150x100?text=Event" 
                                                              class="img-fluid rounded" 
@@ -411,11 +415,13 @@
                                                         <div class="col-md-2 mb-3 mb-md-0">
                                                             @if($order->event->image_path)
                                                                 @php
-                                                                    $historyOrderImgUrl = (str_starts_with($order->event->image_path, 'http')) 
-                                                                        ? $order->event->image_path 
-                                                                        : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $order->event->image_path;
+                                                                    $historyOrderImgUrl = $order->event->image_path
+                                                                        ? (str_starts_with($order->event->image_path, 'http')
+                                                                            ? $order->event->image_path
+                                                                            : \App\Helpers\StorageHelper::url($order->event->image_path))
+                                                                        : null;
                                                                 @endphp
-                                                                <img src="{{ $historyOrderImgUrl }}" 
+                                                                <img src="{{ $historyOrderImgUrl ?? 'https://via.placeholder.com/150x100?text=Event' }}" 
                                                                      class="img-fluid rounded" 
                                                                      alt="{{ $order->event->title }}"
                                                                      style="height: 100px; width: 100%; object-fit: cover; filter: grayscale(50%);">

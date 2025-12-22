@@ -86,11 +86,13 @@
                     <div class="carousel-item hero-carousel-item {{ $index === 0 ? 'active' : '' }}">
                         @if($featured->image_path)
                             @php
-                                $imgUrl = (str_starts_with($featured->image_path, 'http')) 
-                                    ? $featured->image_path 
-                                    : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $featured->image_path;
+                                $imgUrl = $featured->image_path
+                                    ? (str_starts_with($featured->image_path, 'http')
+                                        ? $featured->image_path
+                                        : \App\Helpers\StorageHelper::url($featured->image_path))
+                                    : null;
                             @endphp
-                            <img src="{{ $imgUrl }}" class="d-block w-100" alt="{{ $featured->title }}">
+                            <img src="{{ $imgUrl ?? 'https://via.placeholder.com/1200x500?text=' . urlencode($featured->title) }}" class="d-block w-100" alt="{{ $featured->title }}">
                         @else
                             <img src="https://via.placeholder.com/1200x500?text={{ urlencode($featured->title) }}" class="d-block w-100" alt="{{ $featured->title }}">
                         @endif
@@ -137,12 +139,12 @@
                 <div class="col-6 col-sm-4 col-md-2 category-bubble">
                     <a href="{{ route('kategori.filter', ['slug' => $category->slug]) }}" class="text-decoration-none">
                         <div class="bg-white rounded-circle d-inline-block p-1 mb-3">
-                            @php
+                                @php
                                 $placeholderIcon = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="%23f8f9fa"/><text x="50%" y="55%" font-size="12" font-family="Arial" fill="%23adb5bd" text-anchor="middle">No Icon</text></svg>';
-                                $iconUrl = $category->icon_path 
-                                    ? ((str_starts_with($category->icon_path, 'http')) 
-                                        ? $category->icon_path 
-                                        : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $category->icon_path)
+                                $iconUrl = $category->icon_path
+                                    ? (str_starts_with($category->icon_path, 'http')
+                                        ? $category->icon_path
+                                        : \App\Helpers\StorageHelper::url($category->icon_path))
                                     : $placeholderIcon;
                             @endphp
                             <img src="{{ $iconUrl }}" 
@@ -172,11 +174,13 @@
                         <div class="position-relative">
                             @if($event->image_path)
                                 @php
-                                    $eventImgUrl = (str_starts_with($event->image_path, 'http')) 
-                                        ? $event->image_path 
-                                        : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $event->image_path;
+                                    $eventImgUrl = $event->image_path
+                                        ? (str_starts_with($event->image_path, 'http')
+                                            ? $event->image_path
+                                            : \App\Helpers\StorageHelper::url($event->image_path))
+                                        : null;
                                 @endphp
-                                <img src="{{ $eventImgUrl }}" class="card-img-top" alt="{{ $event->title }}" style="height: 220px; object-fit: cover;">
+                                    <img src="{{ $eventImgUrl ?? 'https://via.placeholder.com/400x300?text=No+Image' }}" class="card-img-top" alt="{{ $event->title }}" style="height: 220px; object-fit: cover;">
                             @else
                                 <img src="https://via.placeholder.com/400x300?text=No+Image" class="card-img-top" alt="{{ $event->title }}" style="height: 220px; object-fit: cover;">
                             @endif
@@ -262,13 +266,15 @@
                     <div class="col">
                         <a href="{{ route('kota') }}?city={{ urlencode($city->name) }}" class="text-decoration-none">
                             <div class="card city-card shadow-sm h-100">
-                                @if($city->image_path)
+                                    @if($city->image_path)
                                     @php
-                                        $cityImgUrl = (str_starts_with($city->image_path, 'http')) 
-                                            ? $city->image_path 
-                                            : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $city->image_path;
+                                        $cityImgUrl = $city->image_path
+                                            ? (str_starts_with($city->image_path, 'http')
+                                                ? $city->image_path
+                                                : \App\Helpers\StorageHelper::url($city->image_path))
+                                            : null;
                                     @endphp
-                                    <img src="{{ $cityImgUrl }}" class="card-img" alt="{{ $city->name }}">
+                                    <img src="{{ $cityImgUrl ?? 'https://via.placeholder.com/300x200?text=' . urlencode($city->name) }}" class="card-img" alt="{{ $city->name }}">
                                 @else
                                     <img src="https://via.placeholder.com/300x200?text={{ urlencode($city->name) }}" class="card-img" alt="{{ $city->name }}">
                                 @endif

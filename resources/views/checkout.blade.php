@@ -19,11 +19,13 @@
                         <div class="col-md-4">
                             @if($event->image_path)
                                 @php
-                                    $checkoutImgUrl = (str_starts_with($event->image_path, 'http')) 
-                                        ? $event->image_path 
-                                        : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $event->image_path;
+                                    $checkoutImgUrl = $event->image_path
+                                        ? (str_starts_with($event->image_path, 'http')
+                                            ? $event->image_path
+                                            : \App\Helpers\StorageHelper::url($event->image_path))
+                                        : null;
                                 @endphp
-                                <img src="{{ $checkoutImgUrl }}" 
+                                <img src="{{ $checkoutImgUrl ?? 'https://via.placeholder.com/300x200?text=Event' }}" 
                                      class="img-fluid rounded" alt="{{ $event->title }}">
                             @else
                                 <img src="https://via.placeholder.com/300x200?text=Event" 

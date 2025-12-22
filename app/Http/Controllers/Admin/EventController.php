@@ -51,10 +51,10 @@ class EventController extends Controller
             'ticket_categories.*.description' => 'nullable|string|max:500',
         ]);
 
-        // Upload image jika ada
+        // Upload image jika ada (simpan di disk 'public')
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('events', ['visibility' => 'public']);
+            $imagePath = $request->file('image')->store('events', 'public');
         }
 
         $event = Event::create([
@@ -137,11 +137,11 @@ class EventController extends Controller
 
         // Upload image baru jika ada
         if ($request->hasFile('image')) {
-            // Hapus image lama
+            // Hapus image lama dari disk 'public'
             if ($event->image_path) {
-                Storage::delete($event->image_path);
+                Storage::disk('public')->delete($event->image_path);
             }
-            $data['image_path'] = $request->file('image')->store('events', ['visibility' => 'public']);
+            $data['image_path'] = $request->file('image')->store('events', 'public');
         }
 
         $event->update($data);
@@ -189,7 +189,7 @@ class EventController extends Controller
     {
         // Hapus image jika ada
         if ($event->image_path) {
-            Storage::delete($event->image_path);
+            Storage::disk('public')->delete($event->image_path);
         }
 
         $event->delete();

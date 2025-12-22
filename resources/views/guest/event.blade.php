@@ -130,10 +130,10 @@
                         <a href="{{ $categoryUrl }}" 
                            class="btn {{ $isActive ? 'btn-primary' : 'btn-white bg-white border' }} rounded-pill px-3 d-flex align-items-center gap-2 category-pill shadow-sm">
                             @php
-                                $catIconUrl = $cat->icon_path 
-                                    ? ((str_starts_with($cat->icon_path, 'http')) 
-                                        ? $cat->icon_path 
-                                        : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $cat->icon_path)
+                                $catIconUrl = $cat->icon_path
+                                    ? (str_starts_with($cat->icon_path, 'http')
+                                        ? $cat->icon_path
+                                        : \App\Helpers\StorageHelper::url($cat->icon_path))
                                     : $placeholderIconSmall;
                             @endphp
                             <img src="{{ $catIconUrl }}" 
@@ -153,10 +153,10 @@
                     <div class="card event-card h-100 shadow-sm border-0">
                         <div class="img-wrapper">
                             @php
-                                $eventImgUrl = $event->image_path 
-                                    ? ((str_starts_with($event->image_path, 'http')) 
-                                        ? $event->image_path 
-                                        : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $event->image_path)
+                                $eventImgUrl = $event->image_path
+                                    ? (str_starts_with($event->image_path, 'http')
+                                        ? $event->image_path
+                                        : \App\Helpers\StorageHelper::url($event->image_path))
                                     : 'https://via.placeholder.com/400x300?text=No+Image';
                             @endphp
                             <img src="{{ $eventImgUrl }}" class="card-img-top" alt="{{ $event->title }}">

@@ -137,11 +137,13 @@
                     <div class="position-relative">
                         @if($event->image_path)
                             @php
-                                $adminEventImgUrl = (str_starts_with($event->image_path, 'http')) 
-                                    ? $event->image_path 
-                                    : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $event->image_path;
+                                $adminEventImgUrl = $event->image_path
+                                    ? (str_starts_with($event->image_path, 'http')
+                                        ? $event->image_path
+                                        : \App\Helpers\StorageHelper::url($event->image_path))
+                                    : null;
                             @endphp
-                            <img src="{{ $adminEventImgUrl }}" class="event-image-preview" alt="{{ $event->title }}">
+                            <img src="{{ $adminEventImgUrl ?? '' }}" class="event-image-preview" alt="{{ $event->title }}">
                         @else
                             <div class="event-image-preview bg-light d-flex align-items-center justify-content-center">
                                 <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>

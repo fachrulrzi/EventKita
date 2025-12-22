@@ -312,11 +312,13 @@
             <!-- Event Banner -->
             @if($order->event->image_path)
                 @php
-                    $ticketImgUrl = (str_starts_with($order->event->image_path, 'http')) 
-                        ? $order->event->image_path 
-                        : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $order->event->image_path;
+                    $ticketImgUrl = $order->event->image_path
+                        ? (str_starts_with($order->event->image_path, 'http')
+                            ? $order->event->image_path
+                            : \App\Helpers\StorageHelper::url($order->event->image_path))
+                        : null;
                 @endphp
-                <img src="{{ $ticketImgUrl }}" 
+                <img src="{{ $ticketImgUrl ?? 'https://via.placeholder.com/1200x500?text=' . urlencode($order->event->title) }}" 
                      alt="{{ $order->event->title }}" 
                      class="event-banner">
             @else

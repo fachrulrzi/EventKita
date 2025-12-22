@@ -123,11 +123,13 @@
                                 <td class="ps-4">
                                     @if($city->image_path)
                                         @php
-                                            $cityImgUrl = (str_starts_with($city->image_path, 'http')) 
-                                                ? $city->image_path 
-                                                : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $city->image_path;
+                                            $cityImgUrl = $city->image_path
+                                                ? (str_starts_with($city->image_path, 'http')
+                                                    ? $city->image_path
+                                                    : \App\Helpers\StorageHelper::url($city->image_path))
+                                                : null;
                                         @endphp
-                                        <img src="{{ $cityImgUrl }}" alt="{{ $city->name }}" class="city-thumbnail shadow-sm">
+                                        <img src="{{ $cityImgUrl ?? '' }}" alt="{{ $city->name }}" class="city-thumbnail shadow-sm">
                                     @else
                                         <div class="city-icon-placeholder">
                                             <i class="bi bi-image"></i>
