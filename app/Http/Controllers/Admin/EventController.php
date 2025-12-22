@@ -54,7 +54,7 @@ class EventController extends Controller
         // Upload image jika ada
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('events');
+            $imagePath = $request->file('image')->store('events', ['visibility' => 'public']);
         }
 
         $event = Event::create([
@@ -141,7 +141,7 @@ class EventController extends Controller
             if ($event->image_path) {
                 Storage::delete($event->image_path);
             }
-            $data['image_path'] = $request->file('image')->store('events');
+            $data['image_path'] = $request->file('image')->store('events', ['visibility' => 'public']);
         }
 
         $event->update($data);

@@ -35,7 +35,7 @@ class CategoryController extends Controller
 
         $iconPath = null;
         if ($request->hasFile('icon')) {
-            $iconPath = $request->file('icon')->store('categories');
+            $iconPath = $request->file('icon')->store('categories', ['visibility' => 'public']);
         }
 
         Category::create([
@@ -69,7 +69,7 @@ class CategoryController extends Controller
             if ($kategori->icon_path) {
                 Storage::delete($kategori->icon_path);
             }
-            $data['icon_path'] = $request->file('icon')->store('categories');
+            $data['icon_path'] = $request->file('icon')->store('categories', ['visibility' => 'public']);
         }
 
         $kategori->update($data);

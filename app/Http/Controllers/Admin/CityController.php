@@ -23,7 +23,7 @@ class CityController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            $data['image_path'] = $request->file('image')->store('cities');
+            $data['image_path'] = $request->file('image')->store('cities', ['visibility' => 'public']);
         }
 
         City::create($data);
@@ -49,7 +49,7 @@ class CityController extends Controller
             if ($city->image_path) {
                 Storage::delete($city->image_path);
             }
-            $data['image_path'] = $request->file('image')->store('cities');
+            $data['image_path'] = $request->file('image')->store('cities', ['visibility' => 'public']);
         }
 
         $city->update($data);
