@@ -127,8 +127,10 @@
                                     <div class="d-flex align-items-center gap-3">
                                         @php
                                             $iconUrl = null;
-                                            if ($category->icon_path && \Illuminate\Support\Facades\Storage::disk('s3')->exists($category->icon_path)) {
-                                            $iconUrl = \Illuminate\Support\Facades\Storage::disk('s3')->url($category->icon_path);                                            }
+                                            // Use StorageHelper to generate a public URL that works with Railway S3-compatible buckets
+                                            if (!empty($category->icon_path)) {
+                                                $iconUrl = \App\Helpers\StorageHelper::url($category->icon_path);
+                                            }
                                         @endphp
                                         <img src="{{ $iconUrl ?? $placeholderIcon }}" class="category-avatar shadow-sm" alt="{{ $category->name }}">
                                         <div>
