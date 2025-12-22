@@ -311,7 +311,7 @@
         <div class="ticket-body">
             <!-- Event Banner -->
             @if($order->event->image_path)
-                <img src="{{ asset('storage/' . $order->event->image_path) }}" 
+                <img src="{{ storage_url($order->event->image_path) }}" 
                      alt="{{ $order->event->title }}" 
                      class="event-banner">
             @else

@@ -51,7 +51,7 @@
                         <div class="row align-items-center">
                             <div class="col-md-3">
                                 @if($order->event->image_path)
-                                    <img src="{{ Storage::url($order->event->image_path) }}" 
+                                    <img src="{{ storage_url($order->event->image_path) }}" 
                                          class="img-fluid rounded" alt="{{ $order->event->title }}">
                                 @else
                                     <img src="https://via.placeholder.com/150x100?text=Event" 

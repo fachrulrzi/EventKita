@@ -129,7 +129,7 @@
                         @endphp
                         <a href="{{ $categoryUrl }}" 
                            class="btn {{ $isActive ? 'btn-primary' : 'btn-white bg-white border' }} rounded-pill px-3 d-flex align-items-center gap-2 category-pill shadow-sm">
-                            <img src="{{ $cat->icon_path ? Storage::url($cat->icon_path) : $placeholderIconSmall }}" 
+                            <img src="{{ $cat->icon_path ? storage_url($cat->icon_path) : $placeholderIconSmall }}" 
                                  alt="{{ $cat->name }}" class="rounded-circle">
                             {{ $cat->name }}
                         </a>
@@ -145,7 +145,7 @@
                      data-tanggal="{{ $event->date->format('Y-m-d') }}">
                     <div class="card event-card h-100 shadow-sm border-0">
                         <div class="img-wrapper">
-                            <img src="{{ asset('storage/' . $event->image_path) }}" class="card-img-top" alt="{{ $event->title }}">
+                            <img src="{{ storage_url($event->image_path) }}" class="card-img-top" alt="{{ $event->title }}">
                             <div class="position-absolute top-0 end-0 p-3">
                                 @auth
                                     <form action="{{ route('favorites.toggle', $event->id) }}" method="POST">

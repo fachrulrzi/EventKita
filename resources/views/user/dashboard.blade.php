@@ -167,7 +167,7 @@
                                     <div class="card event-card-fav h-100 shadow-sm">
                                         <div class="position-relative">
                                             @if($event->image_path)
-                                                <img src="{{ asset('storage/' . $event->image_path) }}" class="card-img-top" alt="{{ $event->title }}" style="height: 200px; object-fit: cover;">
+                                                <img src="{{ storage_url($event->image_path) }}" class="card-img-top" alt="{{ $event->title }}" style="height: 200px; object-fit: cover;">
                                             @else
                                                 <img src="https://via.placeholder.com/400x200?text=EventKita" class="card-img-top" alt="Placeholder">
                                             @endif
@@ -265,7 +265,7 @@
                                                 {{-- Event Image --}}
                                                 <div class="col-md-2 mb-3 mb-md-0">
                                                     @if($order->event->image_path)
-                                                        <img src="{{ asset('storage/' . $order->event->image_path) }}" 
+                                                        <img src="{{ storage_url($order->event->image_path) }}" 
                                                              class="img-fluid rounded" 
                                                              alt="{{ $order->event->title }}"
                                                              style="height: 100px; width: 100%; object-fit: cover;">
@@ -400,7 +400,7 @@
                                                         {{-- Event Image --}}
                                                         <div class="col-md-2 mb-3 mb-md-0">
                                                             @if($order->event->image_path)
-                                                                <img src="{{ asset('storage/' . $order->event->image_path) }}" 
+                                                                <img src="{{ storage_url($order->event->image_path) }}" 
                                                                      class="img-fluid rounded" 
                                                                      alt="{{ $order->event->title }}"
                                                                      style="height: 100px; width: 100%; object-fit: cover; filter: grayscale(50%);">

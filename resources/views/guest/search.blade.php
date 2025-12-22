@@ -121,7 +121,7 @@
                         <div class="card event-card h-100 shadow-sm">
                             <div class="card-img-container">
                                 @if($event->image_path)
-                                    <img src="{{ asset('storage/' . $event->image_path) }}" alt="{{ $event->title }}">
+                                    <img src="{{ storage_url($event->image_path) }}" alt="{{ $event->title }}">
                                 @else
                                     <img src="https://via.placeholder.com/400x300?text=EventKita" alt="{{ $event->title }}">
                                 @endif

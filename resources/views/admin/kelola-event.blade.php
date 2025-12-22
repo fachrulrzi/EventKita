@@ -136,7 +136,7 @@
                     <!-- Event Image -->
                     <div class="position-relative">
                         @if($event->image_path)
-                            <img src="{{ asset('storage/' . $event->image_path) }}" class="event-image-preview" alt="{{ $event->title }}">
+                            <img src="{{ storage_url($event->image_path) }}" class="event-image-preview" alt="{{ $event->title }}">
                         @else
                             <div class="event-image-preview bg-light d-flex align-items-center justify-content-center">
                                 <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>

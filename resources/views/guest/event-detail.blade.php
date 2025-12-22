@@ -98,7 +98,7 @@
     }
 </style>
 
-<section class="event-detail-hero" style="background-image: url('{{ asset('storage/' . $event->image_path) }}');">
+<section class="event-detail-hero" style="background-image: url('{{ storage_url($event->image_path) }}');">
     <div class="event-detail-overlay"></div>
     <div class="container hero-content">
         <nav aria-label="breadcrumb" class="mb-3">
