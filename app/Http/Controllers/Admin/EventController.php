@@ -54,7 +54,7 @@ class EventController extends Controller
         // Upload image jika ada
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('events', 'public');
+            $imagePath = $request->file('image')->store('events');
         }
 
         $event = Event::create([
@@ -139,9 +139,9 @@ class EventController extends Controller
         if ($request->hasFile('image')) {
             // Hapus image lama
             if ($event->image_path) {
-                Storage::disk('public')->delete($event->image_path);
+                Storage::delete($event->image_path);
             }
-            $data['image_path'] = $request->file('image')->store('events', 'public');
+            $data['image_path'] = $request->file('image')->store('events');
         }
 
         $event->update($data);
@@ -189,7 +189,7 @@ class EventController extends Controller
     {
         // Hapus image jika ada
         if ($event->image_path) {
-            Storage::disk('public')->delete($event->image_path);
+            Storage::delete($event->image_path);
         }
 
         $event->delete();

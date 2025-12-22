@@ -692,7 +692,7 @@ function editEvent(eventId) {
     const event = eventsData.find(e => e.id === eventId);
     if (!event) return alert('Data event tidak ditemukan!');
     
-    document.getElementById('updateEventForm').action = `/admin/event/${eventId}`;
+    document.getElementById('updateEventForm').action = `/admin/event/\${eventId}`;
     document.getElementById('edit_title').value = event.title;
     document.getElementById('edit_category_id').value = event.category_id;
     document.getElementById('edit_date').value = event.date.split('T')[0];
@@ -713,18 +713,18 @@ function editEvent(eventId) {
             const categoryHtml = `
                 <div class="ticket-category-item card border-0 bg-light p-3 mb-3">
                     <div class="row g-2">
-                        <input type="hidden" name="ticket_categories[${index}][id]" value="${ticket.id}">
+                        <input type="hidden" name="ticket_categories[\${index}][id]" value="\${ticket.id}">
                         <div class="col-md-4">
                             <label class="form-label small">Nama</label>
-                            <input type="text" name="ticket_categories[${index}][name]" value="${ticket.category_name}" class="form-control border-0 bg-white" required>
+                            <input type="text" name="ticket_categories[\${index}][name]" value="\${ticket.category_name}" class="form-control border-0 bg-white" required>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small">Harga</label>
-                            <input type="number" name="ticket_categories[${index}][price]" value="${ticket.price}" class="form-control border-0 bg-white" required>
+                            <input type="number" name="ticket_categories[\${index}][price]" value="\${ticket.price}" class="form-control border-0 bg-white" required>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small">Stok</label>
-                            <input type="number" name="ticket_categories[${index}][stock]" value="${ticket.stock || ''}" class="form-control border-0 bg-white">
+                            <input type="number" name="ticket_categories[\${index}][stock]" value="\${ticket.stock || ''}" class="form-control border-0 bg-white">
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
                             <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeEditTicketCategory(this)">
