@@ -51,7 +51,13 @@ class StorageHelper
             }
         }
 
-        // Fallback to Laravel's Storage::url() for local disk
+        // Fallback for local/public disk:
+        // If the file exists on the `public` disk, return its public URL.
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->url($path);
+        }
+
+        // Last resort: Laravel's Storage::url() (uses default disk)
         return Storage::url($path);
     }
 }
