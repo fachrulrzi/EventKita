@@ -85,7 +85,7 @@
                 @foreach($featuredEvents as $index => $featured)
                     <div class="carousel-item hero-carousel-item {{ $index === 0 ? 'active' : '' }}">
                         @if($featured->image_path)
-                            <img src="{{ asset('storage/' . $featured->image_path) }}" class="d-block w-100" alt="{{ $featured->title }}">
+                            <img src="{{ Storage::url($featured->image_path) }}" class="d-block w-100" alt="{{ $featured->title }}">
                         @else
                             <img src="https://via.placeholder.com/1200x500?text={{ urlencode($featured->title) }}" class="d-block w-100" alt="{{ $featured->title }}">
                         @endif
@@ -135,7 +135,7 @@
                             @php
                                 $placeholderIcon = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="%23f8f9fa"/><text x="50%" y="55%" font-size="12" font-family="Arial" fill="%23adb5bd" text-anchor="middle">No Icon</text></svg>';
                             @endphp
-                            <img src="{{ $category->icon_path ? asset('storage/' . $category->icon_path) : $placeholderIcon }}" 
+                            <img src="{{ $category->icon_path ? Storage::url($category->icon_path) : $placeholderIcon }}" 
                                  class="rounded-circle shadow-sm" alt="{{ $category->name }}" width="100" height="100" style="object-fit: cover;">
                         </div>
                         <h6 class="text-dark fw-bold">{{ $category->name }}</h6>
@@ -161,7 +161,7 @@
                     <div class="card event-card h-100 shadow-sm">
                         <div class="position-relative">
                             @if($event->image_path)
-                                <img src="{{ asset('storage/' . $event->image_path) }}" class="card-img-top" alt="{{ $event->title }}" style="height: 220px; object-fit: cover;">
+                                <img src="{{ Storage::url($event->image_path) }}" class="card-img-top" alt="{{ $event->title }}" style="height: 220px; object-fit: cover;">
                             @else
                                 <img src="https://via.placeholder.com/400x300?text=No+Image" class="card-img-top" alt="{{ $event->title }}" style="height: 220px; object-fit: cover;">
                             @endif
@@ -248,7 +248,7 @@
                         <a href="{{ route('kota') }}?city={{ urlencode($city->name) }}" class="text-decoration-none">
                             <div class="card city-card shadow-sm h-100">
                                 @if($city->image_path)
-                                    <img src="{{ asset('storage/' . $city->image_path) }}" class="card-img" alt="{{ $city->name }}">
+                                    <img src="{{ Storage::url($city->image_path) }}" class="card-img" alt="{{ $city->name }}">
                                 @else
                                     <img src="https://via.placeholder.com/300x200?text={{ urlencode($city->name) }}" class="card-img" alt="{{ $city->name }}">
                                 @endif
