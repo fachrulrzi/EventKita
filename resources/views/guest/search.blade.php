@@ -1,102 +1,221 @@
 @extends('layouts.app')
 
-@section('title', 'EventKita - Temukan Event Hiburan Terbaik!')
+@section('title', 'Pencarian Event - EventKita')
 
 @section('content')
-<div class="wave-divider bg-soft">
-    <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-        <path
-            d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
-            class="shape-fill-white"></path>
-    </svg>
-</div>
+<style>
+    /* Custom Styles untuk konsistensi tema */
+    .search-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 20px;
+        padding: 40px 20px;
+        margin-bottom: 40px;
+    }
+    .search-input-group {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    .search-input-group .form-control {
+        border: none;
+        padding: 15px 25px;
+    }
+    .search-input-group .btn {
+        padding: 0 30px;
+        font-weight: 600;
+    }
+    .event-card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+    .event-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+    }
+    .card-img-container {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+    }
+    .card-img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .favorite-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 10;
+    }
+    .category-badge {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        color: #0d6efd;
+        font-weight: 700;
+        font-size: 0.75rem;
+        padding: 5px 12px;
+        border-radius: 50px;
+        backdrop-filter: blur(4px);
+    }
+    .tag-link {
+        text-decoration: none;
+        font-size: 0.8rem;
+        color: #6c757d;
+        transition: color 0.2s;
+    }
+    .tag-link:hover {
+        color: #0d6efd;
+    }
+</style>
 
-<div class="album-section bg-soft pt-4 pb-5">
+<section class="py-5">
     <div class="container">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <a href="{{ url('/') }}" class="btn btn-link text-decoration-none text-muted p-0">
+                <i class="bi bi-arrow-left-circle-fill me-2"></i> Kembali ke Beranda
+            </a>
+        </nav>
 
-        <a href="{{ url('/') }}" class="btn btn-sm btn-outline-custom mb-4">
-            <i class="bi bi-arrow-left me-1"></i> Kembali ke Beranda
-        </a>
+        <div class="search-section text-center">
+            <h2 class="fw-bold mb-4">
+                @if($query)
+                    <span class="text-muted">Hasil untuk:</span> "{{ $query }}"
+                @else
+                    <i class="bi bi-search me-2 text-primary"></i> Temukan Event Impianmu
+                @endif
+            </h2>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <form action="{{ route('search') }}" method="GET">
+                        <div class="input-group search-input-group">
+                            <input type="text" class="form-control" name="q" 
+                                   placeholder="Cari konser, workshop, atau festival..." 
+                                   value="{{ $query ?? '' }}" required>
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-search me-1"></i> Cari
+                            </button>
+                        </div>
+                    </form>
+                    
+                    @if($query)
+                        <div class="mt-3">
+                            <span class="badge bg-white text-dark shadow-sm py-2 px-3">
+                                <i class="bi bi-filter-circle me-1 text-primary"></i> 
+                                Ditemukan <strong>{{ $events->count() }}</strong> Event Terkait
+                            </span>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
 
-        @php
-            $searchResults = [
-                [
-                    'judul' => 'Konser "Nada Senja"',
-                    'waktu' => '15 Nov 2025 - Lapangan Banteng',
-                    'kategori' => 'Musik',
-                    'gambar' => 'https://cdn.antaranews.com/cache/1200x800/2024/12/24/A64E4496-BFC8-4FC7-A56A-43D2DBCA8411.jpeg',
-                    'slug' => 'konser-nada-senja',
-                    'link' => 'https://www.synchronizefestival.com/',
-                ],
-                [
-                    'judul' => 'Festival Kuliner Nusantara',
-                    'waktu' => '10 Des 2025 - Kota Kasablanka',
-                    'kategori' => 'Kuliner',
-                    'gambar' => 'https://cdn.antaranews.com/cache/1200x800/2024/12/24/A64E4496-BFC8-4FC7-A56A-43D2DBCA8411.jpeg',
-                    'slug' => 'festival-kuliner-nusantara',
-                    'link' => 'https://www.tasteofarchipelago.com/',
-                ],
-                [
-                    'judul' => 'Pameran Seni Kontemporer',
-                    'waktu' => '18 Nov 2025 - Galeri Nasional',
-                    'kategori' => 'Seni',
-                    'gambar' => 'https://gigsplay.com/wp-content/uploads/2025/10/Synchronize-Fest-2025.jpg.webp',
-                    'slug' => 'pameran-seni-kontemporer',
-                    'link' => 'https://www.galerinasional.or.id/',
-                ],
-                [
-                    'judul' => 'Marathon Kota Hujan',
-                    'waktu' => '05 Nov 2025 - Kota Bandung',
-                    'kategori' => 'Olahraga',
-                    'gambar' => 'https://cdn.antaranews.com/cache/1200x800/2024/12/24/A64E4496-BFC8-4FC7-A56A-43D2DBCA8411.jpeg',
-                    'slug' => 'marathon-kota-hujan',
-                    'link' => 'https://www.bandungrunnersclub.com/',
-                ],
-                [
-                    'judul' => 'Jogja Jazz Fest',
-                    'waktu' => '28 Nov 2025 - Taman Budaya',
-                    'kategori' => 'Musik',
-                    'gambar' => 'https://gigsplay.com/wp-content/uploads/2025/10/Synchronize-Fest-2025.jpg.webp',
-                    'slug' => 'jogja-jazz-fest',
-                    'link' => 'https://www.jogjazzfest.com/',
-                ],
-                [
-                    'judul' => 'Pekan Startup Nusantara',
-                    'waktu' => '01 Des 2025 - ICE BSD',
-                    'kategori' => 'Teknologi',
-                    'gambar' => 'https://cdn.antaranews.com/cache/1200x800/2024/12/24/A64E4496-BFC8-4FC7-A56A-43D2DBCA8411.jpeg',
-                    'slug' => 'pekan-startup-nusantara',
-                    'link' => 'https://www.futurefest.id/',
-                ],
-            ];
-        @endphp
-
-        <div id="event-card-container" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-            @foreach ($searchResults as $index => $event)
-                <div class="col event-col-filterable" data-kota="jakarta" data-tanggal="2025-11-15" data-original-order="{{ $index }}">
-                    <div class="card event-card h-100">
-                        <img src="{{ $event['gambar'] }}"
-                            class="card-img-top" alt="{{ $event['judul'] }}">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ $event['judul'] }}</h5>
-                            <p class="card-text small text-muted">{{ $event['waktu'] }}</p>
-                            <p class="card-text">Nikmati pengalaman spesial yang dikurasi oleh EventKita.</p>
-                            <div class="mt-auto d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <a href="{{ route('event.detail', ['slug' => $event['slug']]) }}"
-                                        class="btn btn-sm btn-outline-custom">
-                                        Lihat Detail
-                                    </a>
-                                    <a href="{{ $event['link'] }}" target="_blank"
-                                        class="btn btn-sm btn-primary-custom ms-2">Situs Resmi</a>
+        <div id="event-card-container" class="row g-4">
+            @if($query && $events->count() > 0)
+                @foreach ($events as $event)
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card event-card h-100 shadow-sm">
+                            <div class="card-img-container">
+                                @if($event->image_path)
+                                    <img src="{{ asset('storage/' . $event->image_path) }}" alt="{{ $event->title }}">
+                                @else
+                                    <img src="https://via.placeholder.com/400x300?text=EventKita" alt="{{ $event->title }}">
+                                @endif
+                                
+                                <div class="category-badge shadow-sm">
+                                    {{ $event->category->name }}
                                 </div>
-                                <span class="badge badge-custom">{{ $event['kategori'] }}</span>
+
+                                @auth
+                                    <div class="favorite-btn">
+                                        <form action="{{ route('favorites.toggle', $event->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-white btn-sm rounded-circle shadow" style="width: 38px; height: 38px;">
+                                                @if(Auth::user()->favoriteEvents()->where('event_id', $event->id)->exists())
+                                                    <i class="bi bi-heart-fill text-danger"></i>
+                                                @else
+                                                    <i class="bi bi-heart text-muted"></i>
+                                                @endif
+                                            </button>
+                                        </form>
+                                    </div>
+                                @endauth
+                            </div>
+
+                            <div class="card-body p-4 d-flex flex-column">
+                                <h5 class="card-title fw-bold mb-3">{{ $event->title }}</h5>
+                                
+                                <div class="mb-3 text-muted small">
+                                    <div class="d-flex align-items-center mb-1">
+                                        <i class="bi bi-calendar-check me-2 text-primary"></i>
+                                        {{ $event->date->format('d M Y') }}
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-geo-alt me-2 text-primary"></i>
+                                        @if($event->cityRelation)
+                                            {{ $event->cityRelation->name }}
+                                        @else
+                                            {{ $event->location ?? 'Lokasi Belum Ditentukan' }}
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <p class="card-text text-muted mb-4 small">
+                                    {{ Str::limit($event->description, 90) }}
+                                </p>
+
+                                @if($event->tags)
+                                    <div class="mb-4">
+                                        @foreach(explode(',', $event->tags) as $tag)
+                                            <a href="#" class="tag-link me-2">#{{ trim($tag) }}</a>
+                                        @endforeach
+                                    </div>
+                                @endif
+
+                                <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold text-primary h5 mb-0">{{ $event->formatted_price }}</span>
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ route('event.detail', ['slug' => $event->slug]) }}"
+                                           class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                           Detail
+                                        </a>
+                                        @if($event->website_url)
+                                            <a href="{{ $event->website_url }}" target="_blank"
+                                               class="btn btn-sm btn-primary rounded-circle">
+                                                <i class="bi bi-box-arrow-up-right"></i>
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                @endforeach
+            @elseif($query)
+                <div class="col-12 text-center py-5">
+                    <div class="mb-4">
+                        <i class="bi bi-search-heart text-muted" style="font-size: 5rem; opacity: 0.3;"></i>
+                    </div>
+                    <h4 class="fw-bold text-muted">Yah, event tidak ditemukan...</h4>
+                    <p class="text-muted">Coba gunakan kata kunci lain atau jelajahi kategori yang tersedia.</p>
+                    <a href="{{ route('kategori') }}" class="btn btn-primary mt-3 px-4 rounded-pill shadow-sm">
+                        Lihat Semua Kategori
+                    </a>
                 </div>
-            @endforeach
+            @else
+                <div class="col-12 text-center py-5">
+                    <div class="p-5 border rounded-4 bg-light shadow-sm d-inline-block w-100">
+                        <i class="bi bi-binoculars text-primary mb-3" style="font-size: 3rem;"></i>
+                        <h4 class="fw-bold">Mulai Pencarianmu!</h4>
+                        <p class="text-muted">Tuliskan nama event atau lokasi yang ingin kamu kunjungi di kolom atas.</p>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
-</div>
+</section>
 @endsection

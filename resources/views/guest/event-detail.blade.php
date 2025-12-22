@@ -1,203 +1,321 @@
 @extends('layouts.app')
 
-@php
-    use Illuminate\Support\Str;
-
-    $eventLibrary = [
-        'konser-nada-senja' => [
-            'title' => 'Konser "Nada Senja"',
-            'category' => 'Musik',
-            'hero_image' => 'https://cdn.antaranews.com/cache/1200x800/2024/12/24/A64E4496-BFC8-4FC7-A56A-43D2DBCA8411.jpeg',
-            'date_text' => 'Sabtu, 15 November 2025',
-            'time_text' => '19.00 WIB - 23.00 WIB',
-            'location' => 'Lapangan Banteng, Jakarta',
-            'price' => 'Rp75.000 - Rp250.000',
-            'site_url' => 'https://www.synchronizefestival.com/',
-            'description' => 'Konser musik indie terbesar akhir tahun dengan tata panggung immersive, kolaborasi lintas musisi, dan experience booth dari brand lokal.',
-            'tags' => ['Indie', 'Festival', 'Outdoor'],
-            'schedule' => [
-                ['label' => 'Soundcheck & Gate Open', 'time' => '16.00 WIB'],
-                ['label' => 'Opening Act', 'time' => '18.30 WIB'],
-                ['label' => 'Main Performance', 'time' => '19.00 - 22.30 WIB'],
-            ],
-            'threads' => [
-                ['name' => 'Rama', 'badge' => 'Tiket', 'time' => '2 jam lalu', 'message' => 'Ada bundle tiket untuk 4 orang?'],
-                ['name' => 'Panitia Event', 'badge' => 'Panitia', 'time' => '1 jam lalu', 'message' => 'Bundle keluarga tersedia di tiket kategori Silver, cek situs resmi ya!'],
-            ],
-        ],
-        'festival-kuliner-nusantara' => [
-            'title' => 'Festival Kuliner Nusantara',
-            'category' => 'Kuliner',
-            'hero_image' => 'https://cdn.antaranews.com/cache/1200x800/2024/12/24/A64E4496-BFC8-4FC7-A56A-43D2DBCA8411.jpeg',
-            'date_text' => 'Selasa, 10 Desember 2025',
-            'time_text' => '10.00 WIB - 22.00 WIB',
-            'location' => 'Kota Kasablanka, Jakarta',
-            'price' => 'Gratis (registrasi online)',
-            'site_url' => 'https://www.synchronizefestival.com/',
-            'description' => 'Temukan 70+ tenant kuliner khas nusantara, kelas memasak langsung bersama chef ternama, dan area family picnic.',
-            'tags' => ['Kuliner', 'Family Friendly', 'Gratis'],
-            'schedule' => [
-                ['label' => 'Registrasi Ulang', 'time' => '09.00 WIB'],
-                ['label' => 'Demo Masak Chef Rara', 'time' => '13.00 WIB'],
-                ['label' => 'Penutupan & Live Music', 'time' => '20.00 WIB'],
-            ],
-            'threads' => [
-                ['name' => 'Sari', 'badge' => 'Akomodasi', 'time' => 'Kemarin', 'message' => 'Apakah tersedia musala dan area menyusui?'],
-                ['name' => 'Panitia Event', 'badge' => 'Panitia', 'time' => '2 jam lalu', 'message' => 'Tersedia lengkap, lokasinya dekat area informasi utama.'],
-            ],
-        ],
-        'pameran-seni-kontemporer' => [
-            'title' => 'Pameran Seni Kontemporer',
-            'category' => 'Seni',
-            'hero_image' => 'https://gigsplay.com/wp-content/uploads/2025/10/Synchronize-Fest-2025.jpg.webp',
-            'date_text' => 'Senin, 18 November 2025',
-            'time_text' => '09.00 WIB - 20.00 WIB',
-            'location' => 'Galeri Nasional, Bandung',
-            'price' => 'Rp50.000',
-            'site_url' => 'https://www.synchronizefestival.com/',
-            'description' => 'Eksplorasi karya seniman muda dengan instalasi interaktif dan tur privat bersama kurator.',
-            'tags' => ['Seni', 'Eksibisi', 'Kurasi'],
-            'schedule' => [
-                ['label' => 'Tur Pagi', 'time' => '10.00 WIB'],
-                ['label' => 'Artist Talk', 'time' => '14.00 WIB'],
-                ['label' => 'Workshop Mini', 'time' => '16.00 WIB'],
-            ],
-            'threads' => [
-                ['name' => 'Deni', 'badge' => 'Workshop', 'time' => '30 menit lalu', 'message' => 'Workshop mini perlu membawa alat sendiri?'],
-                ['name' => 'Panitia Event', 'badge' => 'Panitia', 'time' => 'Baru saja', 'message' => 'Semua alat disediakan, cukup lakukan registrasi ulang 30 menit sebelum sesi.'],
-            ],
-        ],
-    ];
-
-    $normalizedSlug = Str::slug($slug);
-    $event = $eventLibrary[$normalizedSlug] ?? $eventLibrary['konser-nada-senja'];
-@endphp
-
-@section('title', $event['title'] . ' | EventKita')
-@section('body-class', 'bg-brand-surface')
+@section('title', $event->title . ' | EventKita')
+@section('body-class', 'bg-light')
 
 @section('content')
-<section class="event-detail-hero" style="background-image: url('{{ $event['hero_image'] }}');">
-    <div class="event-detail-overlay">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-                <a href="{{ url('/') }}" class="text-white-50 text-decoration-none small">Beranda</a>
-                <span class="text-white-50">/</span>
-                <a href="{{ route('kategori') }}" class="text-white-50 text-decoration-none small">Event</a>
-                <span class="text-white-50">/</span>
-                <span class="text-white fw-semibold">{{ $event['title'] }}</span>
-            </div>
-            <span class="badge badge-custom mb-2">{{ $event['category'] }}</span>
-            <h1 class="display-5 fw-bold text-white mb-3">{{ $event['title'] }}</h1>
-            <div class="event-detail-meta">
-                <div><i class="bi bi-calendar-event"></i> {{ $event['date_text'] }}</div>
-                <div><i class="bi bi-clock"></i> {{ $event['time_text'] }}</div>
-                <div><i class="bi bi-geo-alt"></i> {{ $event['location'] }}</div>
-            </div>
-            <div class="d-flex flex-wrap gap-3 mt-4">
-                <a href="{{ $event['site_url'] }}" target="_blank" class="btn btn-primary-custom">
-                    <i class="bi bi-ticket-perforated me-1"></i> Pesan Tiket
+<style>
+    /* Hero Section Styling */
+    .event-detail-hero {
+        position: relative;
+        height: 450px;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        display: flex;
+        align-items: flex-end;
+        padding-bottom: 50px;
+        color: white;
+    }
+    .event-detail-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.2) 100%);
+    }
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Card & Info Styling */
+    .info-card {
+        background: white;
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        padding: 30px;
+        margin-bottom: 25px;
+    }
+    .detail-info-pill {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 20px;
+        height: 100%;
+        border-left: 4px solid #0d6efd;
+    }
+    .detail-tag {
+        background: #e9ecef;
+        color: #495057;
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: 0.2s;
+    }
+    .detail-tag:hover {
+        background: #0d6efd;
+        color: white;
+    }
+
+    /* Sidebar Timeline Styling */
+    .sidebar-item {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    .sidebar-icon {
+        width: 45px;
+        height: 45px;
+        background: rgba(13, 110, 253, 0.1);
+        color: #0d6efd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    /* Forum CTA Section */
+    .forum-cta {
+        background: linear-gradient(135deg, #0d6efd 0%, #004bb5 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 30px;
+    }
+    .btn-glass {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(10px);
+    }
+    .btn-glass:hover {
+        background: white;
+        color: #0d6efd;
+    }
+</style>
+
+<section class="event-detail-hero" style="background-image: url('{{ asset('storage/' . $event->image_path) }}');">
+    <div class="event-detail-overlay"></div>
+    <div class="container hero-content">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url('/') }}" class="text-white-50 text-decoration-none">Beranda</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('kategori') }}" class="text-white-50 text-decoration-none">Event</a></li>
+                <li class="breadcrumb-item active text-white" aria-current="page">{{ Str::limit($event->title, 30) }}</li>
+            </ol>
+        </nav>
+        
+        <span class="badge bg-primary px-3 py-2 rounded-pill mb-3 shadow-sm">{{ $event->category->name }}</span>
+        <h1 class="display-4 fw-bold mb-4">{{ $event->title }}</h1>
+        
+        <div class="d-flex flex-wrap gap-4 mb-4 opacity-75">
+            <div class="d-flex align-items-center"><i class="bi bi-calendar-check me-2 fs-5 text-primary"></i> {{ $event->date->format('l, d F Y') }}</div>
+            <div class="d-flex align-items-center"><i class="bi bi-clock me-2 fs-5 text-primary"></i> {{ date('H:i', strtotime($event->time_start)) }} - {{ date('H:i', strtotime($event->time_end)) }} WIB</div>
+            <div class="d-flex align-items-center"><i class="bi bi-geo-alt me-2 fs-5 text-primary"></i> {{ $event->location }}</div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-3">
+            @if($event->hasPaidTickets())
+                @auth
+                    <a href="{{ route('checkout', $event->slug) }}" class="btn btn-primary btn-lg px-4 rounded-pill shadow">
+                        <i class="bi bi-ticket-perforated me-2"></i> Beli Tiket
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-4 rounded-pill shadow">
+                        <i class="bi bi-ticket-perforated me-2"></i> Login untuk Beli Tiket
+                    </a>
+                @endauth
+            @endif
+            
+            @if($event->website_url)
+                <a href="{{ $event->website_url }}" target="_blank" class="btn btn-outline-light btn-lg px-4 rounded-pill shadow">
+                    <i class="bi bi-link-45deg me-2"></i> Situs Resmi
                 </a>
-                <button class="btn btn-outline-custom">
-                    <i class="bi bi-share"></i> Bagikan
-                </button>
-            </div>
+            @endif
+            
+            @auth
+                <form action="{{ route('favorites.toggle', $event->id) }}" method="POST" class="d-inline">
+                    @csrf
+                    @if(Auth::user()->favoriteEvents()->where('event_id', $event->id)->exists())
+                        <button type="submit" class="btn btn-danger btn-lg px-4 rounded-pill shadow">
+                            <i class="bi bi-heart-fill me-2"></i> Hapus Favorit
+                        </button>
+                    @else
+                        <button type="submit" class="btn btn-outline-light btn-lg px-4 rounded-pill">
+                            <i class="bi bi-heart me-2"></i> Tambah Favorit
+                        </button>
+                    @endif
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="btn btn-outline-light btn-lg px-4 rounded-pill">
+                    <i class="bi bi-heart me-2"></i> Tambah Favorit
+                </a>
+            @endauth
+            
+            <button class="btn btn-glass btn-lg px-4 rounded-pill">
+                <i class="bi bi-share me-2"></i> Bagikan
+            </button>
         </div>
     </div>
 </section>
 
 <section class="py-5">
     <div class="container">
-        <div class="row g-4">
+        <div class="row g-5">
             <div class="col-lg-8">
-                <div class="detail-info-card mb-4">
-                    <h4 class="fw-bold mb-3">Tentang Event</h4>
-                    <p class="text-muted">{{ $event['description'] }}</p>
-                    <div class="d-flex flex-wrap gap-2 mt-3">
-                        @foreach ($event['tags'] as $tag)
-                            <span class="detail-tag">#{{ $tag }}</span>
+                <div class="info-card">
+                    <h4 class="fw-bold mb-4 d-flex align-items-center">
+                        <span class="bg-primary p-1 rounded-3 me-2" style="width: 8px; height: 30px;"></span>
+                        Tentang Event
+                    </h4>
+                    <p class="text-muted lh-lg" style="font-size: 1.05rem;">
+                        {{ $event->description }}
+                    </p>
+                    
+                    @if($event->tags)
+                        <div class="mt-4 pt-3 border-top">
+                            <h6 class="fw-bold text-muted small text-uppercase mb-3">Tags Terkait</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (explode(',', $event->tags) as $tag)
+                                    <span class="detail-tag">#{{ trim($tag) }}</span>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+                @if($event->ticketCategories->isNotEmpty())
+                <div class="info-card">
+                    <h4 class="fw-bold mb-4 d-flex align-items-center">
+                        <span class="bg-primary p-1 rounded-3 me-2" style="width: 8px; height: 30px;"></span>
+                        Kategori Tiket & Harga
+                    </h4>
+                    <div class="row g-3">
+                        @foreach($event->ticketCategories as $ticket)
+                        <div class="col-md-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <h5 class="fw-bold mb-1">{{ $ticket->category_name }}</h5>
+                                            @if($ticket->description)
+                                                <p class="text-muted small mb-0">{{ $ticket->description }}</p>
+                                            @endif
+                                        </div>
+                                        @if($ticket->stock)
+                                            <span class="badge bg-primary-subtle text-primary">{{ $ticket->remaining_stock }} tersisa</span>
+                                        @endif
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                                        <span class="h5 mb-0 fw-bold text-primary">{{ $ticket->formatted_price }}</span>
+                                        @if($ticket->isAvailable())
+                                            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Tersedia</span>
+                                        @else
+                                            <span class="badge bg-danger">Sold Out</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         @endforeach
                     </div>
                 </div>
+                @endif
 
-                <div class="detail-info-card mb-4">
-                    <h4 class="fw-bold mb-3">Informasi Penting</h4>
+                <div class="info-card">
+                    <h4 class="fw-bold mb-4">Informasi Penting</h4>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div class="detail-info-pill">
-                                <p class="text-muted mb-1">Lokasi</p>
-                                <p class="fw-semibold mb-0">{{ $event['location'] }}</p>
+                                <p class="text-muted small fw-bold text-uppercase mb-1">Lokasi Detail</p>
+                                <p class="fw-semibold mb-0"><i class="bi bi-geo-alt-fill text-primary me-1"></i> {{ $event->location }}</p>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="detail-info-pill">
-                                <p class="text-muted mb-1">Harga</p>
-                                <p class="fw-semibold mb-0">{{ $event['price'] }}</p>
+                            <div class="detail-info-pill text-center">
+                                <p class="text-muted small fw-bold text-uppercase mb-1">Harga</p>
+                                <p class="fw-bold text-primary mb-0">{{ $event->formatted_price }}</p>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="detail-info-pill">
-                                <p class="text-muted mb-1">Jam</p>
-                                <p class="fw-semibold mb-0">{{ $event['time_text'] }}</p>
+                            <div class="detail-info-pill text-center">
+                                <p class="text-muted small fw-bold text-uppercase mb-1">Waktu</p>
+                                <p class="fw-semibold mb-0">{{ date('H:i', strtotime($event->time_start)) }} - {{ date('H:i', strtotime($event->time_end)) }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="detail-info-card mb-4">
-                    <h4 class="fw-bold mb-3">Forum Diskusi</h4>
-                    @foreach ($event['threads'] as $thread)
-                        <div class="forum-thread">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <p class="mb-0 fw-semibold">{{ $thread['name'] }}</p>
-                                    <small class="text-muted">{{ $thread['time'] }}</small>
-                                </div>
-                                <span class="badge bg-light text-secondary">{{ $thread['badge'] }}</span>
-                            </div>
-                            <p class="mt-2 mb-0 text-muted">{{ $thread['message'] }}</p>
+                <div class="forum-cta shadow-sm">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h4 class="fw-bold mb-2">Punya pertanyaan seputar event?</h4>
+                            <p class="mb-0 opacity-75">Bergabunglah di forum diskusi dan tanyakan langsung pada komunitas.</p>
                         </div>
-                    @endforeach
-
-                    @auth
-                        <form class="forum-reply-form" method="POST" action="#">
-                            @csrf
-                            <label class="form-label fw-semibold small">Tinggalkan pertanyaan</label>
-                            <textarea class="form-control rounded-3 mb-2" rows="3" placeholder="Contoh: ada parkir khusus?"></textarea>
-                            <button type="submit" class="btn btn-primary-custom w-100">
-                                <i class="bi bi-send me-1"></i> Kirim Pertanyaan
-                            </button>
-                        </form>
-                    @else
-                        <div class="alert alert-light border forum-guest-alert" role="alert">
-                            <i class="bi bi-chat-dots me-2"></i>
-                            <a href="{{ route('login') }}" class="text-brand fw-semibold text-decoration-none">Login</a>
-                            untuk ikut berdiskusi mengenai event ini.
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            @auth
+                                <a href="{{ route('forum.event', $event->slug) }}" class="btn btn-white btn-lg rounded-pill px-4 fw-bold text-primary bg-white" target="_blank">
+                                    Buka Forum
+                                </a>
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-glass btn-lg rounded-pill px-4 fw-bold">
+                                    Login Diskusi
+                                </a>
+                            @endauth
                         </div>
-                    @endauth
+                    </div>
                 </div>
             </div>
 
             <div class="col-lg-4">
-                <div class="detail-side-card mb-4">
-                    <h5 class="fw-bold mb-3">Timeline Hari-H</h5>
-                    @foreach ($event['schedule'] as $slot)
-                        <div class="detail-timeline-item">
-                            <div>
-                                <p class="fw-semibold mb-0">{{ $slot['label'] }}</p>
-                                <small class="text-muted">{{ $slot['time'] }}</small>
-                            </div>
-                            <i class="bi bi-chevron-right text-muted"></i>
+                <div class="info-card position-sticky" style="top: 100px;">
+                    <h5 class="fw-bold mb-4">Ringkasan Event</h5>
+                    
+                    <div class="sidebar-item">
+                        <div class="sidebar-icon"><i class="bi bi-calendar3"></i></div>
+                        <div>
+                            <p class="text-muted small mb-0">Tanggal Pelaksanaan</p>
+                            <p class="fw-bold mb-0">{{ $event->date->format('d F Y') }}</p>
                         </div>
-                    @endforeach
-                </div>
+                    </div>
 
-                <div class="detail-side-card">
-                    <h5 class="fw-bold mb-3">Butuh Bantuan?</h5>
-                    <p class="text-muted mb-3">Hubungi tim EventKita untuk pengajuan kerjasama atau booth.</p>
-                    <a href="https://wa.me/6285884653526" target="_blank" class="btn btn-success w-100">
-                        <i class="bi bi-whatsapp me-1"></i> Chat Admin
-                    </a>
+                    <div class="sidebar-item">
+                        <div class="sidebar-icon"><i class="bi bi-clock"></i></div>
+                        <div>
+                            <p class="text-muted small mb-0">Waktu Acara</p>
+                            <p class="fw-bold mb-0">{{ date('H:i', strtotime($event->time_start)) }} - Selesai</p>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-item">
+                        <div class="sidebar-icon"><i class="bi bi-geo"></i></div>
+                        <div>
+                            <p class="text-muted small mb-0">Kota</p>
+                            <p class="fw-bold mb-0">{{ $event->city ?? 'Lokasi Terdaftar' }}</p>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-item">
+                        <div class="sidebar-icon"><i class="bi bi-collection"></i></div>
+                        <div>
+                            <p class="text-muted small mb-0">Kategori</p>
+                            <p class="fw-bold mb-0 text-primary">{{ $event->category->name }}</p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 opacity-25">
+
+                    <div class="text-center p-3 bg-light rounded-4">
+                        <h6 class="fw-bold mb-2 small">Butuh Bantuan Kerjasama?</h6>
+                        <p class="text-muted small mb-3">Klik tombol di bawah untuk chat via WhatsApp dengan tim kami.</p>
+                        <a href="https://wa.me/6285884653526" target="_blank" class="btn btn-success w-100 rounded-pill py-2">
+                            <i class="bi bi-whatsapp me-2"></i> Chat Admin
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

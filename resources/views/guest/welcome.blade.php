@@ -1,167 +1,275 @@
 @extends('layouts.app')
 
 @section('title', 'EventKita - Temukan Event Hiburan Terbaik!')
+
 @section('content')
-         <section class="hero-section">
-            <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
-                <div class="carousel-inner">
-                    <div class="carousel-item hero-carousel-item active">
-                        <img src="https://nnc-media.netralnews.com/2025/08/IMG-Netral-News-Admin-68-6J5H0GLMIW.jpg" class="d-block w-100" alt="Penonton konser">
-                    </div>
-                    @foreach (range(1, 3) as $index)
-                        <div class="carousel-item hero-carousel-item">
-                            <img src="https://gigsplay.com/wp-content/uploads/2025/10/Synchronize-Fest-2025.jpg.webp" class="d-block w-100" alt="Penonton festival">
+<style>
+    /* Custom Styles untuk mempercantik yang tidak tercover Bootstrap standar */
+    .hero-section {
+        position: relative;
+        overflow: hidden;
+    }
+    .hero-carousel-item img {
+        height: 550px;
+        object-fit: cover;
+        filter: brightness(60%);
+    }
+    .carousel-caption-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 80px 0;
+        background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        color: white;
+        z-index: 10;
+        pointer-events: none;
+    }
+    .carousel-caption-overlay .container {
+        pointer-events: auto;
+    }
+    .carousel-caption-overlay a {
+        pointer-events: auto;
+    }
+    .category-bubble img {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 3px solid transparent;
+    }
+    .category-bubble:hover img {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        border-color: #0d6efd;
+    }
+    .event-card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    .event-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+    }
+    .city-card {
+        border-radius: 12px;
+        overflow: hidden;
+        border: none;
+    }
+    .city-card img {
+        transition: transform 0.5s ease;
+        height: 180px;
+        object-fit: cover;
+    }
+    .city-card:hover img {
+        transform: scale(1.1);
+    }
+    .btn-primary-custom {
+        background-color: #0d6efd;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+    .badge-category {
+        background: rgba(13, 110, 253, 0.1);
+        color: #0d6efd;
+        border-radius: 5px;
+        padding: 5px 10px;
+    }
+</style>
+
+<section class="hero-section">
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-inner">
+            @if($featuredEvents->count() > 0)
+                @foreach($featuredEvents as $index => $featured)
+                    <div class="carousel-item hero-carousel-item {{ $index === 0 ? 'active' : '' }}">
+                        @if($featured->image_path)
+                            <img src="{{ \Illuminate\Support\Facades\Storage::url($featured->image_path) }}" class="d-block w-100" alt="{{ $featured->title }}">
+                        @else
+                            <img src="https://via.placeholder.com/1200x500?text={{ urlencode($featured->title) }}" class="d-block w-100" alt="{{ $featured->title }}">
+                        @endif
+                        <div class="carousel-caption-overlay">
+                            <div class="container text-start">
+                                <span class="badge bg-primary mb-2">Featured Event</span>
+                                <h1 class="display-4 fw-bold">{{ $featured->title }}</h1>
+                                <p class="fs-5"><i class="bi bi-calendar-event me-2"></i> {{ $featured->date->format('d M Y') }}</p>
+                                <a href="{{ route('event.detail', $featured->slug) }}" class="btn btn-light btn-lg px-4 shadow-sm btn-event-detail" onclick="this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Loading...'">Lihat Detail</a>
+                            </div>
                         </div>
-                    @endforeach
+                    </div>
+                @endforeach
+            @else
+                <div class="carousel-item hero-carousel-item active">
+                    <img src="https://nnc-media.netralnews.com/2025/08/IMG-Netral-News-Admin-68-6J5H0GLMIW.jpg" class="d-block w-100" alt="EventKita">
+                    <div class="carousel-caption-overlay text-center">
+                        <h1 class="display-4 fw-bold">Temukan Event Paling Seru!</h1>
+                        <p class="fs-5">Semua informasi hiburan, konser, dan festival ada di sini.</p>
+                    </div>
                 </div>
-                <div class="hero-carousel-caption d-none d-md-block text-center text-white">
-                    <h1 class="display-4 fw-bold hero-title">Temukan Event Paling Seru!</h1>
-                    <p class="fs-5 col-md-8 mx-auto hero-subtitle">Semua informasi event hiburan, konser, dan festival ada di sini.</p>
-                    <a href="#event-pilihan" class="btn btn-primary-custom btn-lg mt-3">
-                        <i class="bi bi-arrow-down-circle"></i> Lihat Event
+            @endif
+        </div>
+        @if($featuredEvents->count() > 1)
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </button>
+        @endif
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold m-0">Telusuri Kategori</h2>
+            <hr class="flex-grow-1 ms-4 d-none d-md-block opacity-25">
+        </div>
+        
+        <div class="row text-center g-4 justify-content-center">
+            @forelse ($categories as $category)
+                <div class="col-6 col-sm-4 col-md-2 category-bubble">
+                    <a href="{{ route('kategori.filter', ['slug' => $category->slug]) }}" class="text-decoration-none">
+                        <div class="bg-white rounded-circle d-inline-block p-1 mb-3">
+                            @php
+                                $placeholderIcon = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="%23f8f9fa"/><text x="50%" y="55%" font-size="12" font-family="Arial" fill="%23adb5bd" text-anchor="middle">No Icon</text></svg>';
+                            @endphp
+                            <img src="{{ $category->icon_path ? \Illuminate\Support\Facades\Storage::url($category->icon_path) : $placeholderIcon }}" 
+                                 class="rounded-circle shadow-sm" alt="{{ $category->name }}" width="100" height="100" style="object-fit: cover;">
+                        </div>
+                        <h6 class="text-dark fw-bold">{{ $category->name }}</h6>
                     </a>
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span><span class="visually-hidden">Next</span>
-                </button>
-            </div>
-        </section>
+            @empty
+                <p class="text-muted">Belum ada kategori yang tersedia.</p>
+            @endforelse
+        </div>
+    </div>
+</section>
 
-        <section class="py-5 bg-white">
-            <div class="container">
-                <h2 class="text-center mb-5 fw-bold">Telusuri Kategori</h2>
-                @php
-                    $placeholderIcon = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><rect width='100%' height='100%' fill='%23e9ecef'/><text x='50%' y='55%' font-size='14' font-family='Arial' fill='%236c757d' text-anchor='middle'>ICON</text></svg>";
-                @endphp
-                <div class="row text-center g-4">
-                    @forelse ($categories as $category)
-                        <div class="col-6 col-md-2 category-bubble">
-                            <a href="{{ route('kategori') }}" class="text-decoration-none">
-                                <img src="{{ $category->icon_path ? \Illuminate\Support\Facades\Storage::url($category->icon_path) : $placeholderIcon }}" class="rounded-circle mb-2" alt="{{ $category->name }}" width="80" height="80">
-                                <h6 class="kategori-title">{{ $category->name }}</h6>
-                            </a>
+<section id="event-pilihan" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Event Pilihan Minggu Ini</h2>
+            <p class="text-muted">Jangan lewatkan momen seru bersama teman dan keluarga</p>
+        </div>
+
+        <div class="row g-4">
+            @forelse ($events as $event)
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card event-card h-100 shadow-sm">
+                        <div class="position-relative">
+                            @if($event->image_path)
+                                <img src="{{ \Illuminate\Support\Facades\Storage::url($event->image_path) }}" class="card-img-top" alt="{{ $event->title }}" style="height: 220px; object-fit: cover;">
+                            @else
+                                <img src="https://via.placeholder.com/400x300?text=No+Image" class="card-img-top" alt="{{ $event->title }}" style="height: 220px; object-fit: cover;">
+                            @endif
+                            
+                            <div class="position-absolute top-0 start-0 m-3">
+                                <span class="badge bg-white text-dark shadow-sm px-3 py-2">
+                                    <i class="bi bi-tag-fill text-primary me-1"></i> {{ $event->category->name }}
+                                </span>
+                            </div>
+
+                            @auth
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <form action="{{ route('favorites.toggle', $event->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-white btn-sm rounded-circle shadow" style="width: 35px; height: 35px;">
+                                            @if(Auth::user()->favoriteEvents()->where('event_id', $event->id)->exists())
+                                                <i class="bi bi-heart-fill text-danger"></i>
+                                            @else
+                                                <i class="bi bi-heart"></i>
+                                            @endif
+                                        </button>
+                                    </form>
+                                </div>
+                            @endauth
                         </div>
-                    @empty
-                        <p class="text-muted">Belum ada kategori yang tersedia.</p>
-                    @endforelse
-                </div>
-            </div>
-        </section>
 
-
-
-            @php
-                $featuredEvents = [
-                    [
-                        'judul' => 'Konser "Nada Senja"',
-                        'waktu' => '15 Nov 2025 - Lapangan Banteng',
-                        'kategori' => 'Musik',
-                        'gambar' => 'https://cdn.antaranews.com/cache/1200x800/2024/12/24/A64E4496-BFC8-4FC7-A56A-43D2DBCA8411.jpeg',
-                        'slug' => 'konser-nada-senja',
-                        'link' => 'https://www.synchronizefestival.com/',
-                    ],
-                    [
-                        'judul' => 'Pekan Startup Nusantara',
-                        'waktu' => '01 Des 2025 - ICE BSD',
-                        'kategori' => 'Teknologi',
-                        'gambar' => 'https://cdn.antaranews.com/cache/1200x800/2024/12/24/A64E4496-BFC8-4FC7-A56A-43D2DBCA8411.jpeg',
-                        'slug' => 'pekan-startup-nusantara',
-                        'link' => 'https://www.futurefest.id/',
-                    ],
-                    [
-                        'judul' => 'Festival Kuliner Nusantara',
-                        'waktu' => '10 Des 2025 - Kota Kasablanka',
-                        'kategori' => 'Kuliner',
-                        'gambar' => 'https://cdn.antaranews.com/cache/1200x800/2024/12/24/A64E4496-BFC8-4FC7-A56A-43D2DBCA8411.jpeg',
-                        'slug' => 'festival-kuliner-nusantara',
-                        'link' => 'https://www.tasteofarchipelago.com/',
-                    ],
-                    [
-                        'judul' => 'Pameran Seni Kontemporer',
-                        'waktu' => '18 Nov 2025 - Galeri Nasional',
-                        'kategori' => 'Seni',
-                        'gambar' => 'https://gigsplay.com/wp-content/uploads/2025/10/Synchronize-Fest-2025.jpg.webp',
-                        'slug' => 'pameran-seni-kontemporer',
-                        'link' => 'https://www.galerinasional.or.id/',
-                    ],
-                    [
-                        'judul' => 'Jogja Jazz Fest',
-                        'waktu' => '28 Nov 2025 - Taman Budaya',
-                        'kategori' => 'Musik',
-                        'gambar' => 'https://gigsplay.com/wp-content/uploads/2025/10/Synchronize-Fest-2025.jpg.webp',
-                        'slug' => 'jogja-jazz-fest',
-                        'link' => 'https://www.jogjazzfest.com/',
-                    ],
-                    [
-                        'judul' => 'Marathon Kota Hujan',
-                        'waktu' => '05 Nov 2025 - Kota Bandung',
-                        'kategori' => 'Olahraga',
-                        'gambar' => 'https://cdn.antaranews.com/cache/1200x800/2024/12/24/A64E4496-BFC8-4FC7-A56A-43D2DBCA8411.jpeg',
-                        'slug' => 'marathon-kota-hujan',
-                        'link' => 'https://www.bandungrunnersclub.com/',
-                    ],
-                ];
-            @endphp
-
-            <section id="event-pilihan" class="album-section bg-soft py-5">
-                <div class="container">
-                    <h2 class="pb-2 border-bottom mb-4 fw-bold">Event Pilihan Minggu Ini</h2>
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-                        @foreach ($featuredEvents as $event)
-                            <div class="col">
-                                <div class="card event-card h-100">
-                                    <img src="{{ $event['gambar'] }}" class="card-img-top" alt="{{ $event['judul'] }}">
-                                    <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title">{{ $event['judul'] }}</h5>
-                                        <p class="card-text small text-muted">{{ $event['waktu'] }}</p>
-                                        <p class="card-text">Nikmati pengalaman spesial yang dikurasi oleh EventKita.</p>
-                                        <div class="mt-auto d-flex justify-content-between align-items-center">
-                                            <div class="btn-group">
-                                                <a href="{{ route('event.detail', ['slug' => $event['slug']]) }}"
-                                                    class="btn btn-sm btn-outline-custom">
-                                                    Lihat Detail
-                                                </a>
-                                                <a href="{{ $event['link'] }}" target="_blank"
-                                                    class="btn btn-sm btn-primary-custom ms-2">Situs Resmi</a>
-                                            </div>
-                                            <span class="badge badge-custom">{{ $event['kategori'] }}</span>
-                                        </div>
-                                    </div>
+                        <div class="card-body p-4">
+                            <h5 class="card-title fw-bold text-truncate">{{ $event->title }}</h5>
+                            <p class="text-muted small mb-2">
+                                <i class="bi bi-calendar3 me-1"></i> {{ $event->date->format('d M Y') }}
+                                @if($event->location)
+                                    <span class="mx-2">|</span> <i class="bi bi-geo-alt me-1"></i> {{ $event->location }}
+                                @endif
+                            </p>
+                            <p class="card-text text-muted mb-4" style="font-size: 0.9rem;">
+                                {{ Str::limit($event->description, 90) }}
+                            </p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
+                                <span class="h5 mb-0 fw-bold text-primary">{{ $event->formatted_price }}</span>
+                                <div class="btn-group">
+                                    @if($event->slug)
+                                        <a href="{{ route('event.detail', ['slug' => $event->slug]) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">Detail</a>
+                                    @else
+                                        <span class="btn btn-outline-secondary btn-sm rounded-pill px-3 disabled">Detail</span>
+                                    @endif
+                                    @if($event->hasPaidTickets() && $event->slug)
+                                        @auth
+                                            <a href="{{ route('checkout', $event->slug) }}" class="btn btn-primary btn-sm rounded-pill px-3 ms-2" title="Beli Tiket">
+                                                <i class="bi bi-ticket-perforated"></i>
+                                            </a>
+                                        @else
+                                            <a href="{{ route('login') }}" class="btn btn-primary btn-sm rounded-pill px-3 ms-2" title="Login untuk Beli Tiket">
+                                                <i class="bi bi-ticket-perforated"></i>
+                                            </a>
+                                        @endauth
+                                    @endif
                                 </div>
                             </div>
-                        @endforeach
+                        </div>
                     </div>
                 </div>
-            </section>
+            @empty
+                <div class="col-12 text-center py-5">
+                    <img src="https://illustrations.popsy.co/amber/calendar.svg" alt="empty" width="200" class="mb-3">
+                    <p class="text-muted">Wah, belum ada event tersedia nih. Cek lagi nanti ya!</p>
+                </div>
+            @endforelse
+        </div>
+    </div>
+</section>
 
-        <section class="py-5 bg-white">
-            <div class="container">
-                <h2 class="text-center mb-4 fw-bold">Temukan di Kotamu</h2>
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
-                  @foreach (['Jakarta', 'Bandung', 'Surabaya', 'Yogyakarta'] as $kota)
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Temukan di Kotamu</h2>
+            <p class="text-muted">Cari keseruan terdekat dari lokasimu</p>
+        </div>
+
+        @if($cities->count() > 0)
+            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
+                @foreach($cities as $city)
                     <div class="col">
-                        <a href="{{ route('kota') }}" class="text-white text-decoration-none">
-                            <div class="card city-card">
-                                <img src="https://cozzy.id/uploads/0000/630/2024/09/04/cozzyid-hotel-murah-hotel-terdekat-penginapan-murah-penginapan-terdekat-booking-hotel-monumen-nasional-monas-ikon-jakarta-yang-membanggakan-sumber-gambar-kompas.jpg" class="card-img" alt="{{ $kota }}">
-                                <div class="card-img-overlay">
-                                    <h4>{{ $kota }}</h4>
+                        <a href="{{ route('kota') }}?city={{ urlencode($city->name) }}" class="text-decoration-none">
+                            <div class="card city-card shadow-sm h-100">
+                                @if($city->image_path)
+                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($city->image_path) }}" class="card-img" alt="{{ $city->name }}">
+                                @else
+                                    <img src="https://via.placeholder.com/300x200?text={{ urlencode($city->name) }}" class="card-img" alt="{{ $city->name }}">
+                                @endif
+                                <div class="card-img-overlay d-flex align-items-end p-0">
+                                    <div class="w-100 bg-dark bg-opacity-50 text-white p-3 backdrop-blur" style="backdrop-filter: blur(2px);">
+                                        <h6 class="mb-0 fw-bold">{{ $city->name }}</h6>
+                                        <small class="opacity-75">{{ $city->events_count }} Event</small>
+                                    </div>
                                 </div>
                             </div>
                         </a>
                     </div>
-                     @endforeach
-                </div>
+                @endforeach
             </div>
-        </section>
-
-
-
-
-
-
-
+        @else
+            <div class="alert alert-light border text-center">
+                <i class="bi bi-geo-alt fs-3 text-muted"></i>
+                <p class="mb-0 mt-2">Belum ada data kota yang tersedia.</p>
+            </div>
+        @endif
+    </div>
+</section>
 
 @endsection

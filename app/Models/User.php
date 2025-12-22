@@ -46,4 +46,36 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Relasi ke Discussions
+     */
+    public function discussions()
+    {
+        return $this->hasMany(Discussion::class);
+    }
+
+    /**
+     * Relasi ke Discussion Replies
+     */
+    public function discussionReplies()
+    {
+        return $this->hasMany(DiscussionReply::class);
+    }
+
+    /**
+     * Relasi Many-to-Many ke Events (Favorites)
+     */
+    public function favoriteEvents()
+    {
+        return $this->belongsToMany(Event::class, 'favorites')->withTimestamps();
+    }
+
+    /**
+     * Relasi ke Orders
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }
