@@ -25,10 +25,19 @@ class StorageHelper
         $disk = Storage::disk('public');
         if ($disk->exists($path)) {
             $url = $disk->url($path);
-            // Append lastModified timestamp as cache-buster so browsers fetch newly uploaded files
+
+            // If APP_ASSET_VERSION is set in env, use it as a deploy-time cache buster (recommended)
+            $assetVersion = env('APP_ASSET_VERSION');
+            if (!empty($assetVersion)) {
+                $sep = strpos($url, '?') === false ? '?' : '&';
+                return $url . $sep . 'v=' . urlencode($assetVersion);
+            }
+
+            // Otherwise fall back to lastModified timestamp
             try {
                 $mtime = $disk->lastModified($path);
-                return $url . '?v=' . $mtime;
+                $sep = strpos($url, '?') === false ? '?' : '&';
+                return $url . $sep . 'v=' . $mtime;
             } catch (\Throwable $e) {
                 return $url;
             }
