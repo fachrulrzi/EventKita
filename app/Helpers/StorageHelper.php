@@ -21,43 +21,7 @@ class StorageHelper
             return $path;
         }
 
-        // Auto-detect Railway environment - check if AWS credentials exist
-        $hasS3Config = !empty(config('filesystems.disks.s3.bucket')) 
-                    && !empty(config('filesystems.disks.s3.endpoint'));
-        
-        // For Railway or any S3 storage (auto-detect)
-        if (config('filesystems.default') === 's3' || $hasS3Config) {
-            $url = config('filesystems.disks.s3.url');
-            $endpoint = config('filesystems.disks.s3.endpoint');
-            $bucket = config('filesystems.disks.s3.bucket');
-            
-            // Priority 1: If AWS_URL is set, use it
-            if (!empty($url)) {
-                return rtrim($url, '/') . '/' . ltrim($path, '/');
-            }
-            
-            // Priority 2: For Railway Object Storage - construct URL from bucket name
-            // Railway format: https://{bucket}.storage.railway.app/{path}
-            if (!empty($bucket)) {
-                // Railway bucket names are in format: word-word-randomstring
-                if (preg_match('/^[a-z]+-[a-z]+-[a-z0-9]+$/i', $bucket)) {
-                    return 'https://' . $bucket . '.storage.railway.app/' . ltrim($path, '/');
-                }
-            }
-            
-            // Priority 3: Use endpoint directly
-            if (!empty($endpoint)) {
-                return rtrim($endpoint, '/') . '/' . ltrim($path, '/');
-            }
-        }
-
-        // Fallback for local/public disk:
-        // If the file exists on the `public` disk, return its public URL.
-        if (Storage::disk('public')->exists($path)) {
-            return Storage::disk('public')->url($path);
-        }
-
-        // Last resort: Laravel's Storage::url() (uses default disk)
-        return Storage::url($path);
+        // Always use the 'public' disk for generating URLs.
+        return Storage::disk('public')->url($path);
     }
 }
