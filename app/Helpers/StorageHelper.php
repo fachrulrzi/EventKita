@@ -22,6 +22,19 @@ class StorageHelper
         }
 
         // Always use the 'public' disk for generating URLs.
-        return Storage::disk('public')->url($path);
+        $disk = Storage::disk('public');
+        if ($disk->exists($path)) {
+            $url = $disk->url($path);
+            // Append lastModified timestamp as cache-buster so browsers fetch newly uploaded files
+            try {
+                $mtime = $disk->lastModified($path);
+                return $url . '?v=' . $mtime;
+            } catch (\Throwable $e) {
+                return $url;
+            }
+        }
+
+        // Fallback to Laravel's Storage::url() if file not found on public disk
+        return Storage::url($path);
     }
 }
