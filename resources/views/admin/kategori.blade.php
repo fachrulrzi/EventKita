@@ -132,7 +132,7 @@
                                                 $iconUrl = \App\Helpers\StorageHelper::url($category->icon_path);
                                             }
                                         @endphp
-                                        <img src="{{ Storage::disk('s3')->url($category->icon_path) }}" class="category-avatar shadow-sm" alt="{{ $category->name }}">
+                                        <img src="{{ $iconUrl ?? $placeholderIcon }}" class="category-avatar shadow-sm" alt="{{ $category->name }}">
                                         <div>
                                             <div class="fw-bold text-dark fs-6">{{ $category->name }}</div>
                                             <span class="slug-badge">{{ $category->slug }}</span>
