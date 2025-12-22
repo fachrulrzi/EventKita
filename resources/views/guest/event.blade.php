@@ -129,7 +129,7 @@
                         @endphp
                         <a href="{{ $categoryUrl }}" 
                            class="btn {{ $isActive ? 'btn-primary' : 'btn-white bg-white border' }} rounded-pill px-3 d-flex align-items-center gap-2 category-pill shadow-sm">
-                            <img src="{{ $cat->icon_path ? \Illuminate\Support\Facades\Storage::url($cat->icon_path) : $placeholderIconSmall }}" 
+                            <img src="{{ $cat->icon_path ? asset('storage/' . $cat->icon_path) : $placeholderIconSmall }}" 
                                  alt="{{ $cat->name }}" class="rounded-circle">
                             {{ $cat->name }}
                         </a>

@@ -122,7 +122,7 @@
                             <tr>
                                 <td class="ps-4">
                                     @if($city->image_path)
-                                        <img src="{{ Storage::url($city->image_path) }}" alt="{{ $city->name }}" class="city-thumbnail shadow-sm">
+                                        <img src="{{ asset('storage/' . $city->image_path) }}" alt="{{ $city->name }}" class="city-thumbnail shadow-sm">
                                     @else
                                         <div class="city-icon-placeholder">
                                             <i class="bi bi-image"></i>

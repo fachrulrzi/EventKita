@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\City;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class CitySeeder extends Seeder
 {
@@ -58,7 +59,10 @@ class CitySeeder extends Seeder
         foreach ($cities as $city) {
             City::firstOrCreate(
                 ['name' => $city['name']],
-                ['description' => $city['description']]
+                [
+                    'slug' => Str::slug($city['name']),
+                    'description' => $city['description']
+                ]
             );
         }
     }
