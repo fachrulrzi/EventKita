@@ -21,30 +21,37 @@ class StorageHelper
             return $path;
         }
 
-        // For S3/Railway Object Storage
-        if (config('filesystems.default') === 's3') {
+        // Auto-detect Railway environment - check if AWS credentials exist
+        $hasS3Config = !empty(config('filesystems.disks.s3.bucket')) 
+                    && !empty(config('filesystems.disks.s3.endpoint'));
+        
+        // For Railway or any S3 storage (auto-detect)
+        if (config('filesystems.default') === 's3' || $hasS3Config) {
             $url = config('filesystems.disks.s3.url');
             $endpoint = config('filesystems.disks.s3.endpoint');
             $bucket = config('filesystems.disks.s3.bucket');
             
-            // If AWS_URL is set, use it
+            // Priority 1: If AWS_URL is set, use it
             if (!empty($url)) {
                 return rtrim($url, '/') . '/' . ltrim($path, '/');
             }
             
-            // For Railway Object Storage: construct URL from bucket name
+            // Priority 2: For Railway Object Storage - construct URL from bucket name
             // Railway format: https://{bucket}.storage.railway.app/{path}
-            if (!empty($bucket) && str_contains($bucket, '-')) {
-                return 'https://' . $bucket . '.storage.railway.app/' . ltrim($path, '/');
+            if (!empty($bucket)) {
+                // Railway bucket names are in format: word-word-randomstring
+                if (preg_match('/^[a-z]+-[a-z]+-[a-z0-9]+$/i', $bucket)) {
+                    return 'https://' . $bucket . '.storage.railway.app/' . ltrim($path, '/');
+                }
             }
             
-            // Otherwise use endpoint
+            // Priority 3: Use endpoint directly
             if (!empty($endpoint)) {
                 return rtrim($endpoint, '/') . '/' . ltrim($path, '/');
             }
         }
 
-        // Fallback to Laravel's Storage::url()
+        // Fallback to Laravel's Storage::url() for local disk
         return Storage::url($path);
     }
 }

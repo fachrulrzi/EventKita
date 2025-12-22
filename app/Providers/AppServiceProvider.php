@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Filesystem\Filesystem;
-use App\Helpers\StorageHelper;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,13 +27,10 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        // Register global helper function for storage URLs
-        if (!function_exists('storage_url')) {
-            function storage_url(?string $path): ?string
-            {
-                return StorageHelper::url($path);
-            }
-        }
+        // Register Blade directive for storage URLs
+        Blade::directive('storageUrl', function ($expression) {
+            return "<?php echo app('App\Helpers\StorageHelper')::url($expression); ?>";
+        });
 
         // Pastikan symbolic link storage tersedia untuk file upload (icon kategori, dsb)
         $filesystem = new Filesystem();
