@@ -23,12 +23,19 @@ class StorageHelper
 
         // For S3/Railway Object Storage
         if (config('filesystems.default') === 's3') {
-            $endpoint = config('filesystems.disks.s3.endpoint');
             $url = config('filesystems.disks.s3.url');
+            $endpoint = config('filesystems.disks.s3.endpoint');
+            $bucket = config('filesystems.disks.s3.bucket');
             
             // If AWS_URL is set, use it
             if (!empty($url)) {
                 return rtrim($url, '/') . '/' . ltrim($path, '/');
+            }
+            
+            // For Railway Object Storage: construct URL from bucket name
+            // Railway format: https://{bucket}.storage.railway.app/{path}
+            if (!empty($bucket) && str_contains($bucket, '-')) {
+                return 'https://' . $bucket . '.storage.railway.app/' . ltrim($path, '/');
             }
             
             // Otherwise use endpoint
