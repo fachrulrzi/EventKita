@@ -98,7 +98,14 @@
     }
 </style>
 
-<section class="event-detail-hero" style="background-image: url('{{ storage_url($event->image_path) }}');">
+@php
+    $heroImgUrl = $event->image_path 
+        ? ((str_starts_with($event->image_path, 'http')) 
+            ? $event->image_path 
+            : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $event->image_path)
+        : 'https://via.placeholder.com/1200x450?text=Event';
+@endphp
+<section class="event-detail-hero" style="background-image: url('{{ $heroImgUrl }}');">
     <div class="event-detail-overlay"></div>
     <div class="container hero-content">
         <nav aria-label="breadcrumb" class="mb-3">

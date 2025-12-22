@@ -18,7 +18,12 @@
                     <div class="row align-items-center">
                         <div class="col-md-4">
                             @if($event->image_path)
-                                <img src="{{ storage_url($event->image_path) }}" 
+                                @php
+                                    $checkoutImgUrl = (str_starts_with($event->image_path, 'http')) 
+                                        ? $event->image_path 
+                                        : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $event->image_path;
+                                @endphp
+                                <img src="{{ $checkoutImgUrl }}" 
                                      class="img-fluid rounded" alt="{{ $event->title }}">
                             @else
                                 <img src="https://via.placeholder.com/300x200?text=Event" 

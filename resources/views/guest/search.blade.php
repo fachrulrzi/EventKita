@@ -121,7 +121,12 @@
                         <div class="card event-card h-100 shadow-sm">
                             <div class="card-img-container">
                                 @if($event->image_path)
-                                    <img src="{{ storage_url($event->image_path) }}" alt="{{ $event->title }}">
+                                    @php
+                                        $searchImgUrl = (str_starts_with($event->image_path, 'http')) 
+                                            ? $event->image_path 
+                                            : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $event->image_path;
+                                    @endphp
+                                    <img src="{{ $searchImgUrl }}" alt="{{ $event->title }}">
                                 @else
                                     <img src="https://via.placeholder.com/400x300?text=EventKita" alt="{{ $event->title }}">
                                 @endif

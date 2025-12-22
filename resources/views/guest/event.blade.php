@@ -129,7 +129,14 @@
                         @endphp
                         <a href="{{ $categoryUrl }}" 
                            class="btn {{ $isActive ? 'btn-primary' : 'btn-white bg-white border' }} rounded-pill px-3 d-flex align-items-center gap-2 category-pill shadow-sm">
-                            <img src="{{ $cat->icon_path ? storage_url($cat->icon_path) : $placeholderIconSmall }}" 
+                            @php
+                                $catIconUrl = $cat->icon_path 
+                                    ? ((str_starts_with($cat->icon_path, 'http')) 
+                                        ? $cat->icon_path 
+                                        : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $cat->icon_path)
+                                    : $placeholderIconSmall;
+                            @endphp
+                            <img src="{{ $catIconUrl }}" 
                                  alt="{{ $cat->name }}" class="rounded-circle">
                             {{ $cat->name }}
                         </a>
@@ -145,7 +152,14 @@
                      data-tanggal="{{ $event->date->format('Y-m-d') }}">
                     <div class="card event-card h-100 shadow-sm border-0">
                         <div class="img-wrapper">
-                            <img src="{{ storage_url($event->image_path) }}" class="card-img-top" alt="{{ $event->title }}">
+                            @php
+                                $eventImgUrl = $event->image_path 
+                                    ? ((str_starts_with($event->image_path, 'http')) 
+                                        ? $event->image_path 
+                                        : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $event->image_path)
+                                    : 'https://via.placeholder.com/400x300?text=No+Image';
+                            @endphp
+                            <img src="{{ $eventImgUrl }}" class="card-img-top" alt="{{ $event->title }}">
                             <div class="position-absolute top-0 end-0 p-3">
                                 @auth
                                     <form action="{{ route('favorites.toggle', $event->id) }}" method="POST">

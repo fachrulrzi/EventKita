@@ -85,7 +85,12 @@
                 @foreach($featuredEvents as $index => $featured)
                     <div class="carousel-item hero-carousel-item {{ $index === 0 ? 'active' : '' }}">
                         @if($featured->image_path)
-                            <img src="{{ storage_url($featured->image_path) }}" class="d-block w-100" alt="{{ $featured->title }}">
+                            @php
+                                $imgUrl = (str_starts_with($featured->image_path, 'http')) 
+                                    ? $featured->image_path 
+                                    : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $featured->image_path;
+                            @endphp
+                            <img src="{{ $imgUrl }}" class="d-block w-100" alt="{{ $featured->title }}">
                         @else
                             <img src="https://via.placeholder.com/1200x500?text={{ urlencode($featured->title) }}" class="d-block w-100" alt="{{ $featured->title }}">
                         @endif
@@ -134,8 +139,13 @@
                         <div class="bg-white rounded-circle d-inline-block p-1 mb-3">
                             @php
                                 $placeholderIcon = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="%23f8f9fa"/><text x="50%" y="55%" font-size="12" font-family="Arial" fill="%23adb5bd" text-anchor="middle">No Icon</text></svg>';
+                                $iconUrl = $category->icon_path 
+                                    ? ((str_starts_with($category->icon_path, 'http')) 
+                                        ? $category->icon_path 
+                                        : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $category->icon_path)
+                                    : $placeholderIcon;
                             @endphp
-                            <img src="{{ $category->icon_path ? storage_url($category->icon_path) : $placeholderIcon }}" 
+                            <img src="{{ $iconUrl }}" 
                                  class="rounded-circle shadow-sm" alt="{{ $category->name }}" width="100" height="100" style="object-fit: cover;">
                         </div>
                         <h6 class="text-dark fw-bold">{{ $category->name }}</h6>
@@ -161,7 +171,12 @@
                     <div class="card event-card h-100 shadow-sm">
                         <div class="position-relative">
                             @if($event->image_path)
-                                <img src="{{ storage_url($event->image_path) }}" class="card-img-top" alt="{{ $event->title }}" style="height: 220px; object-fit: cover;">
+                                @php
+                                    $eventImgUrl = (str_starts_with($event->image_path, 'http')) 
+                                        ? $event->image_path 
+                                        : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $event->image_path;
+                                @endphp
+                                <img src="{{ $eventImgUrl }}" class="card-img-top" alt="{{ $event->title }}" style="height: 220px; object-fit: cover;">
                             @else
                                 <img src="https://via.placeholder.com/400x300?text=No+Image" class="card-img-top" alt="{{ $event->title }}" style="height: 220px; object-fit: cover;">
                             @endif
@@ -248,7 +263,12 @@
                         <a href="{{ route('kota') }}?city={{ urlencode($city->name) }}" class="text-decoration-none">
                             <div class="card city-card shadow-sm h-100">
                                 @if($city->image_path)
-                                    <img src="{{ storage_url($city->image_path) }}" class="card-img" alt="{{ $city->name }}">
+                                    @php
+                                        $cityImgUrl = (str_starts_with($city->image_path, 'http')) 
+                                            ? $city->image_path 
+                                            : 'https://compact-lounge-fhpy7wqjz9.storage.railway.app/' . $city->image_path;
+                                    @endphp
+                                    <img src="{{ $cityImgUrl }}" class="card-img" alt="{{ $city->name }}">
                                 @else
                                     <img src="https://via.placeholder.com/300x200?text={{ urlencode($city->name) }}" class="card-img" alt="{{ $city->name }}">
                                 @endif
