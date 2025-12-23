@@ -502,10 +502,37 @@
 
 @endsection
 
-@section('scripts')
+@push('scripts')
+@php
+$eventsJson = $events->map(function($event) {
+    return [
+        'id' => $event->id,
+        'title' => $event->title,
+        'category_id' => $event->category_id,
+        'city_id' => $event->city_id,
+        'date' => $event->date->format('Y-m-d'),
+        'location' => $event->location,
+        'time_start' => $event->time_start,
+        'website_url' => $event->website_url,
+        'description' => $event->description,
+        'is_featured' => $event->is_featured,
+        'ticket_categories' => $event->ticketCategories->map(function($tc) {
+            return [
+                'id' => $tc->id,
+                'category_name' => $tc->category_name,
+                'price' => $tc->price,
+                'stock' => $tc->stock,
+                'description' => $tc->description,
+            ];
+        })->toArray(),
+    ];
+})->toArray();
+@endphp
 <script>
 // Sinkronisasi data dari PHP ke JS
-const eventsData = @json($events);
+const eventsData = @json($eventsJson);
+
+console.log('Events Data:', eventsData); // Debug log
 
 // Counter untuk form add ticket category
 let ticketCategoryIndex = 1;
@@ -690,4 +717,4 @@ if (editCategoryModal) {
     });
 }
 </script>
-@endsection
+@endpush
