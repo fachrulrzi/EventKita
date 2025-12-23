@@ -254,27 +254,29 @@
 </div>
 
 <script>
-    // Data cities tetap menggunakan data dari backend
     const citiesData = @json($cities);
 
     function editCity(cityId) {
         const city = citiesData.find(c => c.id === cityId);
         if (!city) return;
 
-        // Set Action URL
         document.getElementById('editCityForm').action = `/admin/kota/${cityId}`;
-        
-        // Populate Fields
+
         document.getElementById('edit_name').value = city.name;
         document.getElementById('edit_description').value = city.description || '';
-        
-        // Current Image Preview Logic
+
         const previewDiv = document.getElementById('current_image_preview');
-        if (city.image_path) {
+
+        if (city.image_url) {
             previewDiv.innerHTML = `
                 <div class="position-relative d-inline-block">
-                    <img src="/storage/${city.image_path}" alt="${city.name}" class="img-thumbnail" style="max-height: 120px; border-radius: 10px;">
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary shadow-sm">Aktif</span>
+                    <img src="${city.image_url}" 
+                         alt="${city.name}" 
+                         class="img-thumbnail"
+                         style="max-height: 120px; border-radius: 10px;">
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary shadow-sm">
+                        Aktif
+                    </span>
                 </div>
                 <p class="small text-muted mt-2 mb-0">Gambar saat ini terpasang</p>
             `;
@@ -288,4 +290,5 @@
         }
     }
 </script>
+
 @endsection
