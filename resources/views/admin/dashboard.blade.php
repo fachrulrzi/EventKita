@@ -126,22 +126,41 @@
         </div>
 
 @php
-    $totalAllEvents = \App\Models\Event::count();
-    // Menghitung event yang tanggalnya hari ini atau ke depan
-    $activeEvents = \App\Models\Event::where('date', '>=', now()->toDateString())->count();
+    // Logika Performa Penjualan (Impactful)
+    // Mengambil total tiket yang terjual vs target (misal target total stok)
+    $totalStokTersedia = \App\Models\EventTicketCategory::sum('stock') ?? 0;
     
-    $activeRate = $totalAllEvents > 0 ? ($activeEvents / $totalAllEvents) * 100 : 0;
+    // Jika stok tidak ada patokan, kita gunakan perbandingan Event Aktif vs Total
+    $totalSemuaEvent = \App\Models\Event::count();
+    $eventBerjalan = \App\Models\Event::where('date', '>=', now()->toDateString())->count();
+    
+    // Hitung persentase untuk Progress Bar
+    $persenAktif = $totalSemuaEvent > 0 ? ($eventBerjalan / $totalSemuaEvent) * 100 : 0;
 @endphp
 
-<div class="text-center bg-white bg-opacity-10 p-4 rounded-4" style="backdrop-filter: blur(10px); min-width: 180px;">
-    <p class="text-white-50 small mb-2 fw-bold text-uppercase">Event Aktif</p>
-    
-    <div class="admin-progress-circle" style="background: conic-gradient(#fff {{ $activeRate }}%, transparent 0); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #fff 0); mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #fff 0); border: none;">
-        <span class="text-white fw-bold" style="-webkit-mask: none; mask: none;">{{ number_format($activeRate, 0) }}%</span>
+<div class="bg-white bg-opacity-10 p-4 rounded-4" style="backdrop-filter: blur(10px); min-width: 250px; border: 1px solid rgba(255,255,255,0.1);">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <p class="text-white-50 small mb-0 fw-bold text-uppercase">Produktivitas Event</p>
+        <span class="badge bg-white text-primary rounded-pill">{{ number_format($persenAktif, 0) }}%</span>
     </div>
-    
-    <small class="text-white fw-bold d-block">{{ $activeEvents }} dari {{ $totalAllEvents }} Event</small>
-    <small class="text-white-50" style="font-size: 10px;">Sedang berjalan/mendatang</small>
+
+    <div class="progress mb-3" style="height: 8px; background: rgba(255,255,255,0.2); border-radius: 10px;">
+        <div class="progress-bar bg-white shadow-sm" role="progressbar" 
+             style="width: {{ $persenAktif }}%; border-radius: 10px;" 
+             aria-valuenow="{{ $persenAktif }}" aria-valuemin="0" aria-valuemax="100">
+        </div>
+    </div>
+
+    <div class="row g-0">
+        <div class="col-6">
+            <small class="text-white-50 d-block" style="font-size: 0.7rem;">EVENT LIVE</small>
+            <h5 class="fw-bold mb-0 text-white">{{ $eventBerjalan }}</h5>
+        </div>
+        <div class="col-6 border-start border-white border-opacity-25 ps-3">
+            <small class="text-white-50 d-block" style="font-size: 0.7rem;">TOTAL DATA</small>
+            <h5 class="fw-bold mb-0 text-white">{{ $totalSemuaEvent }}</h5>
+        </div>
+    </div>
 </div>
 
 <div class="row g-4 mb-4">
