@@ -22,8 +22,12 @@ class CityController extends Controller
             'description' => $validated['description'] ?? null,
         ];
 
+        // 🔥 UPLOAD KE S3 (MINIO)
         if ($request->hasFile('image')) {
-            $data['image_path'] = $request->file('image')->store('cities', 'public');
+            $data['image_path'] = $request->file('image')->storePublicly(
+                'cities',
+                's3'
+            );
         }
 
         City::create($data);
@@ -44,12 +48,18 @@ class CityController extends Controller
             'description' => $validated['description'] ?? null,
         ];
 
+        // 🔥 UPDATE IMAGE KE S3
         if ($request->hasFile('image')) {
-            // Delete old image if exists (from public disk)
+
+            // hapus image lama di S3
             if ($city->image_path) {
-                Storage::disk('public')->delete($city->image_path);
+                Storage::disk('s3')->delete($city->image_path);
             }
-            $data['image_path'] = $request->file('image')->store('cities', 'public');
+
+            $data['image_path'] = $request->file('image')->storePublicly(
+                'cities',
+                's3'
+            );
         }
 
         $city->update($data);
@@ -59,9 +69,9 @@ class CityController extends Controller
 
     public function destroy(City $city)
     {
-        // Delete image if exists
+        // 🔥 HAPUS IMAGE DI S3
         if ($city->image_path) {
-            Storage::disk('public')->delete($city->image_path);
+            Storage::disk('s3')->delete($city->image_path);
         }
 
         $city->delete();
