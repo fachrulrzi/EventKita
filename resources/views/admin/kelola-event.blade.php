@@ -98,6 +98,11 @@
         border-radius: 1.5rem;
         border: none;
     }
+    
+    /* 6. CURSOR POINTER */
+    .cursor-pointer {
+        cursor: pointer;
+    }
     .modal-header-custom {
         border-bottom: 1px solid #f1f5f9;
         padding: 20px 30px;
