@@ -528,6 +528,21 @@
     const eventsData = @json($eventsJson);
     let ticketCategoryIndex = 1;
     let editTicketCategoryIndex = 0;
+    let updateModal = null;
+
+    // Initialize modal and fix aria-hidden issue
+    document.addEventListener('DOMContentLoaded', function() {
+        const updateModalEl = document.getElementById('updateEventModal');
+        updateModal = new bootstrap.Modal(updateModalEl);
+        
+        // Reset modal state when hidden
+        updateModalEl.addEventListener('hidden.bs.modal', function () {
+            // Remove focus from any element inside modal
+            document.activeElement.blur();
+            // Reset aria-hidden
+            updateModalEl.removeAttribute('aria-hidden');
+        });
+    });
 
     // --- ADD TICKET LOGIC ---
     function addTicketCategory() {
@@ -659,7 +674,12 @@
             });
         }
         
-        new bootstrap.Modal(document.getElementById('updateEventModal')).show();
+        // Use the pre-initialized modal instance
+        if (updateModal) {
+            updateModal.show();
+        } else {
+            new bootstrap.Modal(document.getElementById('updateEventModal')).show();
+        }
         } catch (error) {
             console.error('Error in editEvent:', error);
             alert('Terjadi kesalahan saat membuka form edit: ' + error.message);
