@@ -35,6 +35,17 @@
         z-index: 2;
         color: white;
     }
+
+    .hero-content h1,
+    .hero-content p,
+    .hero-content span,
+    .hero-content .text-white {
+        color: white !important;
+    }
+
+    .hero-content .text-white-50 {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
     
     /* 2. CARDS & LAYOUT */
     .info-card {

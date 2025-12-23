@@ -56,6 +56,16 @@
         color: white;
     }
 
+    .hero-content h1,
+    .hero-content p,
+    .hero-content span {
+        color: white !important;
+    }
+
+    .hero-content .text-light {
+        color: white !important;
+    }
+
     /* 2. CATEGORY BUBBLES */
     .category-card {
         transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -165,6 +175,11 @@
         bottom: 0; left: 0; right: 0;
         padding: 20px;
         pointer-events: none;
+    }
+
+    .city-overlay h6,
+    .city-overlay small {
+        color: white !important;
     }
 
     /* General Utilities */
