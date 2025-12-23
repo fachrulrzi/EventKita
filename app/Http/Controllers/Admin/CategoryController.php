@@ -12,19 +12,12 @@ use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-    /**
-     * Tampilkan daftar kategori.
-     */
     public function index(): View
     {
         $categories = Category::orderBy('created_at', 'desc')->paginate(10);
-
         return view('admin.kategori', compact('categories'));
     }
 
-    /**
-     * Simpan kategori baru.
-     */
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -34,9 +27,12 @@ class CategoryController extends Controller
         ]);
 
         $iconPath = null;
+
         if ($request->hasFile('icon')) {
-            // Store uploads on the public disk so they are accessible via /storage
-            $iconPath = $request->file('icon')->store('categories', 'public');
+            $iconPath = $request->file('icon')->storePublicly(
+                'categories',
+                's3'
+            );
         }
 
         Category::create([
@@ -46,12 +42,10 @@ class CategoryController extends Controller
             'icon_path' => $iconPath,
         ]);
 
-        return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil ditambahkan.');
+        return redirect()->route('admin.kategori.index')
+            ->with('success', 'Kategori berhasil ditambahkan.');
     }
 
-    /**
-     * Update kategori yang ada.
-     */
     public function update(Request $request, Category $kategori): RedirectResponse
     {
         $validated = $request->validate([
@@ -68,28 +62,30 @@ class CategoryController extends Controller
 
         if ($request->hasFile('icon')) {
             if ($kategori->icon_path) {
-                // Delete from public disk
-                Storage::disk('public')->delete($kategori->icon_path);
+                Storage::disk('s3')->delete($kategori->icon_path);
             }
-            $data['icon_path'] = $request->file('icon')->store('categories', 'public');
+
+            $data['icon_path'] = $request->file('icon')->storePublicly(
+                'categories',
+                's3'
+            );
         }
 
         $kategori->update($data);
 
-        return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil diperbarui.');
+        return redirect()->route('admin.kategori.index')
+            ->with('success', 'Kategori berhasil diperbarui.');
     }
 
-    /**
-     * Hapus kategori.
-     */
     public function destroy(Category $kategori): RedirectResponse
     {
         if ($kategori->icon_path) {
-            Storage::disk('public')->delete($kategori->icon_path);
+            Storage::disk('s3')->delete($kategori->icon_path);
         }
 
         $kategori->delete();
 
-        return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil dihapus.');
+        return redirect()->route('admin.kategori.index')
+            ->with('success', 'Kategori berhasil dihapus.');
     }
 }

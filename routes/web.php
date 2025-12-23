@@ -14,6 +14,14 @@ use App\Models\Order;
 use App\Models\Ticket;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+
+Route::get('/test-s3', function () {
+    return Storage::disk('s3')->exists('categories/test.jpg')
+        ? 'FILE ADA'
+        : 'FILE TIDAK ADA';
+});
+
 
 Route::get('/', function () {
     $categories = Category::orderBy('name')->get();
