@@ -124,22 +124,24 @@
             <h1 class="admin-hero-title h2 mb-2">Halo, {{ Auth::user()->name }} 👋</h1>
             <p class="text-white-50 mb-0 fs-6">Kelola seluruh ekosistem EventKita dengan kendali penuh hari ini.</p>
         </div>
-        
+
 @php
-    // Logika manual untuk menghitung stok dan okupansi langsung di view
-    $totalStock = \App\Models\EventTicketCategory::sum('stock') ?? 0;
-    $occupancyRate = $totalStock > 0 ? ($totalTicketsSold / $totalStock) * 100 : 0;
+    $totalAllEvents = \App\Models\Event::count();
+    // Menghitung event yang tanggalnya hari ini atau ke depan
+    $activeEvents = \App\Models\Event::where('date', '>=', now()->toDateString())->count();
+    
+    $activeRate = $totalAllEvents > 0 ? ($activeEvents / $totalAllEvents) * 100 : 0;
 @endphp
 
-        <div class="text-center bg-white bg-opacity-10 p-4 rounded-4" style="backdrop-filter: blur(10px); min-width: 180px;">
-                 <p class="text-white-50 small mb-2 fw-bold text-uppercase">Okupansi Tiket</p> 
-        <div class="admin-progress-circle">
-            <span>{{ number_format($occupancyRate ?? 0, 0) }}%</span>
-        </div>
+<div class="text-center bg-white bg-opacity-10 p-4 rounded-4" style="backdrop-filter: blur(10px); min-width: 180px;">
+    <p class="text-white-50 small mb-2 fw-bold text-uppercase">Event Aktif</p>
     
-             <small class="text-white fw-bold">{{ $totalTicketsSold }} / {{ $totalStock ?? 0 }} Terjual</small>
-        </div>
+    <div class="admin-progress-circle" style="background: conic-gradient(#fff {{ $activeRate }}%, transparent 0); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #fff 0); mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #fff 0); border: none;">
+        <span class="text-white fw-bold" style="-webkit-mask: none; mask: none;">{{ number_format($activeRate, 0) }}%</span>
     </div>
+    
+    <small class="text-white fw-bold d-block">{{ $activeEvents }} dari {{ $totalAllEvents }} Event</small>
+    <small class="text-white-50" style="font-size: 10px;">Sedang berjalan/mendatang</small>
 </div>
 
 <div class="row g-4 mb-4">
