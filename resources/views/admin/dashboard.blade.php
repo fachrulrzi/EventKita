@@ -286,71 +286,10 @@
 <div class="row g-4">
     <div class="col-xxl-8">
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-header bg-white py-4 px-4 d-flex flex-wrap justify-content-between align-items-center">
-                <div>
-                    <h5 class="fw-bold mb-0 text-dark">Data Event Terdaftar</h5>
-                    <small class="text-muted">Kelola seluruh status event dan iklan di sini</small>
-                </div>
-                <button class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#addEventModal">
-                    <i class="bi bi-plus-lg me-2"></i>Tambah Event
-                </button>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="ps-4 py-3">Event</th>
-                                <th class="py-3">Kategori</th>
-                                <th class="py-3">Tanggal</th>
-                                <th class="py-3">Harga</th>
-                                <th class="py-3 text-center">Iklan</th>
-                                <th class="py-3 text-center pe-4">Opsi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($events as $event)
-                            <tr>
-                                <td class="ps-4">
-                                    <div class="fw-bold text-dark">{{ $event->title }}</div>
-                                    <small class="text-muted">{{ Str::limit($event->location, 30) }}</small>
-                                </td>
-                                <td><span class="badge bg-primary-subtle text-primary border px-2 py-1">{{ $event->category->name }}</span></td>
-                                <td><i class="bi bi-calendar3 me-2"></i>{{ $event->date->format('d M Y') }}</td>
-                                <td class="fw-bold text-dark">{{ $event->formatted_price }}</td>
-                                <td class="text-center">
-                                    @if($event->is_featured)
-                                        <span class="badge bg-success rounded-pill px-3">Featured</span>
-                                    @else
-                                        <span class="badge bg-secondary-subtle text-muted px-3 border">Reguler</span>
-                                    @endif
-                                </td>
-                                <td class="pe-4">
-                                    <div class="d-flex gap-2 justify-content-center">
-                                        <button class="btn btn-sm btn-outline-primary rounded-circle" onclick="editEvent({{ $event->id }})" title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <form action="{{ route('admin.event.destroy', $event) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus event ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle" title="Hapus">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-5 text-muted">
-                                    <i class="bi bi-inbox fs-1 opacity-25 d-block mb-3"></i>
-                                    Belum ada data event tersedia.
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+            <div class="card-body p-4 text-center">
+                <h5 class="fw-bold mb-2 text-dark">Data Event Terdaftar</h5>
+                <p class="text-muted mb-3">Daftar event dan kontrol publikasi sekarang dipindahkan ke halaman terpisah.</p>
+                <a href="{{ route('admin.events') }}" class="btn btn-primary rounded-pill px-4 fw-bold">Buka Kelola Event</a>
             </div>
         </div>
     </div>

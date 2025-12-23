@@ -130,95 +130,73 @@
 <!-- Events Grid and Sidebar -->
 <div class="row g-4">
     <div class="col-lg-8">
-        <div class="row g-4">
-            @forelse($events as $event)
-                <div class="col-lg-6 col-md-6">
-                    <div class="card event-card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-body p-0">
-                    <!-- Event Image -->
-                    <div class="position-relative">
-                        @if($event->image_path)
-                            @php
-                                $adminEventImgUrl = $event->image_path
-                                    ? (str_starts_with($event->image_path, 'http')
-                                        ? $event->image_path
-                                        : \App\Helpers\StorageHelper::url($event->image_path))
-                                    : null;
-                            @endphp
-                            <img src="{{ $adminEventImgUrl ?? '' }}" class="event-image-preview" alt="{{ $event->title }}">
-                        @else
-                            <div class="event-image-preview bg-light d-flex align-items-center justify-content-center">
-                                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
-                            </div>
-                        @endif
-                        
-                        @if($event->is_featured)
-                            <div class="badge-featured">
-                                <i class="bi bi-star-fill me-1"></i>FEATURED
-                            </div>
-                        @endif
-                    </div>
-
-                    <!-- Event Content -->
-                    <div class="p-3">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="badge bg-{{ $event->status === 'published' ? 'success' : 'warning' }} rounded-pill">
-                                {{ ucfirst($event->status) }}
-                            </span>
-                            <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">
-                                {{ $event->category->name }}
-                            </span>
-                        </div>
-
-                        <h5 class="fw-bold mb-2">{{ Str::limit($event->title, 40) }}</h5>
-                        
-                        <div class="mb-2">
-                            <small class="text-muted d-block mb-1">
-                                <i class="bi bi-calendar3 me-1"></i>{{ $event->date->format('d M Y') }}
-                            </small>
-                            <small class="text-muted d-block mb-1">
-                                <i class="bi bi-clock me-1"></i>{{ $event->time }}
-                            </small>
-                            <small class="text-muted d-block">
-                                <i class="bi bi-geo-alt me-1"></i>{{ $event->cityRelation->name ?? $event->location }}
-                            </small>
-                        </div>
-
-                        <div class="mb-3">
-                            <small class="text-muted fw-bold">Kategori Tiket:</small>
-                            <div class="d-flex flex-wrap gap-1 mt-1">
-                                @foreach($event->ticketCategories as $ticket)
-                                    <span class="badge bg-light text-dark border">{{ $ticket->name }} - Rp {{ number_format($ticket->price, 0, ',', '.') }}</span>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-sm btn-outline-primary rounded-pill flex-grow-1" onclick="editEvent({{ $event->id }})">
-                                <i class="bi bi-pencil me-1"></i>Edit
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger rounded-pill" onclick="deleteEvent({{ $event->id }})">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-header bg-white py-4 px-4 d-flex flex-wrap justify-content-between align-items-center">
+                <div>
+                    <h5 class="fw-bold mb-0 text-dark">Data Event Terdaftar</h5>
+                    <small class="text-muted">Kelola seluruh status event dan iklan di sini</small>
+                </div>
+                <button class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#addEventModal">
+                    <i class="bi bi-plus-lg me-2"></i>Tambah Event
+                </button>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4 py-3">Event</th>
+                                <th class="py-3">Kategori</th>
+                                <th class="py-3">Tanggal</th>
+                                <th class="py-3">Harga</th>
+                                <th class="py-3 text-center">Iklan</th>
+                                <th class="py-3 text-center pe-4">Opsi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($events as $event)
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-bold text-dark">{{ $event->title }}</div>
+                                    <small class="text-muted">{{ Str::limit($event->location, 30) }}</small>
+                                </td>
+                                <td><span class="badge bg-primary-subtle text-primary border px-2 py-1">{{ $event->category->name }}</span></td>
+                                <td><i class="bi bi-calendar3 me-2"></i>{{ $event->date->format('d M Y') }}</td>
+                                <td class="fw-bold text-dark">{{ $event->formatted_price }}</td>
+                                <td class="text-center">
+                                    @if($event->is_featured)
+                                        <span class="badge bg-success rounded-pill px-3">Featured</span>
+                                    @else
+                                        <span class="badge bg-secondary-subtle text-muted px-3 border">Reguler</span>
+                                    @endif
+                                </td>
+                                <td class="pe-4">
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <button class="btn btn-sm btn-outline-primary rounded-circle" onclick="editEvent({{ $event->id }})" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <form action="{{ route('admin.event.destroy', $event) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus event ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle" title="Hapus">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox fs-1 opacity-25 d-block mb-3"></i>
+                                    Belum ada data event tersedia.
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            @empty
-                <div class="col-12">
-                    <div class="card border-0 shadow-sm rounded-4">
-                        <div class="card-body text-center py-5">
-                            <img src="https://illustrations.popsy.co/violet/event.svg" alt="empty" style="width: 200px;" class="mb-4 opacity-75">
-                            <h5 class="fw-bold mb-2">Belum Ada Event</h5>
-                            <p class="text-muted mb-4">Mulai buat event pertama Anda sekarang!</p>
-                            <button class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addEventModal">
-                                <i class="bi bi-plus-lg me-2"></i>Tambah Event
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            @endforelse
         </div>
     </div>
 

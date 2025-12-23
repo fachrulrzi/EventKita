@@ -127,6 +127,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('admin/event', [EventController::class, 'store'])->name('admin.event.store');
     Route::put('admin/event/{event}', [EventController::class, 'update'])->name('admin.event.update');
     Route::delete('admin/event/{event}', [EventController::class, 'destroy'])->name('admin.event.destroy');
+    // Halaman Kelola Event (list & manajemen)
+    Route::get('admin/events', [EventController::class, 'index'])->name('admin.events');
 
     // Forum/Discussion Management Routes
     Route::get('admin/forum', [AdminDiscussionController::class, 'index'])->name('admin.forum.index');

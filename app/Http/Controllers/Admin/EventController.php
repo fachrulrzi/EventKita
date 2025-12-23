@@ -90,7 +90,7 @@ class EventController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.dashboard')
+        return redirect()->route('admin.events')
             ->with('success', 'Event berhasil ditambahkan!');
     }
 
@@ -180,7 +180,7 @@ class EventController extends Controller
             }
         }
 
-        return redirect()->route('admin.dashboard')
+        return redirect()->route('admin.events')
             ->with('success', 'Event berhasil diperbarui!');
     }
 
@@ -195,7 +195,7 @@ class EventController extends Controller
 
         $event->delete();
 
-        return redirect()->route('admin.dashboard')
+        return redirect()->route('admin.events')
             ->with('success', 'Event berhasil dihapus!');
     }
 }
