@@ -7,86 +7,205 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     
     <style>
         :root {
-            --sidebar-width: 260px;
-            --sidebar-bg: #1e293b; /* Slate 800 */
-            --sidebar-hover: #334155;
-            --primary-color: #0d6efd;
-            --bg-body: #f8fafc;
+            --sidebar-width: 280px;
+            --sidebar-bg: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-body: #f1f5f9;
+            --text-muted: #a5b4fc;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-body);
             overflow-x: hidden;
         }
 
-        /* Sidebar Styling */
+        /* ============ SIDEBAR ============ */
         .admin-sidebar {
             width: var(--sidebar-width);
             height: 100vh;
             position: fixed;
             left: 0;
             top: 0;
-            background-color: var(--sidebar-bg);
-            color: #fff;
+            background: var(--sidebar-bg);
             z-index: 1000;
-            transition: all 0.3s;
-            box-shadow: 4px 0 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
         }
 
+        /* Brand Header */
         .sidebar-brand {
-            padding: 25px;
-            font-size: 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 24px 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .nav-custom {
-            padding: 20px 15px;
-        }
-
-        .nav-custom .nav-link {
-            color: #94a3b8; /* Slate 400 */
-            padding: 12px 15px;
-            border-radius: 10px;
-            margin-bottom: 5px;
-            font-weight: 500;
-            transition: 0.2s;
+        .sidebar-brand a {
             display: flex;
             align-items: center;
+            text-decoration: none;
+            color: #fff;
         }
 
-        .nav-custom .nav-link i {
+        .brand-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 12px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .brand-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-subtitle {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        /* Navigation */
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 16px;
+            overflow-y: auto;
+        }
+
+        .nav-section-title {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 0 12px;
+            margin-bottom: 12px;
+            margin-top: 8px;
+        }
+
+        .sidebar-nav .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            margin-bottom: 6px;
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-nav .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: transparent;
+            border-radius: 0 4px 4px 0;
+            transition: all 0.25s ease;
+        }
+
+        .sidebar-nav .nav-link i {
+            font-size: 1.25rem;
+            margin-right: 14px;
+            transition: all 0.25s ease;
+        }
+
+        .sidebar-nav .nav-link:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        .sidebar-nav .nav-link.active {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.9) 0%, rgba(168, 85, 247, 0.9) 100%);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+        }
+
+        .sidebar-nav .nav-link.active::before {
+            background: #fff;
+        }
+
+        .sidebar-nav .nav-link.active i {
+            color: #fff;
+        }
+
+        /* Nav Badge */
+        .nav-badge {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .nav-link.active .nav-badge {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Sidebar Footer */
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-footer .logout-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            color: #fca5a5;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-decoration: none;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            transition: all 0.25s ease;
+        }
+
+        .sidebar-footer .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fecaca;
+            transform: translateY(-2px);
+        }
+
+        .sidebar-footer .logout-btn i {
             font-size: 1.2rem;
-            transition: 0.2s;
+            margin-right: 12px;
         }
 
-        .nav-custom .nav-link:hover {
-            color: #fff;
-            background-color: var(--sidebar-hover);
-        }
-
-        .nav-custom .nav-link.active {
-            color: #fff;
-            background-color: var(--primary-color);
-            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
-        }
-
-        .nav-custom .nav-link.active i {
-            color: #fff;
-        }
-
-        /* Main Content Styling */
+        /* ============ MAIN CONTENT ============ */
         .admin-main {
             margin-left: var(--sidebar-width);
             min-height: 100vh;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .admin-topbar {
@@ -113,13 +232,15 @@
         
         .user-pill {
             background: #f1f5f9;
-            padding: 5px 15px;
+            padding: 6px 16px 6px 6px;
             border-radius: 50px;
             transition: 0.2s;
+            border: 1px solid #e2e8f0;
         }
 
         .user-pill:hover {
             background: #e2e8f0;
+            border-color: var(--primary-color);
         }
 
         /* Responsive */
@@ -134,54 +255,75 @@
                 margin-left: 0;
             }
         }
+
+        /* Scrollbar for sidebar */
+        .sidebar-nav::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar-nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
     </style>
     @stack('styles')
 </head>
 <body class="admin-layout">
 
     <aside class="admin-sidebar">
-        <div class="sidebar-brand text-center">
-            <a href="{{ url('/') }}" class="text-white text-decoration-none fw-bold">
-                <span class="me-1">🎉</span> EventKita
+        <!-- Brand -->
+        <div class="sidebar-brand">
+            <a href="{{ url('/') }}">
+                <div class="brand-icon">🎉</div>
+                <div>
+                    <div class="brand-text">EventKita</div>
+                    <div class="brand-subtitle">Admin Panel</div>
+                </div>
             </a>
         </div>
         
-        <div class="nav-custom">
-            <small class="text-uppercase text-muted fw-bold mb-3 d-block px-3" style="font-size: 0.7rem; letter-spacing: 1px;">Menu Utama</small>
+        <!-- Navigation -->
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Menu Utama</div>
             
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
-                        <i class="bi bi-grid-1x2 me-3"></i> Dashboard
-                    </a>
-                </li>
-                
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.events*') ? 'active' : '' }}"
-                       href="{{ Route::has('admin.events') ? route('admin.events') : '#' }}">
-                        <i class="bi bi-calendar4-event me-3"></i> Kelola Event
-                    </a>
-                </li>
+            <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+            
+            <a class="nav-link {{ request()->routeIs('admin.events*') ? 'active' : '' }}"
+               href="{{ Route::has('admin.events') ? route('admin.events') : '#' }}">
+                <i class="bi bi-calendar-event-fill"></i>
+                <span>Kelola Event</span>
+            </a>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.kategori.*') ? 'active' : '' }}" href="{{ route('admin.kategori.index') }}">
-                        <i class="bi bi-tags me-3"></i> Kelola Kategori
-                    </a>
-                </li>
+            <a class="nav-link {{ request()->routeIs('admin.kategori.*') ? 'active' : '' }}" href="{{ route('admin.kategori.index') }}">
+                <i class="bi bi-tags-fill"></i>
+                <span>Kelola Kategori</span>
+            </a>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.kota.*') ? 'active' : '' }}" href="{{ route('admin.kota.index') }}">
-                        <i class="bi bi-geo-alt me-3"></i> Kelola Kota
-                    </a>
-                </li>
-            </ul>
+            <a class="nav-link {{ request()->routeIs('admin.kota.*') ? 'active' : '' }}" href="{{ route('admin.kota.index') }}">
+                <i class="bi bi-geo-alt-fill"></i>
+                <span>Kelola Kota</span>
+            </a>
+
+            <div class="nav-section-title mt-4">Lainnya</div>
             
-            <hr class="my-4 opacity-10">
-            
-            <small class="text-uppercase text-muted fw-bold mb-3 d-block px-3" style="font-size: 0.7rem; letter-spacing: 1px;">Sistem</small>
-            <a href="{{ route('logout') }}" class="nav-link text-danger" 
+            <a class="nav-link" href="{{ url('/') }}" target="_blank">
+                <i class="bi bi-globe"></i>
+                <span>Lihat Website</span>
+                <i class="bi bi-box-arrow-up-right ms-auto" style="font-size: 0.75rem;"></i>
+            </a>
+        </nav>
+
+        <!-- Footer / Logout -->
+        <div class="sidebar-footer">
+            <a href="{{ route('logout') }}" class="logout-btn" 
                onclick="event.preventDefault(); document.getElementById('logout-form-admin').submit();">
-                <i class="bi bi-box-arrow-right me-3"></i> Keluar
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Keluar dari Admin</span>
             </a>
         </div>
     </aside>
@@ -199,8 +341,8 @@
             <div class="dropdown user-dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="user-pill d-flex align-items-center">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=0D6EFD&color=fff" 
-                             alt="Avatar" class="rounded-circle me-2" width="30" height="30">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=6366f1&color=fff" 
+                             alt="Avatar" class="rounded-circle me-2" width="32" height="32">
                         <span class="fw-semibold text-dark small d-none d-md-inline">{{ Auth::user()->name }}</span>
                         <i class="bi bi-chevron-down ms-2 small text-muted"></i>
                     </div>
