@@ -52,7 +52,7 @@
                         <p class="small text-white-50 mb-3">
                             Promosikan acaramu sekarang dan jangkau audiens lebih luas.
                         </p>
-                        <a href="https://wa.me/6285884653526" target="_blank" class="btn btn-primary w-100 fw-bold rounded-pill shadow-sm">
+                        <a href="https://wa.me/62811547999" target="_blank" class="btn btn-primary w-100 fw-bold rounded-pill shadow-sm">
                             Daftar Partner
                         </a>
                     </div>

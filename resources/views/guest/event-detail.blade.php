@@ -456,7 +456,7 @@
 
                     <div class="mt-4 pt-4 border-top text-center">
                         <p class="text-muted small mb-3">Butuh bantuan atau kerjasama?</p>
-                        <a href="https://wa.me/6285884653526" target="_blank" class="btn btn-success w-100 rounded-pill fw-bold py-2 shadow-sm">
+                        <a href="https://wa.me/62811547999" target="_blank" class="btn btn-success w-100 rounded-pill fw-bold py-2 shadow-sm">
                             <i class="bi bi-whatsapp me-2"></i> Hubungi Admin
                         </a>
                     </div>

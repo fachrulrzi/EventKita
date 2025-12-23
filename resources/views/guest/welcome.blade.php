@@ -177,6 +177,11 @@
         pointer-events: none;
     }
 
+    .city-overlay h6,
+    .city-overlay small {
+        color: white !important;
+    }
+
     /* General Utilities */
     .section-title {
         position: relative;
