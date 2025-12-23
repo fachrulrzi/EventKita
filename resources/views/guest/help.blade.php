@@ -282,7 +282,7 @@
                 <div class="contact-card">
                     <h3 class="fw-bold mb-3">Masih Butuh Bantuan?</h3>
                     <p class="opacity-75 mb-4">Tim support kami siap membantu Anda 24/7</p>
-                    <a href="https://wa.me/6285884653526" target="_blank" class="btn btn-light btn-lg px-5 rounded-pill fw-bold">
+                    <a href="https://wa.me/62811547999" target="_blank" class="btn btn-light btn-lg px-5 rounded-pill fw-bold">
                         <i class="bi bi-whatsapp me-2"></i>Hubungi via WhatsApp
                     </a>
                 </div>
