@@ -96,6 +96,13 @@
         background: white;
         color: #0d6efd;
     }
+    
+    /* Share Button Hover */
+    .share-btn:hover {
+        background: #e9ecef !important;
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
 </style>
 
 @php
@@ -169,6 +176,107 @@
         </div>
     </div>
 </section>
+
+{{-- Share Modal --}}
+<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="shareModalLabel">
+                    <i class="bi bi-share-fill text-primary me-2"></i>Bagikan Event
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-3">
+                <p class="text-muted small mb-4">Bagikan event ini ke teman-temanmu!</p>
+                
+                <div class="row g-3 mb-4">
+                    {{-- WhatsApp --}}
+                    <div class="col-3">
+                        <a href="https://wa.me/?text={{ urlencode($event->title . ' - Yuk ikutan event ini! ' . url()->current()) }}" 
+                           target="_blank" 
+                           class="btn btn-light w-100 py-3 rounded-4 d-flex flex-column align-items-center share-btn" 
+                           style="transition: all 0.2s;">
+                            <i class="bi bi-whatsapp fs-4 text-success"></i>
+                            <small class="mt-1 text-muted">WhatsApp</small>
+                        </a>
+                    </div>
+                    
+                    {{-- Twitter/X --}}
+                    <div class="col-3">
+                        <a href="https://twitter.com/intent/tweet?text={{ urlencode($event->title) }}&url={{ urlencode(url()->current()) }}" 
+                           target="_blank" 
+                           class="btn btn-light w-100 py-3 rounded-4 d-flex flex-column align-items-center share-btn" 
+                           style="transition: all 0.2s;">
+                            <i class="bi bi-twitter-x fs-4"></i>
+                            <small class="mt-1 text-muted">Twitter</small>
+                        </a>
+                    </div>
+                    
+                    {{-- Facebook --}}
+                    <div class="col-3">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}" 
+                           target="_blank" 
+                           class="btn btn-light w-100 py-3 rounded-4 d-flex flex-column align-items-center share-btn" 
+                           style="transition: all 0.2s;">
+                            <i class="bi bi-facebook fs-4 text-primary"></i>
+                            <small class="mt-1 text-muted">Facebook</small>
+                        </a>
+                    </div>
+                    
+                    {{-- Telegram --}}
+                    <div class="col-3">
+                        <a href="https://t.me/share/url?url={{ urlencode(url()->current()) }}&text={{ urlencode($event->title) }}" 
+                           target="_blank" 
+                           class="btn btn-light w-100 py-3 rounded-4 d-flex flex-column align-items-center share-btn" 
+                           style="transition: all 0.2s;">
+                            <i class="bi bi-telegram fs-4 text-info"></i>
+                            <small class="mt-1 text-muted">Telegram</small>
+                        </a>
+                    </div>
+                </div>
+                
+                {{-- Copy Link --}}
+                <div class="input-group">
+                    <input type="text" class="form-control bg-light border-0 py-3" id="shareUrl" value="{{ url()->current() }}" readonly style="border-radius: 12px 0 0 12px;">
+                    <button class="btn btn-primary px-4" type="button" id="copyLinkBtn" onclick="copyShareLink()" style="border-radius: 0 12px 12px 0;">
+                        <i class="bi bi-clipboard me-1"></i> Salin
+                    </button>
+                </div>
+                <small class="text-muted mt-2 d-block text-center" id="copyFeedback"></small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyShareLink() {
+    const shareUrl = document.getElementById('shareUrl');
+    shareUrl.select();
+    shareUrl.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(shareUrl.value);
+    
+    const feedback = document.getElementById('copyFeedback');
+    const copyBtn = document.getElementById('copyLinkBtn');
+    
+    feedback.innerHTML = '<i class="bi bi-check-circle text-success me-1"></i> Link berhasil disalin!';
+    copyBtn.innerHTML = '<i class="bi bi-check me-1"></i> Tersalin';
+    copyBtn.classList.remove('btn-primary');
+    copyBtn.classList.add('btn-success');
+    
+    setTimeout(() => {
+        feedback.innerHTML = '';
+        copyBtn.innerHTML = '<i class="bi bi-clipboard me-1"></i> Salin';
+        copyBtn.classList.remove('btn-success');
+        copyBtn.classList.add('btn-primary');
+    }, 3000);
+}
+
+// Open share modal when share button clicked
+document.querySelector('.btn-glass').addEventListener('click', function() {
+    new bootstrap.Modal(document.getElementById('shareModal')).show();
+});
+</script>
 
 <section class="py-5">
     <div class="container">
