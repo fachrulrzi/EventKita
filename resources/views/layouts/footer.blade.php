@@ -71,7 +71,7 @@
                 </div>
                 <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
                     <span class="small text-white-50">
-                        Made with <i class="bi bi-heart-fill text-danger mx-1"></i> in Indonesia
+                        Made in Indonesia
                     </span>
                 </div>
             </div>
