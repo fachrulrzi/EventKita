@@ -612,7 +612,9 @@
         document.getElementById('edit_time_start').value = event.time_start || '';
         document.getElementById('edit_website_url').value = event.website_url || '';
         document.getElementById('edit_description').value = event.description || '';
-        document.getElementById('edit_is_featured').checked = event.is_featured;
+        document.getElementById('edit_is_featured').checked = Boolean(event.is_featured);
+        
+        console.log('Event ID:', eventId, 'is_featured:', event.is_featured, 'Type:', typeof event.is_featured);
         
         // Populate Ticket Categories
         const container = document.getElementById('editTicketCategoriesContainer');
