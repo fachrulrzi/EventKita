@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {{-- CSRF Token --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <title>@yield('title', 'Admin Panel') | EventKita</title>
@@ -26,8 +25,8 @@
             --sidebar-active: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
             --sidebar-text: #94a3b8;
             --sidebar-text-active: #ffffff;
-            --bg-light: #f1f5f9;
-            --text-dark: #1e293b;
+            --bg-light: #f8fafc; /* Lebih soft dari putih biasa */
+            --text-dark: #334155;
             --primary-violet: #6366f1;
         }
 
@@ -38,12 +37,11 @@
             overflow-x: hidden;
         }
 
-        /* --- MODERN SIDEBAR STYLING --- */
+        /* --- SIDEBAR STYLING --- */
         .sidebar {
             height: 100vh;
             width: var(--sidebar-width);
             background-color: var(--sidebar-bg);
-            /* Texture background halus */
             background-image: linear-gradient(to bottom, #0f172a, #1e1b4b); 
             position: fixed;
             top: 0;
@@ -52,24 +50,23 @@
             display: flex;
             flex-direction: column;
             transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
         }
 
         /* Header Sidebar */
         .sidebar-header {
-            padding: 1.8rem 1.5rem;
+            padding: 1.5rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .brand-logo {
             background: rgba(99, 102, 241, 0.2);
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
+            border-radius: 12px;
             color: #818cf8;
             box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
         }
@@ -83,13 +80,10 @@
             scrollbar-color: rgba(255,255,255,0.1) transparent;
         }
 
-        .sidebar-nav::-webkit-scrollbar { width: 4px; }
-        .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-
         .menu-label {
             font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1.2px;
             color: rgba(255, 255, 255, 0.4);
             font-weight: 700;
             margin: 1.5rem 0 0.5rem 0.8rem;
@@ -100,37 +94,36 @@
             font-weight: 500;
             padding: 0.85rem 1rem;
             margin-bottom: 0.4rem;
-            border-radius: 10px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             transition: all 0.2s ease;
-            border: 1px solid transparent;
+            font-size: 0.95rem;
         }
 
         .sidebar .nav-link i {
             font-size: 1.2rem;
             margin-right: 12px;
-            transition: transform 0.2s ease;
             color: rgba(255,255,255,0.6);
+            transition: 0.2s;
         }
 
         .sidebar .nav-link:hover {
             background: var(--sidebar-hover);
             color: #fff;
-            transform: translateX(3px);
+            transform: translateX(4px);
         }
-        .sidebar .nav-link:hover i { color: #fff; transform: scale(1.1); }
+        .sidebar .nav-link:hover i { color: #fff; }
 
-        /* Active State - Glowing Pill */
+        /* Active State */
         .sidebar .nav-link.active {
             background: var(--sidebar-active);
             color: var(--sidebar-text-active);
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
         }
         .sidebar .nav-link.active i { color: #fff; }
 
-        /* Footer Sidebar (User Profile) */
+        /* Sidebar Footer (User Profile) */
         .sidebar-footer {
             padding: 1rem;
             background: rgba(0, 0, 0, 0.2);
@@ -141,13 +134,12 @@
         .user-card {
             display: flex;
             align-items: center;
-            padding: 10px;
+            padding: 12px;
             border-radius: 12px;
             background: rgba(255, 255, 255, 0.05);
-            transition: all 0.3s;
-            text-decoration: none;
-            border: 1px solid transparent;
+            transition: all 0.2s;
             cursor: pointer;
+            border: 1px solid transparent;
         }
         .user-card:hover {
             background: rgba(255, 255, 255, 0.1);
@@ -164,10 +156,11 @@
         }
 
         .topbar { 
-            background-color: rgba(255, 255, 255, 0.85); 
+            background-color: rgba(255, 255, 255, 0.8); 
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 1rem 2rem; 
-            border-bottom: 1px solid #e2e8f0; 
+            border-bottom: 1px solid rgba(0,0,0,0.05); 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
@@ -181,8 +174,8 @@
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(2px);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
             z-index: 1045;
             opacity: 0;
             transition: opacity 0.3s;
@@ -193,32 +186,32 @@
             .sidebar.show { transform: translateX(0); }
             .main-content { margin-left: 0; }
             .sidebar-overlay.show { display: block; opacity: 1; }
+            .topbar { padding: 1rem; }
         }
     </style>
     @stack('styles')
 </head>
 <body>
 
-    {{-- Overlay untuk Mobile --}}
+    {{-- Overlay Mobile --}}
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    {{-- SIDEBAR BARU --}}
+    {{-- SIDEBAR --}}
     <aside class="sidebar" id="sidebar">
-        {{-- Header Logo --}}
+        {{-- Header --}}
         <div class="sidebar-header d-flex align-items-center gap-3">
             <div class="brand-logo">
                 <i class="bi bi-rocket-takeoff-fill fs-5"></i>
             </div>
             <div>
                 <h5 class="fw-bold text-white mb-0" style="letter-spacing: -0.5px;">EventKita</h5>
-                <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill" style="font-size: 0.65rem;">ADMIN v2.0</span>
+                <span class="badge bg-white bg-opacity-10 text-white border border-white border-opacity-10 rounded-pill" style="font-size: 0.65rem;">ADMIN v2.0</span>
             </div>
         </div>
         
-        {{-- Menu Navigasi --}}
+        {{-- Navigation --}}
         <div class="sidebar-nav">
             <ul class="nav flex-column">
-                
                 <li class="menu-label">Overview</li>
                 
                 <li class="nav-item">
@@ -230,33 +223,37 @@
                 <li class="menu-label">Management</li>
 
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.event*') ? 'active' : '' }}" href="{{ route('admin.events') }}">
+                    <a class="nav-link {{ request()->routeIs('admin.events*') ? 'active' : '' }}" href="{{ route('admin.events') }}">
                         <i class="bi bi-calendar2-heart-fill"></i> <span>Kelola Event</span>
                     </a>
                 </li>
                 
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link {{ request()->routeIs('admin.kategori*') ? 'active' : '' }}" href="{{ route('admin.kategori.index') }}">
                         <i class="bi bi-bookmarks-fill"></i> <span>Kategori</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.forum.*') ? 'active' : '' }}" href="{{ route('admin.forum.index') }}">
+                    <a class="nav-link {{ request()->routeIs('admin.forum*') ? 'active' : '' }}" href="{{ route('admin.forum.index') }}">
                         <i class="bi bi-chat-left-quote-fill"></i> <span>Moderasi Forum</span>
-                        {{-- Contoh Badge Notifikasi --}}
-                        <span class="badge bg-danger rounded-circle ms-auto" style="font-size: 0.6rem;">3</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.kota*') ? 'active' : '' }}" href="{{ route('admin.kota.index') }}">
+                        <i class="bi bi-geo-alt-fill"></i> <span>Kelola Kota</span>
                     </a>
                 </li>
             </ul>
         </div>
 
-        {{-- Footer Profil User (Pengganti Logout Biasa) --}}
+        {{-- Footer Profile --}}
         <div class="sidebar-footer">
             <div class="dropdown dropup">
                 <div class="user-card d-flex align-items-center gap-3" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="position-relative">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=random&color=fff" 
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=random&color=fff&bold=true" 
                              alt="User" class="rounded-circle border border-2 border-white border-opacity-25" width="38" height="38">
                         <span class="position-absolute bottom-0 end-0 bg-success border border-dark rounded-circle p-1"></span>
                     </div>
@@ -267,12 +264,11 @@
                     <i class="bi bi-chevron-up text-white-50" style="font-size: 0.8rem;"></i>
                 </div>
 
-                <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-0 mb-2 p-2 rounded-3 w-100">
-                    <li><a class="dropdown-item rounded-2 small" href="#"><i class="bi bi-person me-2"></i> Profil Saya</a></li>
-                    <li><a class="dropdown-item rounded-2 small" href="{{ url('/') }}"><i class="bi bi-globe me-2"></i> Ke Website</a></li>
-                    <li><hr class="dropdown-divider border-secondary opacity-25"></li>
+                <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-0 mb-2 p-2 rounded-4 w-100">
+                    <li><a class="dropdown-item rounded-2 small py-2" href="{{ url('/') }}"><i class="bi bi-globe me-2"></i> Lihat Website</a></li>
+                    <li><hr class="dropdown-divider border-secondary opacity-25 my-1"></li>
                     <li>
-                        <a class="dropdown-item rounded-2 text-danger small" href="{{ route('logout') }}"
+                        <a class="dropdown-item rounded-2 text-danger small py-2" href="{{ route('logout') }}"
                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <i class="bi bi-box-arrow-right me-2"></i> Keluar
                         </a>
@@ -285,19 +281,18 @@
         </div>
     </aside>
 
-    {{-- KONTEN UTAMA --}}
+    {{-- MAIN CONTENT --}}
     <div class="main-content">
         <header class="topbar">
             <div class="d-flex align-items-center">
-                <button class="btn btn-white border d-lg-none me-3 shadow-sm" id="sidebarToggle">
+                <button class="btn btn-white border d-lg-none me-3 shadow-sm rounded-circle" id="sidebarToggle" style="width: 40px; height: 40px;">
                     <i class="bi bi-list fs-5"></i>
                 </button>
                 <h5 class="mb-0 fw-bold text-dark">@yield('page-title', 'Halaman Admin')</h5>
             </div>
             
-            {{-- Topbar Actions (Opsional, karena profil sudah di sidebar) --}}
             <div class="d-flex align-items-center gap-3">
-                <a href="#" class="text-muted position-relative">
+                <a href="#" class="text-secondary position-relative p-2">
                     <i class="bi bi-bell fs-5"></i>
                     <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
                 </a>
@@ -309,10 +304,10 @@
         </main>
     </div>
 
+    {{-- SCRIPTS --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
     <script>
-        // Logic Toggle Sidebar Mobile
+        // Sidebar Toggle Logic
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
         const toggleBtn = document.getElementById('sidebarToggle');
@@ -322,8 +317,8 @@
             overlay.classList.toggle('show');
         }
 
-        toggleBtn.addEventListener('click', toggleSidebar);
-        overlay.addEventListener('click', toggleSidebar);
+        if(toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
+        if(overlay) overlay.addEventListener('click', toggleSidebar);
     </script>
     @stack('scripts')
 </body>

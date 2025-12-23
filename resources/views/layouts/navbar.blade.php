@@ -1,169 +1,196 @@
+{{-- INTERNAL STYLES KHUSUS NAVBAR --}}
 <style>
-    /* Custom Styling khusus Navbar */
     .navbar-main {
-        backdrop-filter: blur(15px);
-        background-color: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        background-color: rgba(255, 255, 255, 0.85);
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        padding: 12px 0;
+        padding: 0.8rem 0;
+        transition: all 0.3s ease;
+    }
+
+    .navbar-brand {
+        font-weight: 800;
+        font-size: 1.4rem;
+        letter-spacing: -0.5px;
+        color: #1e1b4b !important;
     }
     
-    .navbar-brand {
-        font-size: 1.5rem;
-        letter-spacing: -0.5px;
-    }
-
-    .search-container {
+    /* Search Bar Styles */
+    .search-wrapper {
         position: relative;
-        max-width: 500px;
+        width: 100%;
+        max-width: 480px;
+    }
+    .search-input {
+        background-color: #f1f5f9;
+        border: 2px solid transparent;
+        border-radius: 50px;
+        padding: 10px 20px 10px 48px;
+        font-size: 0.95rem;
+        transition: all 0.25s ease;
         width: 100%;
     }
-
-    .search-input {
-        background-color: #f1f3f5;
-        border: none;
-        border-radius: 50px;
-        padding: 10px 20px 10px 45px;
-        transition: all 0.3s ease;
-        font-size: 0.9rem;
-    }
-
     .search-input:focus {
         background-color: #fff;
+        border-color: #0d6efd;
         box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
-        width: 105%;
+        outline: none;
     }
-
     .search-icon {
         position: absolute;
         left: 18px;
         top: 50%;
         transform: translateY(-50%);
-        color: #adb5bd;
+        color: #64748b;
+        pointer-events: none;
     }
 
+    /* Nav Links */
     .nav-link-custom {
         font-weight: 600;
-        color: #495057;
+        color: #475569;
         padding: 8px 16px !important;
-        border-radius: 8px;
-        transition: 0.2s;
+        border-radius: 50px;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
     }
-
     .nav-link-custom:hover {
-        background-color: #f8f9fa;
+        background-color: #f1f5f9;
         color: #0d6efd;
     }
 
-    .user-pill-nav {
-        background-color: #f8f9fa;
-        padding: 4px 12px 4px 6px;
+    /* User Profile Pill */
+    .user-pill-btn {
+        background: white;
+        border: 1px solid #e2e8f0;
+        padding: 4px 14px 4px 4px;
         border-radius: 50px;
-        border: 1px solid #e9ecef;
-        transition: 0.2s;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
-
-    .user-pill-nav:hover {
-        background-color: #fff;
+    .user-pill-btn:hover, .user-pill-btn[aria-expanded="true"] {
+        border-color: #cbd5e1;
+        background: #f8fafc;
         box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-
-    .avatar-nav {
+    .user-avatar {
         border: 2px solid white;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    .dropdown-menu {
+    /* Dropdown Animation */
+    .dropdown-menu-animate {
         border: none;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        border-radius: 15px;
-        margin-top: 15px;
-        padding: 10px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        border-radius: 16px;
+        margin-top: 10px;
+        padding: 8px;
+        animation: dropdownFade 0.2s ease;
     }
-
+    @keyframes dropdownFade {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
     .dropdown-item {
         border-radius: 8px;
-        padding: 10px 15px;
+        padding: 8px 16px;
         font-weight: 500;
+        color: #334155;
+    }
+    .dropdown-item:hover {
+        background-color: #f1f5f9;
+        color: #0d6efd;
     }
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-light fixed-top navbar-main">
+<nav class="navbar navbar-expand-lg fixed-top navbar-main">
     <div class="container">
-        <a class="navbar-brand fw-bold text-dark" href="{{ url('/') }}">
-            <span class="text-primary">🎉</span> EventKita
+        {{-- BRAND --}}
+        <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url('/') }}">
+            <span style="font-size: 1.5rem;">🎉</span> EventKita
         </a>
 
-        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        {{-- MOBILE TOGGLER --}}
+        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse" id="navbarContent">
             
-            <div class="mx-auto search-container d-none d-lg-block">
+            {{-- SEARCH BAR (Hidden on mobile, block on lg up) --}}
+            <div class="mx-lg-auto my-3 my-lg-0 search-wrapper">
                 <form action="{{ route('search') }}" method="GET">
                     <div class="position-relative">
                         <i class="bi bi-search search-icon"></i>
                         <input type="search" class="form-control search-input" 
-                               name="q" placeholder="Mau nonton konser apa hari ini?" 
+                               name="q" placeholder="Cari konser, workshop, atau festival..." 
                                value="{{ request('q') }}">
                     </div>
                 </form>
             </div>
 
-            <ul class="navbar-nav align-items-center">
-                <li class="nav-item">
+            {{-- RIGHT NAV --}}
+            <ul class="navbar-nav align-items-center ms-auto">
+                <li class="nav-item me-2">
                     <a class="nav-link nav-link-custom" href="{{ route('forum.index') }}">
-                        <i class="bi bi-chat-dots me-1"></i> Forum
+                        <i class="bi bi-chat-right-dots-fill text-primary"></i> Forum
                     </a>
                 </li>
 
                 @guest
-                    @if (Route::has('login'))
-                        <li class="nav-item ms-lg-3">
-                            <a href="{{ route('login') }}" class="btn btn-link text-decoration-none text-dark fw-bold">Login</a>
-                        </li>
-                    @endif
-                    @if (Route::has('register'))
-                        <li class="nav-item">
-                            <a href="{{ route('register') }}" class="btn btn-primary px-4 rounded-pill shadow-sm fw-bold">Register</a>
-                        </li>
-                    @endif
+                    <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
+                        @if (Route::has('login'))
+                            <li class="nav-item">
+                                <a href="{{ route('login') }}" class="btn btn-link text-decoration-none text-dark fw-bold px-3">Login</a>
+                            </li>
+                        @endif
+                        @if (Route::has('register'))
+                            <li class="nav-item">
+                                <a href="{{ route('register') }}" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">Daftar</a>
+                            </li>
+                        @endif
+                    </div>
                 @else
-                    <li class="nav-item dropdown ms-lg-3">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle user-pill-nav d-flex align-items-center" 
-                           href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=0D6EFD&color=fff" 
-                                 alt="Avatar" class="rounded-circle avatar-nav me-2" width="30" height="30">
-                            
-                            <span class="fw-bold text-dark small d-none d-md-inline">{{ Str::words(Auth::user()->name, 1, '') }}</span>
+                    <li class="nav-item dropdown ms-lg-2 mt-3 mt-lg-0">
+                        <a id="navbarDropdown" class="nav-link p-0 user-pill-btn" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=0d6efd&color=fff&bold=true" 
+                                 alt="Avatar" class="rounded-circle user-avatar" width="34" height="34">
+                            <span class="fw-bold text-dark small d-none d-md-block pe-2">{{ Str::limit(Auth::user()->name, 10) }}</span>
+                            <i class="bi bi-chevron-down small text-muted me-2"></i>
                         </a>
 
-                        <div class="dropdown-menu dropdown-menu-end animated fadeIn" aria-labelledby="navbarDropdown">
-                            <div class="px-3 py-2 border-bottom mb-2 d-lg-none text-center">
-                                <small class="text-muted d-block">Masuk sebagai</small>
-                                <span class="fw-bold">{{ Auth::user()->name }}</span>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate" aria-labelledby="navbarDropdown">
+                            {{-- Mobile User Info --}}
+                            <div class="px-3 py-2 d-lg-none border-bottom mb-2">
+                                <small class="text-muted d-block" style="font-size: 0.75rem;">Login sebagai</small>
+                                <span class="fw-bold text-dark">{{ Auth::user()->name }}</span>
                             </div>
 
                             @if(Auth::user()->role == 'admin')
                                 <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-                                    <i class="bi bi-speedometer2 me-2"></i> Dashboard Admin
+                                    <i class="bi bi-speedometer2 me-2 text-primary"></i> Dashboard Admin
                                 </a>
                             @else
                                 <a class="dropdown-item" href="{{ route('user.dashboard') }}">
-                                    <i class="bi bi-person-circle me-2"></i> Dashboard Saya
+                                    <i class="bi bi-grid-fill me-2 text-primary"></i> Dashboard Saya
                                 </a>
                             @endif
                             
+                            {{-- Logic Route Event Favorit (Jika ada) --}}
                             <a class="dropdown-item" href="#">
-                                <i class="bi bi-heart me-2"></i> Event Favorit
+                                <i class="bi bi-heart-fill me-2 text-danger"></i> Event Favorit
                             </a>
 
-                            <hr class="dropdown-divider">
+                            <div class="dropdown-divider my-2"></div>
                             
-                            <a class="dropdown-item text-danger" href="{{ route('logout') }}"
+                            <a class="dropdown-item text-danger fw-semibold" href="{{ route('logout') }}"
                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                <i class="bi bi-box-arrow-right me-2"></i> Keluar
                             </a>
                             
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">

@@ -43,6 +43,27 @@ Route::get('/', function () {
     return view('guest.welcome', compact('categories', 'events', 'featuredEvents', 'cities'));
 })->name('/');
 
+// Halaman Statis Footer
+Route::get('tentang-kami', function () {
+    return view('guest.about');
+})->name('about');
+
+Route::get('pusat-bantuan', function () {
+    return view('guest.help');
+})->name('help');
+
+Route::get('syarat-ketentuan', function () {
+    return view('guest.terms');
+})->name('terms');
+
+Route::get('kebijakan-privasi', function () {
+    return view('guest.privacy');
+})->name('privacy');
+
+Route::get('hubungi-kami', function () {
+    return view('guest.contact');
+})->name('contact');
+
 Auth::routes();
 
 // Group Admin Routes

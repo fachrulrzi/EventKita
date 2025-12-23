@@ -1,65 +1,78 @@
-<footer class="site-footer mt-5">
-    <div class="footer-top pt-5 pb-4">
+<footer class="site-footer mt-auto">
+    {{-- BAGIAN ATAS: Widget & Link --}}
+    <div class="footer-top py-5">
         <div class="container">
-            <div class="row gy-5">
+            <div class="row gy-5 align-items-start"> {{-- align-items-start agar isinya rata atas --}}
+                
+                {{-- KOLOM 1: Brand & Deskripsi --}}
                 <div class="col-lg-4 col-md-12 text-center text-lg-start">
-                    <a class="footer-brand d-inline-block mb-3" href="{{ url('/') }}">
-                        <span class="fs-2 fw-bold text-white">🎉 Event<span class="text-primary">Kita</span></span>
+                    <a class="d-inline-flex align-items-center mb-3 text-decoration-none" href="{{ url('/') }}">
+                        <span class="fs-2 me-2">🎉</span>
+                        <span class="fs-3 fw-bold text-white tracking-wide">Event<span class="text-primary">Kita</span></span>
                     </a>
-                    <p class="footer-bio mb-4 opacity-75">
-                        Solusi terlengkap untuk menemukan pengalaman tak terlupakan. Dari konser megah hingga komunitas hangat, semua ada di genggamanmu.
+                    <p class="text-white-50 lh-lg mb-4 pe-lg-5">
+                        Platform nomor #1 untuk menemukan event seru dan membangun komunitas yang solid di sekitarmu.
                     </p>
-                    <div class="social-links d-flex justify-content-center justify-content-lg-start gap-3">
-                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-tiktok"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-youtube"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
+                    <div class="d-flex justify-content-center justify-content-lg-start gap-2">
+                        <a href="#" class="social-box"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-box"><i class="bi bi-tiktok"></i></a>
+                        <a href="#" class="social-box"><i class="bi bi-youtube"></i></a>
+                        <a href="#" class="social-box"><i class="bi bi-twitter-x"></i></a>
                     </div>
                 </div>
 
+                {{-- KOLOM 2: Navigasi (Lurus Vertikal) --}}
                 <div class="col-lg-2 col-md-4 col-6 ps-lg-5">
-                    <h6 class="text-white fw-bold mb-4 text-uppercase small" style="letter-spacing: 2px;">Jelajahi</h6>
-                    <ul class="list-unstyled footer-links">
+                    <h6 class="footer-title mb-4">Jelajahi</h6>
+                    <ul class="list-unstyled footer-menu">
                         <li><a href="{{ url('/') }}">Beranda</a></li>
-                        <li><a href="{{ route('kategori') }}">Kategori Event</a></li>
-                        <li><a href="{{ route('forum.index') }}">Forum Komunitas</a></li>
-                        <li><a href="#">Tentang Kami</a></li>
+                        <li><a href="{{ route('kategori') }}">Cari Event</a></li>
+                        <li><a href="{{ route('forum.index') }}">Forum Diskusi</a></li>
+                        <li><a href="{{ route('about') }}">Tentang Kami</a></li>
                     </ul>
                 </div>
 
+                {{-- KOLOM 3: Bantuan (Lurus Vertikal) --}}
                 <div class="col-lg-2 col-md-4 col-6">
-                    <h6 class="text-white fw-bold mb-4 text-uppercase small" style="letter-spacing: 2px;">Bantuan</h6>
-                    <ul class="list-unstyled footer-links">
-                        <li><a href="#">Pusat Bantuan</a></li>
-                        <li><a href="#">Syarat & Ketentuan</a></li>
-                        <li><a href="#">Kebijakan Privasi</a></li>
-                        <li><a href="#">Kemitraan</a></li>
+                    <h6 class="footer-title mb-4">Dukungan</h6>
+                    <ul class="list-unstyled footer-menu">
+                        <li><a href="{{ route('help') }}">Pusat Bantuan</a></li>
+                        <li><a href="{{ route('terms') }}">Syarat & Ketentuan</a></li>
+                        <li><a href="{{ route('privacy') }}">Kebijakan Privasi</a></li>
+                        <li><a href="{{ route('contact') }}">Hubungi Admin</a></li>
                     </ul>
                 </div>
 
-                <div class="col-lg-4 col-md-4 col-12 text-center text-md-start">
-                    <div class="cta-box p-4 rounded-4">
-                        <h6 class="text-white fw-bold mb-2">Punya Event Sendiri?</h6>
-                        <p class="small text-white-50 mb-3">Promosikan eventmu secara gratis dan jangkau ribuan audiens setiap harinya.</p>
-                        <a href="https://wa.me/6285884653526?text=Halo%20Admin%2C%20saya%20ingin%20mendaftarkan%20event%20baru%20di%20EventKita." 
-                           target="_blank" 
-                           class="btn btn-primary w-100 rounded-pill py-2 fw-bold">
-                            <i class="bi bi-whatsapp me-2"></i>Daftarkan Event
+                {{-- KOLOM 4: CTA Box (Rata Kanan/Tengah) --}}
+                <div class="col-lg-4 col-md-4 col-12">
+                    <div class="cta-card p-4 rounded-3 border border-white-10">
+                        <h6 class="text-white fw-bold mb-2">
+                            <i class="bi bi-calendar-plus text-primary me-2"></i>Event Organizer?
+                        </h6>
+                        <p class="small text-white-50 mb-3">
+                            Promosikan acaramu sekarang dan jangkau audiens lebih luas.
+                        </p>
+                        <a href="https://wa.me/6285884653526" target="_blank" class="btn btn-primary w-100 fw-bold rounded-pill shadow-sm">
+                            Daftar Partner
                         </a>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <div class="footer-bottom py-3">
+    {{-- BAGIAN BAWAH: Copyright (Garis Lurus Pemisah) --}}
+    <div class="footer-bottom py-3 border-top border-white-10">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6 text-center text-md-start">
-                    <span class="small opacity-50 text-white">© 2025 EventKita. All Rights Reserved.</span>
+                    <span class="small text-white-50">© 2025 <strong>EventKita</strong>. All Rights Reserved.</span>
                 </div>
                 <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
-                    <span class="small opacity-50 text-white">Dibuat dengan <i class="bi bi-heart-fill text-danger mx-1"></i> untuk Indonesia</span>
+                    <span class="small text-white-50">
+                        Made with <i class="bi bi-heart-fill text-danger mx-1"></i> in Indonesia
+                    </span>
                 </div>
             </div>
         </div>
@@ -67,80 +80,73 @@
 </footer>
 
 <style>
-    /* Reset & Background */
+    /* KONFIGURASI UTAMA */
     .site-footer {
-        background-color: #0b0f19; /* Deep Slate Black */
-        color: #e9ecef;
-        font-family: 'Inter', sans-serif;
+        background-color: #1e1b4b; /* Dark Indigo - Warna solid */
+        color: #e2e8f0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        margin-top: auto; /* Wajib untuk Sticky Footer */
+        border-top: 1px solid rgba(0,0,0,0.05); /* Garis halus di atas footer */
     }
 
-    .footer-top {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    /* TYPOGRAPHY JUDUL KOLOM */
+    .footer-title {
+        color: white;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1.2px;
+        opacity: 0.8;
     }
 
-    /* Typography */
-    .footer-brand {
-        text-decoration: none;
-    }
-    
-    .footer-bio {
-        font-size: 0.95rem;
-        line-height: 1.7;
-    }
-
-    /* Links Animation */
-    .footer-links li {
+    /* MENU LINKS */
+    .footer-menu li {
         margin-bottom: 12px;
     }
-
-    .footer-links a {
+    .footer-menu a {
         text-decoration: none;
-        color: rgba(255, 255, 255, 0.6);
-        transition: all 0.3s ease;
-        font-size: 0.9rem;
+        color: #94a3b8; /* Abu-abu soft */
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        display: block; /* Agar lurus */
+    }
+    .footer-menu a:hover {
+        color: #ffffff;
+        transform: translateX(5px); /* Efek geser dikit saat hover */
     }
 
-    .footer-links a:hover {
-        color: #0d6efd;
-        padding-left: 8px;
-    }
-
-    /* Social Icons */
-    .social-icon {
-        width: 40px;
-        height: 40px;
-        background: rgba(255, 255, 255, 0.03);
+    /* SOCIAL ICONS (KOTAK RAPI) */
+    .social-box {
+        width: 38px;
+        height: 38px;
+        background: rgba(255, 255, 255, 0.05);
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 10px;
+        border-radius: 8px; /* Sudut sedikit membulat tapi tetap kotak */
         color: white;
         text-decoration: none;
         transition: all 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
-
-    .social-icon:hover {
+    .social-box:hover {
         background: #0d6efd;
-        color: white;
-        transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
+        border-color: #0d6efd;
+        transform: translateY(-3px);
     }
 
-    /* CTA Box */
-    .cta-box {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+    /* UTILITIES */
+    .border-white-10 {
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    /* CTA CARD BACKGROUND */
+    .cta-card {
+        background: rgba(0, 0, 0, 0.2); /* Gelap transparan agar kontras */
     }
 
-    .footer-bottom {
-        background-color: #080b12;
-    }
-
-    /* Responsive adjustment */
-    @media (max-width: 768px) {
-        .ps-lg-5 {
-            padding-left: 0.75rem !important;
-        }
+    /* RESPONSIVE */
+    @media (max-width: 991px) {
+        .ps-lg-5 { padding-left: 0.75rem !important; } /* Reset padding di mobile */
     }
 </style>

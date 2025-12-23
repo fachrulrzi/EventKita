@@ -3,306 +3,327 @@
 @section('title', 'Detail Pesanan - ' . $order->order_number)
 
 @section('content')
+{{-- INTERNAL CSS --}}
+<style>
+    :root {
+        --primary-color: #0d6efd;
+        --border-radius-lg: 1rem;
+    }
+
+    /* 1. STATUS HEADER */
+    .status-header {
+        text-align: center;
+        padding: 40px 20px;
+        margin-bottom: 30px;
+        background: white;
+        border-radius: var(--border-radius-lg);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    .status-icon-large {
+        font-size: 5rem;
+        margin-bottom: 1rem;
+        display: block;
+        line-height: 1;
+    }
+
+    /* 2. ORDER DETAILS CARD */
+    .order-card {
+        border: none;
+        border-radius: var(--border-radius-lg);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        overflow: hidden;
+        background: white;
+    }
+    .order-card-header {
+        background-color: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 20px 25px;
+    }
+    .info-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        color: #64748b;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+    }
+    .info-value {
+        font-weight: 600;
+        color: #1e293b;
+        font-size: 1.05rem;
+    }
+
+    /* 3. EVENT & TICKET SECTION */
+    .event-thumb-small {
+        width: 100px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    .ticket-item {
+        background-color: #f8fafc;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 10px;
+        border: 1px solid #e2e8f0;
+    }
+
+    /* 4. TOTAL & ACTION */
+    .total-section {
+        background-color: #f1f5f9;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+    
+    /* Buttons */
+    .btn-action {
+        padding: 12px 24px;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.2s;
+    }
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+</style>
+
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <!-- Status Header -->
-            <div class="text-center mb-4">
+            
+            {{-- STATUS HEADER --}}
+            <div class="status-header">
                 @if($order->status === 'pending')
-                    <div class="mb-4">
-                        <i class="bi bi-clock-fill text-warning" style="font-size: 80px;"></i>
-                    </div>
-                    <h2 class="fw-bold text-warning mb-3">Menunggu Pembayaran</h2>
-                    <p class="text-muted">Segera selesaikan pembayaran untuk mendapatkan tiket Anda.</p>
+                    <i class="bi bi-hourglass-split status-icon-large text-warning"></i>
+                    <h2 class="fw-bold text-dark mb-2">Menunggu Pembayaran</h2>
+                    <p class="text-muted mb-0">Selesaikan pembayaran sebelum batas waktu berakhir.</p>
                 @elseif($order->status === 'paid')
-                    <div class="mb-4">
-                        <i class="bi bi-check-circle-fill text-success" style="font-size: 80px;"></i>
-                    </div>
-                    <h2 class="fw-bold text-success mb-3">Pembayaran Berhasil</h2>
-                    <p class="text-muted">Tiket Anda sudah siap!</p>
+                    <i class="bi bi-check-circle-fill status-icon-large text-success"></i>
+                    <h2 class="fw-bold text-dark mb-2">Pembayaran Berhasil!</h2>
+                    <p class="text-muted mb-0">Terima kasih, tiket Anda sudah siap digunakan.</p>
                 @elseif($order->status === 'cancelled')
-                    <div class="mb-4">
-                        <i class="bi bi-x-circle-fill text-danger" style="font-size: 80px;"></i>
-                    </div>
-                    <h2 class="fw-bold text-danger mb-3">Pesanan Dibatalkan</h2>
-                    <p class="text-muted">Pesanan ini telah dibatalkan.</p>
+                    <i class="bi bi-x-circle-fill status-icon-large text-danger"></i>
+                    <h2 class="fw-bold text-dark mb-2">Pesanan Dibatalkan</h2>
+                    <p class="text-muted mb-0">Pesanan ini telah dibatalkan oleh sistem atau Anda.</p>
                 @elseif($order->status === 'expired')
-                    <div class="mb-4">
-                        <i class="bi bi-exclamation-circle-fill text-secondary" style="font-size: 80px;"></i>
-                    </div>
-                    <h2 class="fw-bold text-secondary mb-3">Pesanan Kedaluwarsa</h2>
-                    <p class="text-muted">Pesanan ini telah kedaluwarsa. Silakan buat pesanan baru.</p>
+                    <i class="bi bi-clock-history status-icon-large text-secondary"></i>
+                    <h2 class="fw-bold text-dark mb-2">Pesanan Kedaluwarsa</h2>
+                    <p class="text-muted mb-0">Waktu pembayaran telah habis. Silakan pesan ulang.</p>
                 @endif
             </div>
 
-            <!-- Order Details Card -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-receipt me-2"></i>Detail Pesanan</h5>
+            {{-- ORDER DETAILS CARD --}}
+            <div class="card order-card mb-4">
+                <div class="order-card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-receipt me-2 text-primary"></i>Detail Pesanan</h5>
+                    <span class="badge bg-light text-dark border">#{{ $order->order_number }}</span>
                 </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <p class="text-muted mb-1">Nomor Pesanan</p>
-                            <h6 class="fw-bold">{{ $order->order_number }}</h6>
+                
+                <div class="card-body p-4">
+                    {{-- Info Grid --}}
+                    <div class="row g-4 mb-4">
+                        <div class="col-6 col-md-3">
+                            <div class="info-label">Tanggal Order</div>
+                            <div class="info-value">{{ $order->created_at->format('d M Y') }}</div>
+                            <small class="text-muted">{{ $order->created_at->format('H:i') }} WIB</small>
                         </div>
-                        <div class="col-md-6 text-md-end">
-                            <p class="text-muted mb-1">Status</p>
-                            @if($order->status === 'pending')
-                                <span class="badge bg-warning text-dark fs-6">
-                                    <i class="bi bi-clock me-1"></i>Menunggu Pembayaran
-                                </span>
-                            @elseif($order->status === 'paid')
-                                <span class="badge bg-success fs-6">
-                                    <i class="bi bi-check-circle me-1"></i>Dibayar
-                                </span>
-                            @elseif($order->status === 'cancelled')
-                                <span class="badge bg-danger fs-6">Dibatalkan</span>
-                            @else
-                                <span class="badge bg-secondary fs-6">{{ ucfirst($order->status) }}</span>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <p class="text-muted mb-1">Tanggal Pemesanan</p>
-                            <p class="mb-0">{{ $order->created_at->format('d M Y H:i') }} WIB</p>
-                        </div>
-                        <div class="col-md-6 text-md-end">
+                        <div class="col-6 col-md-3">
+                            <div class="info-label">Status</div>
                             @if($order->status === 'paid')
-                                <p class="text-muted mb-1">Metode Pembayaran</p>
-                                <p class="mb-0">{{ $order->payment_type ?? 'N/A' }}</p>
+                                <span class="badge bg-success">PAID</span>
+                            @elseif($order->status === 'pending')
+                                <span class="badge bg-warning text-dark">PENDING</span>
+                            @elseif($order->status === 'cancelled')
+                                <span class="badge bg-danger">CANCELLED</span>
                             @else
-                                <p class="text-muted mb-1">Batas Pembayaran</p>
-                                <p class="mb-0 text-danger fw-bold">{{ $order->created_at->addHours(24)->format('d M Y H:i') }} WIB</p>
+                                <span class="badge bg-secondary">EXPIRED</span>
+                            @endif
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="info-label">Metode Bayar</div>
+                            <div class="info-value">{{ $order->payment_type ?? '-' }}</div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="info-label">Batas Waktu</div>
+                            @if($order->status === 'paid')
+                                <div class="text-success fw-bold"><i class="bi bi-check-lg"></i> Selesai</div>
+                            @else
+                                <div class="text-danger fw-bold">{{ $order->created_at->addHours(24)->format('d M H:i') }}</div>
                             @endif
                         </div>
                     </div>
 
-                    <hr>
+                    <hr class="border-light-subtle my-4">
 
-                    <!-- Event Information -->
-                    <div class="mb-3">
-                        <h6 class="fw-bold mb-3"><i class="bi bi-calendar-event me-2"></i>Informasi Event</h6>
-                        <div class="row align-items-center">
-                            <div class="col-md-3">
-                                @php
-                                    $eventImgUrl = $order->event->image_path
-                                        ? (str_starts_with($order->event->image_path, 'http')
-                                            ? $order->event->image_path
-                                            : \App\Helpers\StorageHelper::url($order->event->image_path))
-                                        : null;
-                                @endphp
-                                <img src="{{ $eventImgUrl ?? 'https://via.placeholder.com/150x100?text=Event' }}" 
-                                     class="img-fluid rounded" alt="{{ $order->event->title }}">
-                            </div>
-                            <div class="col-md-9">
-                                <h5 class="fw-bold mb-2">{{ $order->event->title }}</h5>
-                                <p class="text-muted mb-1">
-                                    <i class="bi bi-calendar3 me-1"></i> 
-                                    {{ $order->event->date->format('d M Y') }}
-                                </p>
-                                @if($order->event->time_start)
-                                <p class="text-muted mb-1">
-                                    <i class="bi bi-clock me-1"></i> 
-                                    {{ date('H:i', strtotime($order->event->time_start)) }}
-                                    @if($order->event->time_end)
-                                        - {{ date('H:i', strtotime($order->event->time_end)) }}
-                                    @endif
-                                    WIB
-                                </p>
-                                @endif
-                                <p class="text-muted mb-0">
-                                    <i class="bi bi-geo-alt me-1"></i> 
-                                    {{ $order->event->location ?? 'Lokasi akan diinformasikan' }}
-                                </p>
-                            </div>
+                    {{-- Event Info --}}
+                    <h6 class="fw-bold mb-3">Event yang Dipesan</h6>
+                    <div class="d-flex align-items-start gap-3 mb-4">
+                        @php
+                            $imgUrl = $order->event->image_path 
+                                ? (str_starts_with($order->event->image_path, 'http') ? $order->event->image_path : \App\Helpers\StorageHelper::url($order->event->image_path)) 
+                                : 'https://via.placeholder.com/150';
+                        @endphp
+                        <img src="{{ $imgUrl }}" class="event-thumb-small shadow-sm" alt="Event">
+                        <div>
+                            <h5 class="fw-bold mb-1">{{ $order->event->title }}</h5>
+                            <p class="text-muted small mb-1"><i class="bi bi-calendar3 me-1"></i> {{ $order->event->date->format('d F Y') }}</p>
+                            <p class="text-muted small mb-0"><i class="bi bi-geo-alt me-1"></i> {{ $order->event->location ?? 'Lokasi Online' }}</p>
                         </div>
                     </div>
 
-                    <hr>
-
-                    <!-- Ticket Details -->
-                    <div class="mb-3">
-                        <h6 class="fw-bold mb-3"><i class="bi bi-ticket-perforated me-2"></i>Detail Tiket</h6>
-                        @php
-                            $ticketsByCategory = $order->tickets->groupBy('event_ticket_category_id');
-                        @endphp
+                    {{-- Ticket List --}}
+                    <h6 class="fw-bold mb-3">Rincian Tiket</h6>
+                    <div class="ticket-list">
+                        @php $ticketsByCategory = $order->tickets->groupBy('event_ticket_category_id'); @endphp
+                        
                         @foreach($ticketsByCategory as $categoryId => $tickets)
-                            @php
-                                $category = $tickets->first()->ticketCategory;
-                            @endphp
-                            <div class="d-flex justify-content-between align-items-center mb-2 p-3 bg-light rounded">
+                            @php $category = $tickets->first()->ticketCategory; @endphp
+                            <div class="ticket-item d-flex justify-content-between align-items-center">
                                 <div>
-                                    <p class="fw-bold mb-1">{{ $category->category_name ?? 'Tiket' }}</p>
+                                    <div class="fw-bold">{{ $category->category_name ?? 'Tiket Masuk' }}</div>
                                     <small class="text-muted">{{ $tickets->count() }}x @ Rp {{ number_format($category->price ?? 0, 0, ',', '.') }}</small>
                                 </div>
-                                <div class="text-end">
-                                    <p class="fw-bold mb-0">Rp {{ number_format(($category->price ?? 0) * $tickets->count(), 0, ',', '.') }}</p>
+                                <div class="fw-bold">
+                                    Rp {{ number_format(($category->price ?? 0) * $tickets->count(), 0, ',', '.') }}
                                 </div>
                             </div>
                         @endforeach
                     </div>
 
-                    <hr>
-
-                    <!-- Total -->
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="fw-bold mb-0">Total Pembayaran</h5>
-                        <h4 class="fw-bold text-primary mb-0">Rp {{ number_format($order->total_price, 0, ',', '.') }}</h4>
+                    {{-- Total Section --}}
+                    <div class="total-section d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-secondary">Total Pembayaran</span>
+                        <span class="fw-bold text-primary fs-4">Rp {{ number_format($order->total_price, 0, ',', '.') }}</span>
                     </div>
+
+                    {{-- Actions (Pending Only) --}}
+                    @if($order->status === 'pending')
+                        <div class="mt-4">
+                            <div class="alert alert-warning border-0 d-flex align-items-center mb-3">
+                                <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                                <div>
+                                    <strong>Perhatian:</strong> Mohon selesaikan pembayaran sebelum batas waktu berakhir agar pesanan tidak hangus.
+                                </div>
+                            </div>
+                            <button id="continuePaymentBtn" class="btn btn-primary btn-action w-100 shadow-sm">
+                                <i class="bi bi-credit-card-fill me-2"></i> Lanjutkan Pembayaran
+                            </button>
+                        </div>
+                    @endif
+
+                    {{-- Actions (Paid Only) --}}
+                    @if($order->status === 'paid')
+                        <div class="mt-4">
+                            <div class="alert alert-success border-0 d-flex align-items-center mb-3">
+                                <i class="bi bi-check-circle-fill fs-4 me-3"></i>
+                                <div>
+                                    <strong>Info:</strong> E-Ticket telah dikirim ke email <b>{{ Auth::user()->email }}</b>.
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                 </div>
             </div>
 
-            @if($order->status === 'pending')
-                <!-- Payment Information -->
-                <div class="alert alert-warning mb-4">
-                    <h6 class="fw-bold mb-2"><i class="bi bi-exclamation-triangle me-2"></i>Segera Selesaikan Pembayaran</h6>
-                    <ul class="mb-0">
-                        <li>Batas waktu pembayaran: <strong>{{ $order->created_at->addHours(24)->format('d M Y H:i') }} WIB</strong></li>
-                        <li>Pesanan akan otomatis dibatalkan jika pembayaran tidak diselesaikan</li>
-                        <li>Tiket akan dikirim ke email setelah pembayaran berhasil</li>
-                    </ul>
-                </div>
-
-                <!-- Continue Payment Button -->
-                <div class="d-grid gap-2 mb-4">
-                    <button id="continuePaymentBtn" class="btn btn-primary btn-lg py-3">
-                        <i class="bi bi-credit-card me-2"></i>Lanjutkan Pembayaran
-                    </button>
-                </div>
-            @endif
-
-            @if($order->status === 'paid')
-                <!-- Success Info -->
-                <div class="alert alert-success mb-4">
-                    <h6 class="fw-bold mb-2"><i class="bi bi-check-circle me-2"></i>Pembayaran Diterima</h6>
-                    <ul class="mb-0">
-                        <li>E-ticket telah dikirim ke email Anda ({{ Auth::user()->email }})</li>
-                        <li>Simpan e-ticket untuk ditunjukkan saat memasuki venue event</li>
-                        <li>Kode tiket bersifat unik dan hanya dapat digunakan sekali</li>
-                    </ul>
-                </div>
-            @endif
-
-            <!-- Action Buttons -->
-            <div class="d-flex gap-2 justify-content-center flex-wrap">
-                <a href="{{ url('/') }}" class="btn btn-outline-primary">
-                    <i class="bi bi-house-door me-2"></i>Kembali ke Home
+            {{-- BOTTOM NAVIGATION --}}
+            <div class="d-flex justify-content-center gap-3 pb-5">
+                <a href="{{ url('/') }}" class="btn btn-outline-secondary rounded-pill px-4">
+                    <i class="bi bi-house-door me-2"></i>Home
                 </a>
-                <a href="{{ url('/events/' . $order->event->slug) }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-eye me-2"></i>Lihat Event
+                <a href="{{ route('user.dashboard') }}" class="btn btn-outline-primary rounded-pill px-4">
+                    <i class="bi bi-clock-history me-2"></i>Riwayat
                 </a>
                 @if($order->status === 'paid')
-                    <a href="{{ route('order.print', $order->id) }}" class="btn btn-success" target="_blank">
-                        <i class="bi bi-printer me-2"></i>Cetak Tiket
+                    <a href="{{ route('order.print', $order->id) }}" target="_blank" class="btn btn-success btn-action shadow-sm text-white">
+                        <i class="bi bi-printer-fill me-2"></i>Cetak E-Ticket
                     </a>
                 @endif
             </div>
+
         </div>
     </div>
 </div>
 
+{{-- MODAL & SCRIPTS (Pending Only) --}}
 @if($order->status === 'pending')
-<!-- Loading Modal -->
 <div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
+        <div class="modal-content border-0 shadow rounded-4">
             <div class="modal-body text-center py-5">
-                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <h5 class="fw-bold">Memproses Pembayaran...</h5>
-                <p class="text-muted mb-0">Mohon tunggu sebentar</p>
+                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
+                <h5 class="fw-bold">Memproses...</h5>
+                <p class="text-muted mb-0">Mohon tunggu sebentar, sedang menghubungkan ke gateway pembayaran.</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Midtrans Snap JS -->
 <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
 
 <script>
-document.getElementById('continuePaymentBtn').addEventListener('click', function() {
-    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
-    loadingModal.show();
-    
-    fetch('{{ route("order.continue", $order->id) }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        loadingModal.hide();
+    document.getElementById('continuePaymentBtn').addEventListener('click', function() {
+        const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+        loadingModal.show();
         
-        if (data.error) {
-            alert(data.error);
-            return;
-        }
-        
-        if (data.mock_mode) {
-            // Development mode - redirect to mock success
-            if (confirm('Development Mode: Simulasi pembayaran berhasil?')) {
-                window.location.href = '{{ route("order.mock.success", $order->id) }}';
+        fetch('{{ route("order.continue", $order->id) }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             }
-        } else {
-            // Real Midtrans payment
-            snap.pay(data.snap_token, {
-                onSuccess: function(result) {
-                    // Call finishPayment to update order status
-                    fetch('{{ route("order.finish", $order->id) }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(finishData => {
-                        window.location.href = '{{ route("order.success", $order->id) }}';
-                    })
-                    .catch(error => {
-                        // Even if finish fails, redirect to success page
-                        window.location.href = '{{ route("order.success", $order->id) }}';
-                    });
-                },
-                onPending: function(result) {
-                    alert('Pembayaran pending. Silakan selesaikan pembayaran.');
-                    window.location.reload();
-                },
-                onError: function(result) {
-                    alert('Terjadi kesalahan saat pembayaran.');
-                },
-                onClose: function() {
-                    // User closed the popup - check payment status
-                    fetch('{{ route("order.finish", $order->id) }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(finishData => {
-                        if (finishData.payment_status === 'paid') {
-                            window.location.href = '{{ route("order.success", $order->id) }}';
-                        } else {
-                            window.location.reload();
-                        }
-                    });
+        })
+        .then(response => response.json())
+        .then(data => {
+            loadingModal.hide();
+            
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            
+            if (data.mock_mode) {
+                // Development Mode Mock
+                if (confirm('DEV MODE: Simulasi pembayaran berhasil?')) {
+                    window.location.href = '{{ route("order.mock.success", $order->id) }}';
                 }
-            });
-        }
-    })
-    .catch(error => {
-        loadingModal.hide();
-        alert('Terjadi kesalahan: ' + error.message);
+            } else {
+                // Real Midtrans Snap
+                snap.pay(data.snap_token, {
+                    onSuccess: function(result) {
+                        fetch('{{ route("order.finish", $order->id) }}', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+                        }).then(() => { window.location.href = '{{ route("order.success", $order->id) }}'; });
+                    },
+                    onPending: function(result) {
+                        alert('Pembayaran tertunda. Silakan selesaikan pembayaran.');
+                        window.location.reload();
+                    },
+                    onError: function(result) {
+                        alert('Terjadi kesalahan saat pembayaran.');
+                    },
+                    onClose: function() {
+                        // Check status when closed
+                        fetch('{{ route("order.finish", $order->id) }}', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+                        }).then(r => r.json()).then(d => {
+                            if (d.payment_status === 'paid') window.location.href = '{{ route("order.success", $order->id) }}';
+                            else window.location.reload();
+                        });
+                    }
+                });
+            }
+        })
+        .catch(error => {
+            loadingModal.hide();
+            alert('Terjadi kesalahan koneksi: ' + error.message);
+        });
     });
-});
 </script>
 @endif
+
 @endsection

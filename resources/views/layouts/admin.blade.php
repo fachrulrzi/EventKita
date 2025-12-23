@@ -5,294 +5,225 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Admin Panel') | EventKita</title>
 
+    {{-- FONTS --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    {{-- CSS LIBRARIES --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     
     <style>
         :root {
             --sidebar-width: 280px;
-            --sidebar-bg: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
-            --primary-color: #6366f1;
-            --primary-hover: #4f46e5;
-            --bg-body: #f1f5f9;
-            --text-muted: #a5b4fc;
+            --primary-color: #4f46e5;
+            --primary-light: #e0e7ff;
+            --bg-body: #f8fafc;
+            --sidebar-bg: #1e1b4b; /* Dark Indigo */
+            --sidebar-active: #4338ca;
+            --text-color: #334155;
         }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-body);
+            color: var(--text-color);
             overflow-x: hidden;
         }
 
-        /* ============ SIDEBAR ============ */
+        /* 1. SIDEBAR STYLING */
         .admin-sidebar {
             width: var(--sidebar-width);
             height: 100vh;
             position: fixed;
             left: 0;
             top: 0;
-            background: var(--sidebar-bg);
+            background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
             z-index: 1000;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
-            box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 4px 0 25px rgba(0, 0, 0, 0.1);
         }
 
-        /* Brand Header */
+        /* Brand */
         .sidebar-brand {
-            padding: 24px 24px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .sidebar-brand a {
+        .brand-wrapper {
             display: flex;
             align-items: center;
             text-decoration: none;
-            color: #fff;
+            color: white;
+            gap: 12px;
         }
-
         .brand-icon {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            border-radius: 12px;
+            width: 42px;
+            height: 42px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            margin-right: 12px;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            backdrop-filter: blur(5px);
         }
-
-        .brand-text {
-            font-size: 1.4rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .brand-subtitle {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 2px;
-        }
+        .brand-text h4 { font-size: 1.1rem; font-weight: 700; margin: 0; letter-spacing: 0.5px; }
+        .brand-text span { font-size: 0.7rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; }
 
         /* Navigation */
         .sidebar-nav {
             flex: 1;
-            padding: 20px 16px;
+            padding: 20px 15px;
             overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.2) transparent;
         }
-
-        .nav-section-title {
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: var(--text-muted);
+        .nav-section {
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            padding: 0 12px;
-            margin-bottom: 12px;
-            margin-top: 8px;
+            color: rgba(255,255,255,0.4);
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin: 15px 0 8px 12px;
         }
-
-        .sidebar-nav .nav-link {
+        
+        .nav-link {
             display: flex;
             align-items: center;
-            padding: 14px 16px;
-            margin-bottom: 6px;
-            border-radius: 12px;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 500;
-            font-size: 0.9rem;
+            padding: 12px 16px;
+            color: rgba(255,255,255,0.7);
             text-decoration: none;
-            transition: all 0.25s ease;
-            position: relative;
-            overflow: hidden;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.95rem;
         }
-
-        .sidebar-nav .nav-link::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 4px;
-            height: 100%;
-            background: transparent;
-            border-radius: 0 4px 4px 0;
-            transition: all 0.25s ease;
+        .nav-link i { font-size: 1.2rem; margin-right: 12px; transition: 0.2s; }
+        
+        .nav-link:hover {
+            background: rgba(255,255,255,0.08);
+            color: white;
+            transform: translateX(3px);
         }
-
-        .sidebar-nav .nav-link i {
-            font-size: 1.25rem;
-            margin-right: 14px;
-            transition: all 0.25s ease;
-        }
-
-        .sidebar-nav .nav-link:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: #fff;
-            transform: translateX(4px);
-        }
-
-        .sidebar-nav .nav-link.active {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.9) 0%, rgba(168, 85, 247, 0.9) 100%);
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
-        }
-
-        .sidebar-nav .nav-link.active::before {
-            background: #fff;
-        }
-
-        .sidebar-nav .nav-link.active i {
-            color: #fff;
-        }
-
-        /* Nav Badge */
-        .nav-badge {
-            margin-left: auto;
-            background: rgba(255, 255, 255, 0.15);
-            color: #fff;
-            font-size: 0.7rem;
-            padding: 3px 8px;
-            border-radius: 20px;
-            font-weight: 600;
-        }
-
-        .nav-link.active .nav-badge {
-            background: rgba(255, 255, 255, 0.25);
+        
+        .nav-link.active {
+            background: linear-gradient(90deg, var(--primary-color) 0%, #6366f1 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
         }
 
         /* Sidebar Footer */
         .sidebar-footer {
             padding: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0,0,0,0.1);
         }
-
-        .sidebar-footer .logout-btn {
+        .logout-btn-sidebar {
             display: flex;
             align-items: center;
+            justify-content: center;
             width: 100%;
-            padding: 14px 16px;
-            border-radius: 12px;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.15);
             color: #fca5a5;
-            font-weight: 500;
-            font-size: 0.9rem;
+            border-radius: 10px;
             text-decoration: none;
-            background: rgba(239, 68, 68, 0.1);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
             border: 1px solid rgba(239, 68, 68, 0.2);
-            transition: all 0.25s ease;
+        }
+        .logout-btn-sidebar:hover {
+            background: #ef4444;
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
         }
 
-        .sidebar-footer .logout-btn:hover {
-            background: rgba(239, 68, 68, 0.2);
-            color: #fecaca;
-            transform: translateY(-2px);
-        }
-
-        .sidebar-footer .logout-btn i {
-            font-size: 1.2rem;
-            margin-right: 12px;
-        }
-
-        /* ============ MAIN CONTENT ============ */
+        /* 2. MAIN CONTENT AREA */
         .admin-main {
             margin-left: var(--sidebar-width);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             transition: all 0.3s ease;
         }
 
+        /* Topbar with Glassmorphism */
         .admin-topbar {
             height: 70px;
-            background: #fff;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 30px;
             position: sticky;
             top: 0;
-            z-index: 999;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            z-index: 99;
         }
 
+        .user-dropdown-btn {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 6px 12px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: 0.2s;
+            color: #334155;
+        }
+        .user-dropdown-btn:hover, .user-dropdown-btn[aria-expanded="true"] {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        /* Content Padding */
         .admin-content {
             padding: 30px;
+            flex: 1;
         }
 
-        /* Profile Dropdown */
-        .user-dropdown .dropdown-toggle::after {
-            display: none;
-        }
-        
-        .user-pill {
-            background: #f1f5f9;
-            padding: 6px 16px 6px 6px;
-            border-radius: 50px;
-            transition: 0.2s;
-            border: 1px solid #e2e8f0;
-        }
-
-        .user-pill:hover {
-            background: #e2e8f0;
-            border-color: var(--primary-color);
-        }
-
-        /* Responsive */
+        /* Responsive Logic */
         @media (max-width: 991.98px) {
-            .admin-sidebar {
-                margin-left: calc(-1 * var(--sidebar-width));
-            }
-            .admin-main {
-                margin-left: 0;
-            }
-            .admin-sidebar.show {
-                margin-left: 0;
-            }
-        }
-
-        /* Scrollbar for sidebar */
-        .sidebar-nav::-webkit-scrollbar {
-            width: 4px;
-        }
-        .sidebar-nav::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .sidebar-nav::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
+            .admin-sidebar { margin-left: calc(-1 * var(--sidebar-width)); }
+            .admin-sidebar.show { margin-left: 0; box-shadow: 10px 0 50px rgba(0,0,0,0.5); }
+            .admin-main { margin-left: 0; }
         }
     </style>
     @stack('styles')
 </head>
-<body class="admin-layout">
+<body>
 
+    {{-- SIDEBAR --}}
     <aside class="admin-sidebar">
-        <!-- Brand -->
         <div class="sidebar-brand">
-            <a href="{{ url('/') }}">
+            <a href="{{ url('/') }}" class="brand-wrapper">
                 <div class="brand-icon">🎉</div>
-                <div>
-                    <div class="brand-text">EventKita</div>
-                    <div class="brand-subtitle">Admin Panel</div>
+                <div class="brand-text">
+                    <h4>EventKita</h4>
+                    <span>Admin Dashboard</span>
                 </div>
             </a>
         </div>
         
-        <!-- Navigation -->
         <nav class="sidebar-nav">
-            <div class="nav-section-title">Menu Utama</div>
+            <div class="nav-section">Menu Utama</div>
             
+            {{-- Logic Active State Dipertahankan --}}
             <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
                 <i class="bi bi-grid-1x2-fill"></i>
                 <span>Dashboard</span>
             </a>
             
+            {{-- Logic Route Check Dipertahankan --}}
             <a class="nav-link {{ request()->routeIs('admin.events*') ? 'active' : '' }}"
                href="{{ Route::has('admin.events') ? route('admin.events') : '#' }}">
                 <i class="bi bi-calendar-event-fill"></i>
@@ -309,68 +240,90 @@
                 <span>Kelola Kota</span>
             </a>
 
-            <div class="nav-section-title mt-4">Lainnya</div>
+            <div class="nav-section mt-3">Akses Cepat</div>
             
             <a class="nav-link" href="{{ url('/') }}" target="_blank">
                 <i class="bi bi-globe"></i>
                 <span>Lihat Website</span>
-                <i class="bi bi-box-arrow-up-right ms-auto" style="font-size: 0.75rem;"></i>
+                <i class="bi bi-box-arrow-up-right ms-auto small opacity-50"></i>
             </a>
         </nav>
 
-        <!-- Footer / Logout -->
         <div class="sidebar-footer">
-            <a href="{{ route('logout') }}" class="logout-btn" 
+            <a href="{{ route('logout') }}" class="logout-btn-sidebar" 
                onclick="event.preventDefault(); document.getElementById('logout-form-admin').submit();">
-                <i class="bi bi-box-arrow-left"></i>
-                <span>Keluar dari Admin</span>
+                <i class="bi bi-box-arrow-left me-2"></i> Keluar
             </a>
         </div>
     </aside>
 
+    {{-- MAIN CONTENT WRAPPER --}}
     <div class="admin-main">
         
+        {{-- TOPBAR --}}
         <header class="admin-topbar">
             <div class="d-flex align-items-center">
-                <button class="btn btn-light d-lg-none me-3" onclick="document.querySelector('.admin-sidebar').classList.toggle('show')">
-                    <i class="bi bi-list"></i>
+                {{-- Mobile Toggle --}}
+                <button class="btn btn-light border d-lg-none me-3 shadow-sm" onclick="document.querySelector('.admin-sidebar').classList.toggle('show')">
+                    <i class="bi bi-list fs-5"></i>
                 </button>
-                <h5 class="mb-0 fw-bold text-dark">@yield('page-title', 'Halaman Admin')</h5>
+                <h5 class="mb-0 fw-bold text-dark d-none d-sm-block">@yield('page-title', 'Halaman Admin')</h5>
             </div>
 
-            <div class="dropdown user-dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <div class="user-pill d-flex align-items-center">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=6366f1&color=fff" 
-                             alt="Avatar" class="rounded-circle me-2" width="32" height="32">
-                        <span class="fw-semibold text-dark small d-none d-md-inline">{{ Auth::user()->name }}</span>
-                        <i class="bi bi-chevron-down ms-2 small text-muted"></i>
-                    </div>
+            {{-- User Profile Dropdown --}}
+            <div class="dropdown">
+                <a class="user-dropdown-btn" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=6366f1&color=fff&bold=true" 
+                         alt="Avatar" class="rounded-circle" width="32" height="32">
+                    <span class="fw-semibold small d-none d-md-block">{{ Auth::user()->name }}</span>
+                    <i class="bi bi-chevron-down small opacity-50"></i>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3" style="border-radius: 12px;">
-                    <li><h6 class="dropdown-header">Administrator</h6></li>
-                    <li><a class="dropdown-item py-2" href="{{ url('/') }}"><i class="bi bi-house-door me-2"></i> Lihat Website</a></li>
-                    <li><hr class="dropdown-divider"></li>
+                
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 p-2" style="border-radius: 12px; min-width: 200px;">
+                    <li><h6 class="dropdown-header small text-uppercase">Akun Administrator</h6></li>
                     <li>
-                        <a class="dropdown-item py-2 text-danger" href="{{ route('logout') }}"
+                        <a class="dropdown-item rounded-2 py-2" href="{{ url('/') }}">
+                            <i class="bi bi-house-door me-2 text-primary"></i> Ke Beranda Utama
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider my-2"></li>
+                    <li>
+                        {{-- Logout Logic Dipertahankan --}}
+                        <a class="dropdown-item rounded-2 py-2 text-danger fw-medium" href="{{ route('logout') }}"
                            onclick="event.preventDefault(); document.getElementById('logout-form-admin').submit();">
-                           <i class="bi bi-box-arrow-right me-2"></i> Logout
+                           <i class="bi bi-power me-2"></i> Log Out
                         </a>
                     </li>
                 </ul>
+                {{-- Form Logout Hidden --}}
                 <form id="logout-form-admin" action="{{ route('logout') }}" method="POST" class="d-none">
                     @csrf
                 </form>
             </div>
         </header>
 
+        {{-- DYNAMIC CONTENT --}}
         <main class="admin-content">
             @yield('content')
         </main>
     </div>
 
+    {{-- SCRIPTS --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('js/main.js') }}"></script>
+    <script>
+        // Simple script untuk menutup sidebar jika klik di luar (Mobile)
+        document.addEventListener('click', function(e) {
+            const sidebar = document.querySelector('.admin-sidebar');
+            const toggleBtn = document.querySelector('.btn-light'); // Target tombol toggle mobile
+            
+            if (window.innerWidth < 992 && 
+                sidebar.classList.contains('show') && 
+                !sidebar.contains(e.target) && 
+                !toggleBtn.contains(e.target)) {
+                sidebar.classList.remove('show');
+            }
+        });
+    </script>
     @stack('scripts')
 </body>
 </html>
