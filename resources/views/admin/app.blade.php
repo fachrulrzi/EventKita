@@ -169,8 +169,10 @@
                     <i class="bi bi-grid-1x2"></i> Dashboard
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
+        <li class="nav-item">
+            {{-- route('admin.events') memanggil fungsi index di EventController --}}
+            {{-- request()->routeIs('admin.event*') membuat menu tetap menyala (active) saat halaman edit/create dibuka --}}
+                <a class="nav-link {{ request()->routeIs('admin.event*') ? 'active' : '' }}" href="{{ route('admin.events') }}">
                     <i class="bi bi-calendar-event"></i> Kelola Event
                 </a>
             </li>

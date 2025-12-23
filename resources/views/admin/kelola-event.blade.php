@@ -13,16 +13,7 @@
         transform: translateY(-3px);
         box-shadow: 0 8px 20px rgba(0,0,0,0.08);
     }
-    .event-image-preview {
-        width: 100%;
-        height: 140px;
-        object-fit: cover;
-        border-radius: 12px;
-    }
     .badge-featured {
-        position: absolute;
-        top: 10px;
-        right: 10px;
         background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
         color: white;
         padding: 5px 12px;
@@ -36,6 +27,7 @@
     <div class="alert alert-success border-0 shadow-sm mb-4 d-flex align-items-center" role="alert" style="border-radius: 1rem;">
         <i class="bi bi-check-circle-fill fs-4 me-3"></i>
         <div><strong>Berhasil!</strong> {{ session('success') }}</div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
     </div>
 @endif
 
@@ -43,10 +35,10 @@
     <div class="alert alert-danger border-0 shadow-sm mb-4 d-flex align-items-center" role="alert" style="border-radius: 1rem;">
         <i class="bi bi-exclamation-circle-fill fs-4 me-3"></i>
         <div><strong>Error!</strong> {{ session('error') }}</div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
     </div>
 @endif
 
-<!-- Header Section -->
 <div class="card border-0 shadow-sm rounded-4 mb-4" style="background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);">
     <div class="card-body p-4">
         <div class="row align-items-center">
@@ -63,7 +55,6 @@
     </div>
 </div>
 
-<!-- Statistics Cards -->
 <div class="row g-4 mb-4">
     <div class="col-md-3">
         <div class="card border-0 shadow-sm rounded-4">
@@ -127,7 +118,6 @@
     </div>
 </div>
 
-<!-- Events Grid and Sidebar -->
 <div class="row g-4">
     <div class="col-lg-8">
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
@@ -136,9 +126,6 @@
                     <h5 class="fw-bold mb-0 text-dark">Data Event Terdaftar</h5>
                     <small class="text-muted">Kelola seluruh status event dan iklan di sini</small>
                 </div>
-                <button class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#addEventModal">
-                    <i class="bi bi-plus-lg me-2"></i>Tambah Event
-                </button>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -149,7 +136,7 @@
                                 <th class="py-3">Kategori</th>
                                 <th class="py-3">Tanggal</th>
                                 <th class="py-3">Harga</th>
-                                <th class="py-3 text-center">Iklan</th>
+                                <th class="py-3 text-center">Status</th>
                                 <th class="py-3 text-center pe-4">Opsi</th>
                             </tr>
                         </thead>
@@ -162,12 +149,15 @@
                                 </td>
                                 <td><span class="badge bg-primary-subtle text-primary border px-2 py-1">{{ $event->category->name }}</span></td>
                                 <td><i class="bi bi-calendar3 me-2"></i>{{ $event->date->format('d M Y') }}</td>
-                                <td class="fw-bold text-dark">{{ $event->formatted_price }}</td>
+                                <td class="fw-bold text-dark">Rp {{ number_format($event->ticketCategories->min('price'), 0, ',', '.') }}</td>
                                 <td class="text-center">
                                     @if($event->is_featured)
-                                        <span class="badge bg-success rounded-pill px-3">Featured</span>
+                                        <span class="badge bg-warning text-dark rounded-pill px-2">Featured</span>
+                                    @endif
+                                    @if($event->status == 'published')
+                                        <span class="badge bg-success rounded-pill px-2">Published</span>
                                     @else
-                                        <span class="badge bg-secondary-subtle text-muted px-3 border">Reguler</span>
+                                        <span class="badge bg-secondary rounded-pill px-2">Draft</span>
                                     @endif
                                 </td>
                                 <td class="pe-4">
@@ -200,7 +190,6 @@
         </div>
     </div>
 
-    <!-- Sidebar: Kategori -->
     <div class="col-lg-4">
         <div class="card border-0 shadow-sm rounded-4">
             <div class="card-body">
@@ -219,11 +208,6 @@
                         @forelse($categories->take(8) as $cat)
                             <div class="list-group-item d-flex justify-content-between align-items-center py-3">
                                 <div class="d-flex align-items-center gap-3">
-                                    @php
-                                        $placeholderIcon = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48'><rect width='100%' height='100%' fill='%23e9ecef'/><text x='50%' y='55%' font-size='10' font-family='Arial' fill='%23adb5bd' text-anchor='middle'>IMG</text></svg>";
-                                        $iconUrl = !empty($cat->icon_path) ? \App\Helpers\StorageHelper::url($cat->icon_path) : null;
-                                    @endphp
-                                    <img src="{{ $iconUrl ?? $placeholderIcon }}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" alt="{{ $cat->name }}">
                                     <div>
                                         <div class="fw-bold">{{ $cat->name }}</div>
                                         <small class="text-muted">{{ $cat->slug }}</small>
@@ -239,11 +223,6 @@
                             <div class="text-center text-muted py-3">Belum ada kategori.</div>
                         @endforelse
                     </div>
-                    @if(method_exists($categories, 'links'))
-                        <div class="mt-3">
-                            {{ $categories->links() }}
-                        </div>
-                    @endif
                 @else
                     <div class="text-center py-3">
                         <a href="{{ route('admin.kategori.index') }}" class="btn btn-outline-primary btn-sm">Kelola Kategori</a>
@@ -255,13 +234,204 @@
     </div>
 </div>
 
-<!-- Include Modal Tambah Event dari dashboard.blade.php -->
-@include('admin.partials.event-modal')
+{{-- MODAL TAMBAH EVENT --}}
+<div class="modal fade" id="addEventModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0" style="border-radius: 1.5rem;">
+            <div class="modal-header border-0 px-4 pt-4">
+                <h5 class="modal-title fw-bold text-dark"><i class="bi bi-plus-circle-fill text-primary me-2"></i> Tambah Event Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('admin.event.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-7">
+                            <label class="form-label">Nama Event <span class="text-danger">*</span></label>
+                            <input type="text" name="title" class="form-control bg-light border-0" placeholder="Contoh: Konser Harmoni Bangsa" required>
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label">Kategori <span class="text-danger">*</span></label>
+                            <select class="form-select bg-light border-0" name="category_id" required>
+                                <option value="">Pilih Kategori</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Tanggal Pelaksanaan <span class="text-danger">*</span></label>
+                            <input type="date" name="date" class="form-control bg-light border-0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Kota / Lokasi <span class="text-danger">*</span></label>
+                            <select name="city_id" class="form-select bg-light border-0" required>
+                                <option value="">Pilih Kota</option>
+                                @foreach($cities as $city)
+                                    <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Alamat Lengkap</label>
+                            <input type="text" name="location" class="form-control bg-light border-0" placeholder="e.g. Gedung Sate, Bandung">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Jam Mulai</label>
+                            <input type="time" name="time_start" class="form-control bg-light border-0">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Link Website</label>
+                            <input type="url" name="website_url" class="form-control bg-light border-0" placeholder="https://example.com">
+                        </div>
+                        <div class="col-12">
+                            <hr class="my-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <label class="form-label fw-bold mb-0"><i class="bi bi-ticket-perforated-fill text-primary me-2"></i>Kategori Tiket</label>
+                                <button type="button" class="btn btn-sm btn-primary rounded-pill" onclick="addTicketCategory()">
+                                    <i class="bi bi-plus-lg me-1"></i> Tambah
+                                </button>
+                            </div>
+                            <div id="ticketCategoriesContainer">
+                                <div class="ticket-category-item card border-0 bg-light p-3 mb-3">
+                                    <div class="row g-2">
+                                        <div class="col-md-4">
+                                            <label class="form-label small">Nama Kategori</label>
+                                            <input type="text" name="ticket_categories[0][name]" class="form-control border-0 bg-white" placeholder="e.g. VIP, Regular" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small">Harga (Rp)</label>
+                                            <input type="number" name="ticket_categories[0][price]" class="form-control border-0 bg-white" placeholder="0" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small">Stok</label>
+                                            <input type="number" name="ticket_categories[0][stock]" class="form-control border-0 bg-white" placeholder="Unlimited">
+                                        </div>
+                                        <div class="col-md-2 d-flex align-items-end">
+                                            <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeTicketCategory(this)" disabled>
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label small">Deskripsi</label>
+                                            <input type="text" name="ticket_categories[0][description]" class="form-control border-0 bg-white" placeholder="Detail kategori">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Banner Event <span class="text-danger">*</span></label>
+                            <input type="file" name="image" class="form-control bg-light border-0" accept="image/*" required>
+                            <small class="text-muted">Rekomendasi: 1200x600px (Maks 5MB)</small>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Deskripsi Event</label>
+                            <textarea name="description" class="form-control bg-light border-0" rows="3" placeholder="Jelaskan detail event..."></textarea>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check form-switch p-3 bg-light rounded-3 border-0">
+                                <input class="form-check-input ms-0 me-2" type="checkbox" name="is_featured" value="1" id="isFeatured">
+                                <label class="form-check-label fw-bold" for="isFeatured">Pasang sebagai Featured</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold shadow">Simpan Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-<!-- Include Modal Edit Event dari dashboard.blade.php -->
-@include('admin.partials.event-edit-modal')
+{{-- MODAL UPDATE EVENT --}}
+<div class="modal fade" id="updateEventModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0" style="border-radius: 1.5rem;">
+            <div class="modal-header border-0 px-4 pt-4">
+                <h5 class="modal-title fw-bold text-dark"><i class="bi bi-pencil-square text-primary me-2"></i> Edit Event</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="updateEventForm" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-7">
+                            <label class="form-label">Nama Event</label>
+                            <input type="text" name="title" id="edit_title" class="form-control bg-light border-0" required>
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label">Kategori</label>
+                            <select class="form-select bg-light border-0" name="category_id" id="edit_category_id" required>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Tanggal</label>
+                            <input type="date" name="date" id="edit_date" class="form-control bg-light border-0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Kota</label>
+                            <select name="city_id" id="edit_city_id" class="form-select bg-light border-0" required>
+                                @foreach($cities as $city)
+                                    <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Lokasi Detail</label>
+                            <input type="text" name="location" id="edit_location" class="form-control bg-light border-0">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Jam Mulai</label>
+                            <input type="time" name="time_start" id="edit_time_start" class="form-control bg-light border-0">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Link Website</label>
+                            <input type="url" name="website_url" id="edit_website_url" class="form-control bg-light border-0">
+                        </div>
+                        <div class="col-12">
+                            <hr class="my-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <label class="form-label fw-bold mb-0"><i class="bi bi-ticket-perforated-fill text-primary me-2"></i>Kategori Tiket</label>
+                                <button type="button" class="btn btn-sm btn-primary rounded-pill" onclick="addEditTicketCategory()">
+                                    <i class="bi bi-plus-lg me-1"></i> Tambah
+                                </button>
+                            </div>
+                            <div id="editTicketCategoriesContainer"></div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Banner Event</label>
+                            <input type="file" name="image" class="form-control bg-light border-0" accept="image/*">
+                            <small class="text-muted">Kosongkan jika tidak ingin mengganti</small>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Deskripsi</label>
+                            <textarea name="description" id="edit_description" class="form-control bg-light border-0" rows="3"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check form-switch p-3 bg-light rounded-3 border-0">
+                                <input class="form-check-input ms-0 me-2" type="checkbox" name="is_featured" value="1" id="edit_is_featured">
+                                <label class="form-check-label fw-bold" for="edit_is_featured">Featured</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold shadow">Update Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-{{-- MODAL TAMBAH KATEGORI (disalin untuk sidebar) --}}
+{{-- MODAL TAMBAH KATEGORI (Sidebar) --}}
 <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content shadow-lg">
@@ -295,7 +465,7 @@
     </div>
 </div>
 
-{{-- MODAL EDIT KATEGORI (disalin untuk sidebar) --}}
+{{-- MODAL EDIT KATEGORI (Sidebar) --}}
 <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content shadow-lg">
@@ -330,12 +500,6 @@
     </div>
 </div>
 
-<!-- Form Delete Event (Hidden) -->
-<form id="deleteEventForm" method="POST" style="display: none;">
-    @csrf
-    @method('DELETE')
-</form>
-
 @endsection
 
 @section('scripts')
@@ -343,78 +507,10 @@
 // Sinkronisasi data dari PHP ke JS
 const eventsData = @json($events);
 
-function editEvent(eventId) {
-    const event = eventsData.find(e => e.id === eventId);
-    if (!event) return;
-
-    // Isi form edit modal
-    document.getElementById('editEventForm').action = `/admin/event/${eventId}`;
-    document.querySelector('[name="edit_title"]').value = event.title;
-    document.querySelector('[name="edit_category_id"]').value = event.category_id;
-    document.querySelector('[name="edit_date"]').value = event.date.split('T')[0];
-    document.querySelector('[name="edit_city_id"]').value = event.city_id || '';
-    document.querySelector('[name="edit_location"]').value = event.location || '';
-    document.querySelector('[name="edit_time"]').value = event.time || '';
-    document.querySelector('[name="edit_website_url"]').value = event.website_url || '';
-    document.querySelector('[name="edit_description"]').value = event.description || '';
-    document.querySelector('[name="edit_status"]').value = event.status;
-    document.getElementById('editIsFeatured').checked = event.is_featured;
-
-    // Load ticket categories untuk edit
-    const container = document.getElementById('editTicketCategoriesContainer');
-    container.innerHTML = '';
-    
-    if (event.ticket_categories && event.ticket_categories.length > 0) {
-        event.ticket_categories.forEach((ticket, index) => {
-            const ticketHtml = `
-                <div class="ticket-category-item card border-0 bg-light p-3 mb-3">
-                    <input type="hidden" name="ticket_categories[${index}][id]" value="${ticket.id}">
-                    <div class="row g-2">
-                        <div class="col-md-4">
-                            <label class="form-label small">Nama Kategori</label>
-                            <input type="text" name="ticket_categories[${index}][name]" class="form-control border-0 bg-white" value="${ticket.name}" required>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label small">Harga (Rp)</label>
-                            <input type="number" name="ticket_categories[${index}][price]" class="form-control border-0 bg-white" value="${ticket.price}" required>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label small">Stok (Opsional)</label>
-                            <input type="number" name="ticket_categories[${index}][stock]" class="form-control border-0 bg-white" value="${ticket.stock || ''}">
-                        </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeEditTicketCategory(this)" ${index === 0 ? 'disabled' : ''}>
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small">Deskripsi (Opsional)</label>
-                            <input type="text" name="ticket_categories[${index}][description]" class="form-control border-0 bg-white" value="${ticket.description || ''}">
-                        </div>
-                    </div>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', ticketHtml);
-        });
-    }
-
-    // Show modal
-    new bootstrap.Modal(document.getElementById('editEventModal')).show();
-}
-
-function deleteEvent(eventId) {
-    if (confirm('Apakah Anda yakin ingin menghapus event ini? Semua data terkait akan hilang.')) {
-        const form = document.getElementById('deleteEventForm');
-        form.action = `/admin/event/${eventId}`;
-        form.submit();
-    }
-}
-
 // Counter untuk form add ticket category
 let ticketCategoryIndex = 1;
 let editTicketCategoryIndex = 0;
 
-// Fungsi Add Ticket Category (Form Tambah Event)
 function addTicketCategory() {
     const container = document.getElementById('ticketCategoriesContainer');
     const newCategory = `
@@ -452,10 +548,12 @@ function removeTicketCategory(button) {
     button.closest('.ticket-category-item').remove();
 }
 
-// Fungsi Add Ticket Category (Form Edit Event)
 function addEditTicketCategory() {
     const container = document.getElementById('editTicketCategoriesContainer');
-    editTicketCategoryIndex = container.querySelectorAll('.ticket-category-item').length;
+    // Hitung index baru berdasarkan jumlah item yang ada untuk menghindari duplikasi ID
+    const currentItems = container.querySelectorAll('.ticket-category-item').length;
+    // Gunakan timestamp untuk memastikan index unik jika perlu, atau lanjutkan counter
+    editTicketCategoryIndex++; 
     
     const newCategory = `
         <div class="ticket-category-item card border-0 bg-light p-3 mb-3">
@@ -489,10 +587,89 @@ function addEditTicketCategory() {
 }
 
 function removeEditTicketCategory(button) {
-    const container = document.getElementById('editTicketCategoriesContainer');
-    if (container.querySelectorAll('.ticket-category-item').length > 1) {
-        button.closest('.ticket-category-item').remove();
+    // Tambahkan input hidden untuk menandai kategori dihapus (opsional jika backend handle delete)
+    // Untuk simplifikasi saat ini, kita hapus elemennya dari DOM. 
+    // Backend akan sync ulang berdasarkan ID yang dikirim.
+    // Jika ID ada di input hidden, kita harus kirim ID tersebut ke backend untuk dihapus (soft delete logic).
+    
+    const item = button.closest('.ticket-category-item');
+    const idInput = item.querySelector('input[type="hidden"]');
+    
+    if (idInput && idInput.value) {
+        // Jika ini kategori lama yang dihapus, tambahkan input hidden ke form utama untuk delete
+        const form = document.getElementById('updateEventForm');
+        const deleteInput = document.createElement('input');
+        deleteInput.type = 'hidden';
+        deleteInput.name = 'delete_categories[]';
+        deleteInput.value = idInput.value;
+        form.appendChild(deleteInput);
     }
+    
+    item.remove();
+}
+
+function editEvent(eventId) {
+    const event = eventsData.find(e => e.id === eventId);
+    if (!event) return;
+
+    // Isi form edit modal
+    document.getElementById('updateEventForm').action = `/admin/event/${eventId}`;
+    document.getElementById('edit_title').value = event.title;
+    document.getElementById('edit_category_id').value = event.category_id;
+    document.getElementById('edit_date').value = event.date.split('T')[0];
+    document.getElementById('edit_city_id').value = event.city_id || '';
+    document.getElementById('edit_location').value = event.location || '';
+    document.getElementById('edit_time_start').value = event.time_start || '';
+    document.getElementById('edit_website_url').value = event.website_url || '';
+    document.getElementById('edit_description').value = event.description || '';
+    document.getElementById('edit_is_featured').checked = event.is_featured;
+
+    // Load ticket categories untuk edit
+    const container = document.getElementById('editTicketCategoriesContainer');
+    container.innerHTML = '';
+    
+    // Reset index counter based on existing data
+    editTicketCategoryIndex = 0;
+
+    if (event.ticket_categories && event.ticket_categories.length > 0) {
+        event.ticket_categories.forEach((ticket, index) => {
+            // Kita gunakan index loop agar urutannya rapi dari 0
+            editTicketCategoryIndex = index; 
+            
+            const ticketHtml = `
+                <div class="ticket-category-item card border-0 bg-light p-3 mb-3">
+                    <input type="hidden" name="ticket_categories[${index}][id]" value="${ticket.id}">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label class="form-label small">Nama Kategori</label>
+                            <input type="text" name="ticket_categories[${index}][name]" class="form-control border-0 bg-white" value="${ticket.category_name}" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small">Harga (Rp)</label>
+                            <input type="number" name="ticket_categories[${index}][price]" class="form-control border-0 bg-white" value="${ticket.price}" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small">Stok (Opsional)</label>
+                            <input type="number" name="ticket_categories[${index}][stock]" class="form-control border-0 bg-white" value="${ticket.stock || ''}">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeEditTicketCategory(this)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small">Deskripsi (Opsional)</label>
+                            <input type="text" name="ticket_categories[${index}][description]" class="form-control border-0 bg-white" value="${ticket.description || ''}">
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', ticketHtml);
+        });
+    }
+
+    // Show modal
+    new bootstrap.Modal(document.getElementById('updateEventModal')).show();
 }
 
 // Logic Modal Edit Kategori (untuk sidebar)
