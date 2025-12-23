@@ -261,7 +261,7 @@
                     
                     <div class="card event-card h-100 shadow-sm">
                         {{-- Image Wrapper --}}
-                        <div class="img-wrapper">
+                        <div class="img-wrapper position-relative" style="height:220px; overflow:hidden;">
                             @php
                                 $eventImgUrl = $event->image_path
                                     ? (str_starts_with($event->image_path, 'http')
@@ -269,11 +269,25 @@
                                         : \App\Helpers\StorageHelper::url($event->image_path))
                                     : 'https://via.placeholder.com/400x300?text=No+Image';
                             @endphp
-                            <img src="{{ $eventImgUrl }}" class="card-img-top" alt="{{ $event->title }}">
+                            <img src="{{ $eventImgUrl }}" class="card-img-top" alt="{{ $event->title }}" style="height:100%; object-fit:cover;">
                             
+                            {{-- Category Badge --}}
+                            <div class="position-absolute top-0 start-0 m-3" style="z-index:2;">
+                                <span class="badge bg-primary bg-opacity-90 text-white px-3 py-1 rounded-pill shadow-sm" style="font-size:0.8rem; font-weight:600;">
+                                    {{ $event->category->name }}
+                                </span>
+                            </div>
+                            {{-- City Badge --}}
+                            @if($event->cityRelation)
+                                <div class="position-absolute bottom-0 start-0 m-3" style="z-index:2;">
+                                    <span class="badge bg-dark bg-opacity-75 text-white px-2 py-1 rounded-pill" style="font-size: 0.75rem;">
+                                        <i class="bi bi-geo-alt-fill me-1"></i>{{ $event->cityRelation->name }}
+                                    </span>
+                                </div>
+                            @endif
                             {{-- Favorite Button --}}
                             @auth
-                                <form action="{{ route('favorites.toggle', $event->id) }}" method="POST">
+                                <form action="{{ route('favorites.toggle', $event->id) }}" method="POST" class="position-absolute top-0 end-0 m-3" style="z-index:3;">
                                     @csrf
                                     <button type="submit" class="btn-fav-float shadow-sm">
                                         @if(Auth::user()->favoriteEvents()->where('event_id', $event->id)->exists())
@@ -284,20 +298,6 @@
                                     </button>
                                 </form>
                             @endauth
-
-                            {{-- Category Badge --}}
-                            <div class="badge-float shadow-sm">
-                                {{ $event->category->name }}
-                            </div>
-
-                            {{-- City Badge --}}
-                            @if($event->cityRelation)
-                                <div class="position-absolute bottom-0 start-0 m-3">
-                                    <span class="badge bg-dark bg-opacity-75 text-white px-2 py-1 rounded-pill" style="font-size: 0.75rem;">
-                                        <i class="bi bi-geo-alt-fill me-1"></i>{{ $event->cityRelation->name }}
-                                    </span>
-                                </div>
-                            @endif
                         </div>
 
                         {{-- Card Body --}}
