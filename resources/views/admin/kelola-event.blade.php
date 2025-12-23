@@ -127,11 +127,13 @@
     </div>
 </div>
 
-<!-- Events Grid -->
+<!-- Events Grid and Sidebar -->
 <div class="row g-4">
-    @forelse($events as $event)
-        <div class="col-lg-4 col-md-6">
-            <div class="card event-card border-0 shadow-sm rounded-4 h-100">
+    <div class="col-lg-8">
+        <div class="row g-4">
+            @forelse($events as $event)
+                <div class="col-lg-6 col-md-6">
+                    <div class="card event-card border-0 shadow-sm rounded-4 h-100">
                 <div class="card-body p-0">
                     <!-- Event Image -->
                     <div class="position-relative">
@@ -203,21 +205,76 @@
                     </div>
                 </div>
             </div>
+            @empty
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-body text-center py-5">
+                            <img src="https://illustrations.popsy.co/violet/event.svg" alt="empty" style="width: 200px;" class="mb-4 opacity-75">
+                            <h5 class="fw-bold mb-2">Belum Ada Event</h5>
+                            <p class="text-muted mb-4">Mulai buat event pertama Anda sekarang!</p>
+                            <button class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addEventModal">
+                                <i class="bi bi-plus-lg me-2"></i>Tambah Event
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @endforelse
         </div>
-    @empty
-        <div class="col-12">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-body text-center py-5">
-                    <img src="https://illustrations.popsy.co/violet/event.svg" alt="empty" style="width: 200px;" class="mb-4 opacity-75">
-                    <h5 class="fw-bold mb-2">Belum Ada Event</h5>
-                    <p class="text-muted mb-4">Mulai buat event pertama Anda sekarang!</p>
-                    <button class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addEventModal">
-                        <i class="bi bi-plus-lg me-2"></i>Tambah Event
+    </div>
+
+    <!-- Sidebar: Kategori -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <p class="text-muted small fw-bold text-uppercase mb-1">Kategori</p>
+                        <small class="text-muted small">Kategori Aktif</small>
+                    </div>
+                    <button class="btn btn-sm btn-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                        <i class="bi bi-plus-lg me-1"></i>Tambah
                     </button>
                 </div>
+
+                @isset($categories)
+                    <div class="list-group list-group-flush">
+                        @forelse($categories->take(8) as $cat)
+                            <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    @php
+                                        $placeholderIcon = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48'><rect width='100%' height='100%' fill='%23e9ecef'/><text x='50%' y='55%' font-size='10' font-family='Arial' fill='%23adb5bd' text-anchor='middle'>IMG</text></svg>";
+                                        $iconUrl = !empty($cat->icon_path) ? \App\Helpers\StorageHelper::url($cat->icon_path) : null;
+                                    @endphp
+                                    <img src="{{ $iconUrl ?? $placeholderIcon }}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" alt="{{ $cat->name }}">
+                                    <div>
+                                        <div class="fw-bold">{{ $cat->name }}</div>
+                                        <small class="text-muted">{{ $cat->slug }}</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editCategoryModal" data-update-url="{{ route('admin.kategori.update', $cat) }}" data-name="{{ $cat->name }}" data-description="{{ $cat->description }}">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-center text-muted py-3">Belum ada kategori.</div>
+                        @endforelse
+                    </div>
+                    @if(method_exists($categories, 'links'))
+                        <div class="mt-3">
+                            {{ $categories->links() }}
+                        </div>
+                    @endif
+                @else
+                    <div class="text-center py-3">
+                        <a href="{{ route('admin.kategori.index') }}" class="btn btn-outline-primary btn-sm">Kelola Kategori</a>
+                    </div>
+                @endisset
+
             </div>
         </div>
-    @endforelse
+    </div>
 </div>
 
 <!-- Include Modal Tambah Event dari dashboard.blade.php -->
@@ -225,6 +282,75 @@
 
 <!-- Include Modal Edit Event dari dashboard.blade.php -->
 @include('admin.partials.event-edit-modal')
+
+{{-- MODAL TAMBAH KATEGORI (disalin untuk sidebar) --}}
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg">
+            <div class="modal-header border-0 px-4 pt-4">
+                <h5 class="modal-title fw-bold">Tambah Kategori Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="categoryForm" method="POST" action="{{ route('admin.kategori.store') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-4">
+                        <label class="form-label">Nama Kategori <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="Contoh: Konser Musik" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Deskripsi Singkat</label>
+                        <textarea name="description" class="form-control" rows="3" placeholder="Jelaskan jenis event ini..."></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Icon Kategori</label>
+                        <input type="file" name="icon" accept="image/*" class="form-control">
+                        <small class="text-muted mt-2 d-block"><i class="bi bi-info-circle me-1"></i> Format: JPG, PNG. Maks 2MB.</small>
+                    </div>
+                    <div class="mt-2 text-end">
+                        <button type="button" class="btn btn-light rounded-pill px-4 me-2" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- MODAL EDIT KATEGORI (disalin untuk sidebar) --}}
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg">
+            <div class="modal-header border-0 px-4 pt-4">
+                <h5 class="modal-title fw-bold">Perbarui Kategori</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="editCategoryForm" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <div class="mb-4">
+                        <label class="form-label">Nama Kategori</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Ubah Icon</label>
+                        <input type="file" name="icon" accept="image/*" class="form-control">
+                        <small class="text-muted d-block mt-2">Biarkan kosong jika tidak ingin mengubah icon.</small>
+                    </div>
+                    <div class="mt-2 text-end">
+                        <button type="button" class="btn btn-light rounded-pill px-4 me-2" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow">Perbarui</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Form Delete Event (Hidden) -->
 <form id="deleteEventForm" method="POST" style="display: none;">
@@ -389,6 +515,24 @@ function removeEditTicketCategory(button) {
     if (container.querySelectorAll('.ticket-category-item').length > 1) {
         button.closest('.ticket-category-item').remove();
     }
+}
+
+// Logic Modal Edit Kategori (untuk sidebar)
+const editCategoryModal = document.getElementById('editCategoryModal');
+if (editCategoryModal) {
+    editCategoryModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        if (!button) return;
+
+        const updateUrl = button.getAttribute('data-update-url');
+        const name = button.getAttribute('data-name') || '';
+        const description = button.getAttribute('data-description') || '';
+
+        const form = document.getElementById('editCategoryForm');
+        form.action = updateUrl;
+        form.querySelector('input[name="name"]').value = name;
+        form.querySelector('textarea[name="description"]').value = description;
+    });
 }
 </script>
 @endsection
