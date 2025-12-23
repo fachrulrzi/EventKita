@@ -478,8 +478,8 @@
                         </div>
                         <div class="col-12">
                             <div class="form-check form-switch p-3 bg-white border rounded-3 shadow-sm">
-                                <input class="form-check-input ms-0 me-3" type="checkbox" name="is_featured" value="1" id="edit_is_featured" style="width: 2.5em; height: 1.25em;">
-                                <label class="form-check-label fw-bold text-dark" for="edit_is_featured">Featured Event</label>
+                                <input class="form-check-input ms-0 me-3" type="checkbox" name="is_featured" value="1" id="edit_is_featured" style="width: 2.5em; height: 1.25em; cursor: pointer;">
+                                <label class="form-check-label fw-bold text-dark cursor-pointer" for="edit_is_featured">Featured Event</label>
                             </div>
                         </div>
                     </div>
