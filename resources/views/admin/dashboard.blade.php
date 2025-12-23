@@ -169,9 +169,6 @@
     <div class="card-body p-4 p-lg-5">
         <div class="row align-items-center">
             <div class="col-lg-7 mb-4 mb-lg-0">
-                <span class="hero-badge mb-3 d-inline-block">
-                    <i class="bi bi-stars me-1"></i> Admin Panel v2.0
-                </span>
                 <h1 class="display-6 fw-bold mb-2">Selamat Datang, {{ Auth::user()->name }}! 👋</h1>
                 <p class="text-white-50 fs-5 mb-0" style="max-width: 500px;">
                     Kelola event, pantau statistik, dan moderasi komunitas dalam satu dashboard terintegrasi.

@@ -199,6 +199,11 @@
                     <div class="d-flex align-items-center">
                         <i class="bi bi-geo-alt me-2 text-warning"></i> 
                         <span class="text-white">{{ $event->location }}</span>
+                        @if($event->cityRelation)
+                            <span class="badge bg-dark bg-opacity-75 text-white ms-2 px-2 py-1 rounded-pill" style="font-size: 0.95em;">
+                                <i class="bi bi-geo-alt-fill me-1"></i>{{ $event->cityRelation->name }}
+                            </span>
+                        @endif
                     </div>
                 </div>
 
