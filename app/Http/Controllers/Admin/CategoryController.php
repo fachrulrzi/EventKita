@@ -29,10 +29,14 @@ class CategoryController extends Controller
         $iconPath = null;
 
         if ($request->hasFile('icon')) {
-            $iconPath = $request->file('icon')->storePublicly(
+            // 🔥 Upload ke Railway Bucket
+            $iconPath = $request->file('icon')->store(
                 'categories',
                 's3'
             );
+
+            // 🔥 WAJIB: set visibility PUBLIC
+            Storage::disk('s3')->setVisibility($iconPath, 'public');
         }
 
         Category::create([
@@ -42,7 +46,8 @@ class CategoryController extends Controller
             'icon_path' => $iconPath,
         ]);
 
-        return redirect()->route('admin.kategori.index')
+        return redirect()
+            ->route('admin.kategori.index')
             ->with('success', 'Kategori berhasil ditambahkan.');
     }
 
@@ -61,19 +66,27 @@ class CategoryController extends Controller
         ];
 
         if ($request->hasFile('icon')) {
+            // hapus icon lama
             if ($kategori->icon_path) {
                 Storage::disk('s3')->delete($kategori->icon_path);
             }
 
-            $data['icon_path'] = $request->file('icon')->storePublicly(
+            // upload icon baru
+            $newPath = $request->file('icon')->store(
                 'categories',
                 's3'
             );
+
+            // 🔥 WAJIB PUBLIC
+            Storage::disk('s3')->setVisibility($newPath, 'public');
+
+            $data['icon_path'] = $newPath;
         }
 
         $kategori->update($data);
 
-        return redirect()->route('admin.kategori.index')
+        return redirect()
+            ->route('admin.kategori.index')
             ->with('success', 'Kategori berhasil diperbarui.');
     }
 
@@ -85,7 +98,8 @@ class CategoryController extends Controller
 
         $kategori->delete();
 
-        return redirect()->route('admin.kategori.index')
+        return redirect()
+            ->route('admin.kategori.index')
             ->with('success', 'Kategori berhasil dihapus.');
     }
 }
