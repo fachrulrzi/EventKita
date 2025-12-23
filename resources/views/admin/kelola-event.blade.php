@@ -600,21 +600,27 @@
     }
 
     function editEvent(eventId) {
+        console.log('editEvent called with ID:', eventId);
+        console.log('All events data:', eventsData);
+        
         const event = eventsData.find(e => e.id === eventId);
+        console.log('Found event:', event);
+        
         if (!event) return alert('Data event tidak ditemukan!');
         
-        document.getElementById('updateEventForm').action = `/admin/event/${eventId}`;
-        document.getElementById('edit_title').value = event.title;
-        document.getElementById('edit_category_id').value = event.category_id;
-        document.getElementById('edit_date').value = event.date;
-        document.getElementById('edit_city_id').value = event.city_id || '';
-        document.getElementById('edit_location').value = event.location || '';
-        document.getElementById('edit_time_start').value = event.time_start || '';
-        document.getElementById('edit_website_url').value = event.website_url || '';
-        document.getElementById('edit_description').value = event.description || '';
-        document.getElementById('edit_is_featured').checked = Boolean(event.is_featured);
-        
-        console.log('Event ID:', eventId, 'is_featured:', event.is_featured, 'Type:', typeof event.is_featured);
+        try {
+            document.getElementById('updateEventForm').action = `/admin/event/${eventId}`;
+            document.getElementById('edit_title').value = event.title || '';
+            document.getElementById('edit_category_id').value = event.category_id || '';
+            document.getElementById('edit_date').value = event.date || '';
+            document.getElementById('edit_city_id').value = event.city_id || '';
+            document.getElementById('edit_location').value = event.location || '';
+            document.getElementById('edit_time_start').value = event.time_start || '';
+            document.getElementById('edit_website_url').value = event.website_url || '';
+            document.getElementById('edit_description').value = event.description || '';
+            document.getElementById('edit_is_featured').checked = Boolean(event.is_featured);
+            
+            console.log('Event ID:', eventId, 'is_featured:', event.is_featured, 'Type:', typeof event.is_featured);
         
         // Populate Ticket Categories
         const container = document.getElementById('editTicketCategoriesContainer');
@@ -654,6 +660,10 @@
         }
         
         new bootstrap.Modal(document.getElementById('updateEventModal')).show();
+        } catch (error) {
+            console.error('Error in editEvent:', error);
+            alert('Terjadi kesalahan saat membuka form edit: ' + error.message);
+        }
     }
 </script>
 @endpush
