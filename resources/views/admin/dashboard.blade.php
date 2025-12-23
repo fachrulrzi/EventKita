@@ -125,43 +125,42 @@
             <p class="text-white-50 mb-0 fs-6">Kelola seluruh ekosistem EventKita dengan kendali penuh hari ini.</p>
         </div>
 
-@php
-    // Logika Performa Penjualan (Impactful)
-    // Mengambil total tiket yang terjual vs target (misal target total stok)
-    $totalStokTersedia = \App\Models\EventTicketCategory::sum('stock') ?? 0;
-    
-    // Jika stok tidak ada patokan, kita gunakan perbandingan Event Aktif vs Total
-    $totalSemuaEvent = \App\Models\Event::count();
-    $eventBerjalan = \App\Models\Event::where('date', '>=', now()->toDateString())->count();
-    
-    // Hitung persentase untuk Progress Bar
-    $persenAktif = $totalSemuaEvent > 0 ? ($eventBerjalan / $totalSemuaEvent) * 100 : 0;
-@endphp
+{{-- Statistik Baru: Diletakkan di samping atau bawah dengan kolom yang jelas --}}
+        <div class="col-md-4 ms-md-auto">
+            @php
+                $totalAllEvents = \App\Models\Event::count();
+                $activeEvents = \App\Models\Event::where('date', '>=', now()->toDateString())->count();
+                $activeRate = $totalAllEvents > 0 ? ($activeEvents / $totalAllEvents) * 100 : 0;
+            @endphp
 
-<div class="bg-white bg-opacity-10 p-4 rounded-4" style="backdrop-filter: blur(10px); min-width: 250px; border: 1px solid rgba(255,255,255,0.1);">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <p class="text-white-50 small mb-0 fw-bold text-uppercase">Produktivitas Event</p>
-        <span class="badge bg-white text-primary rounded-pill">{{ number_format($persenAktif, 0) }}%</span>
-    </div>
+            <div class="p-3 rounded-4" style="background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px);">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-white fw-bold small text-uppercase">Produktivitas Event</span>
+                    <span class="badge bg-white text-primary">{{ number_format($activeRate, 0) }}%</span>
+                </div>
+                
+                {{-- Progress Bar Horizontal --}}
+                <div class="progress mb-2" style="height: 10px; background: rgba(0,0,0,0.2); border-radius: 20px;">
+                    <div class="progress-bar bg-white shadow-sm" role="progressbar" 
+                         style="width: {{ $activeRate }}%; border-radius: 20px;" 
+                         aria-valuenow="{{ $activeRate }}" aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
 
-    <div class="progress mb-3" style="height: 8px; background: rgba(255,255,255,0.2); border-radius: 10px;">
-        <div class="progress-bar bg-white shadow-sm" role="progressbar" 
-             style="width: {{ $persenAktif }}%; border-radius: 10px;" 
-             aria-valuenow="{{ $persenAktif }}" aria-valuemin="0" aria-valuemax="100">
+                <div class="d-flex justify-content-between">
+                    <div class="text-start">
+                        <p class="text-white-50 mb-0" style="font-size: 0.65rem;">EVENT AKTIF</p>
+                        <h5 class="text-white fw-bold mb-0">{{ $activeEvents }}</h5>
+                    </div>
+                    <div class="text-end">
+                        <p class="text-white-50 mb-0" style="font-size: 0.65rem;">TOTAL DATA</p>
+                        <h5 class="text-white fw-bold mb-0">{{ $totalAllEvents }}</h5>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <div class="row g-0">
-        <div class="col-6">
-            <small class="text-white-50 d-block" style="font-size: 0.7rem;">EVENT LIVE</small>
-            <h5 class="fw-bold mb-0 text-white">{{ $eventBerjalan }}</h5>
-        </div>
-        <div class="col-6 border-start border-white border-opacity-25 ps-3">
-            <small class="text-white-50 d-block" style="font-size: 0.7rem;">TOTAL DATA</small>
-            <h5 class="fw-bold mb-0 text-white">{{ $totalSemuaEvent }}</h5>
-        </div>
-    </div>
-</div>
+    </div> {{-- Penutup card-body --}}
+</div> {{-- Penutup card admin-hero --}}
 
 <div class="row g-4 mb-4">
     <div class="col-lg-3 col-sm-6">
