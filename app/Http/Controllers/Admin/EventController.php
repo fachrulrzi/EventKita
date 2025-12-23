@@ -110,105 +110,89 @@ class EventController extends Controller
     /**
      * Update event.
      */
-    public function update(Request $request, Event $event): RedirectResponse
-    {
-        // Filter ticket_categories yang kosong (tidak diisi)
-        $ticketCategories = collect($request->input('ticket_categories', []))
-            ->filter(function ($category) {
-                return !empty($category['name']) && isset($category['price']) && $category['price'] !== '';
-            })
-            ->values()
-            ->toArray();
-        
-        $request->merge(['ticket_categories' => $ticketCategories ?: null]);
+public function update(Request $request, Event $event): RedirectResponse
+{
+    // 1. Filter data kategori tiket yang valid saja
+    $ticketCategories = collect($request->input('ticket_categories', []))
+        ->filter(function ($cat) {
+            return !empty($cat['name']) && isset($cat['price']);
+        })
+        ->toArray();
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'city_id' => 'required|exists:cities,id',
-            'description' => 'nullable|string',
-            'location' => 'nullable|string|max:255',
-            'date' => 'required|date',
-            'time_start' => 'nullable|date_format:H:i',
-            'time_end' => 'nullable|date_format:H:i|after:time_start',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
-            'is_featured' => 'nullable|boolean',
-            'tags' => 'nullable|string',
-            'website_url' => 'nullable|url|max:500',
-            'ticket_categories' => 'nullable|array',
-            'ticket_categories.*.id' => 'nullable|exists:event_ticket_categories,id',
-            'ticket_categories.*.name' => 'required|string|max:255',
-            'ticket_categories.*.price' => 'required|numeric|min:0',
-            'ticket_categories.*.stock' => 'nullable|integer|min:1',
-            'ticket_categories.*.description' => 'nullable|string|max:500',
-            'delete_categories' => 'nullable|array',
-            'delete_categories.*' => 'exists:event_ticket_categories,id',
-        ]);
+    // 2. Validasi
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'category_id' => 'required|exists:categories,id',
+        'city_id' => 'required|exists:cities,id',
+        'description' => 'nullable|string',
+        'location' => 'nullable|string|max:255',
+        'date' => 'required|date',
+        'time_start' => 'nullable',
+        'is_featured' => 'nullable',
+        'website_url' => 'nullable|url|max:500',
+        'ticket_categories' => 'nullable|array',
+        'delete_categories' => 'nullable|array',
+    ]);
 
+    // Menggunakan DB Transaction untuk keamanan data
+    \DB::transaction(function () use ($request, $event, $validated, $ticketCategories) {
+        // 3. Update Data Utama Event
         $data = [
             'title' => $validated['title'],
             'category_id' => $validated['category_id'],
             'city_id' => $validated['city_id'],
-            'description' => $validated['description'] ?? null,
-            'location' => $validated['location'] ?? null,
+            'description' => $validated['description'],
+            'location' => $validated['location'],
             'date' => $validated['date'],
-            'time_start' => $validated['time_start'] ?? null,
-            'time_end' => $validated['time_end'] ?? null,
-            'price_min' => 0,
-            'price_max' => 0,
+            'time_start' => $validated['time_start'],
             'is_featured' => $request->has('is_featured'),
-            'tags' => $validated['tags'] ?? null,
-            'website_url' => $validated['website_url'] ?? null,
+            'website_url' => $validated['website_url'],
         ];
 
-        /** ✅ UPDATE IMAGE KE S3 */
+        // Update Gambar jika ada upload baru
         if ($request->hasFile('image')) {
             if ($event->image_path) {
-                Storage::disk('s3')->delete($event->image_path);
+                \Storage::disk('s3')->delete($event->image_path);
             }
-
-            $data['image_path'] = $request->file('image')->store(
-                'events',
-                's3',
-                ['visibility' => 'public']
-            );
+            $data['image_path'] = $request->file('image')->store('events', 's3', ['visibility' => 'public']);
         }
 
         $event->update($data);
 
+        // 4. Hapus kategori tiket yang ditandai hapus dari UI
         if ($request->has('delete_categories')) {
-            EventTicketCategory::whereIn('id', $validated['delete_categories'])
+            EventTicketCategory::whereIn('id', $request->delete_categories)
                 ->where('event_id', $event->id)
                 ->delete();
         }
 
-        // Update/create kategori tiket jika ada
-        if (!empty($validated['ticket_categories'])) {
-            foreach ($validated['ticket_categories'] as $category) {
-                if (!empty($category['id'])) {
-                    EventTicketCategory::where('id', $category['id'])
-                        ->where('event_id', $event->id)
-                        ->update([
-                            'category_name' => $category['name'],
-                            'price' => $category['price'],
-                            'stock' => $category['stock'] ?? null,
-                            'description' => $category['description'] ?? null,
-                        ]);
-                } else {
-                    EventTicketCategory::create([
-                        'event_id' => $event->id,
-                        'category_name' => $category['name'],
-                        'price' => $category['price'],
-                        'stock' => $category['stock'] ?? null,
-                        'description' => $category['description'] ?? null,
+        // 5. Update atau Create Kategori Tiket
+        foreach ($ticketCategories as $cat) {
+            if (!empty($cat['id'])) {
+                // Update kategori lama
+                EventTicketCategory::where('id', $cat['id'])
+                    ->where('event_id', $event->id)
+                    ->update([
+                        'category_name' => $cat['name'],
+                        'price' => $cat['price'],
+                        'stock' => $cat['stock'] ?? null,
+                        'description' => $cat['description'] ?? null,
                     ]);
-                }
+            } else {
+                // Tambah kategori baru
+                EventTicketCategory::create([
+                    'event_id' => $event->id,
+                    'category_name' => $cat['name'],
+                    'price' => $cat['price'],
+                    'stock' => $cat['stock'] ?? null,
+                    'description' => $cat['description'] ?? null,
+                ]);
             }
         }
+    });
 
-        return redirect()->route('admin.events')
-            ->with('success', 'Event berhasil diperbarui!');
-    }
+    return redirect()->route('admin.events')->with('success', 'Event berhasil diperbarui!');
+}
 
     /**
      * Hapus event.
