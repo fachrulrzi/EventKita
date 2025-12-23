@@ -368,4 +368,101 @@ class OrderController extends Controller
 
         return view('my-orders', compact('orders'));
     }
+
+    /**
+     * Show order detail (for pending payment)
+     */
+    public function show($orderId)
+    {
+        $order = Order::with(['event.ticketCategories', 'tickets.ticketCategory'])->findOrFail($orderId);
+        
+        if ($order->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        return view('order-detail', compact('order'));
+    }
+
+    /**
+     * Continue/retry payment for pending order
+     */
+    public function continuePayment($orderId)
+    {
+        $order = Order::with(['event', 'tickets.ticketCategory'])->findOrFail($orderId);
+        
+        if ($order->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Only allow for pending orders
+        if ($order->status !== 'pending') {
+            return response()->json(['error' => 'Order ini tidak dalam status pending'], 400);
+        }
+
+        try {
+            // Check if using Mock Payment or Real Midtrans
+            $useMockPayment = !config('midtrans.server_key') || str_contains(config('midtrans.server_key'), 'YOUR_');
+
+            if ($useMockPayment) {
+                // MOCK PAYMENT for development
+                $snapToken = 'MOCK-' . uniqid();
+                
+                return response()->json([
+                    'snap_token' => $snapToken,
+                    'order_id' => $order->id,
+                    'mock_mode' => true,
+                    'message' => 'Development Mode: Using Mock Payment'
+                ]);
+            } else {
+                // REAL MIDTRANS - recreate snap token with unique retry suffix
+                $itemDetails = [];
+                $ticketsByCategory = $order->tickets->groupBy('event_ticket_category_id');
+                
+                foreach ($ticketsByCategory as $categoryId => $tickets) {
+                    $category = $tickets->first()->ticketCategory;
+                    if ($category) {
+                        $itemDetails[] = [
+                            'id' => "ticket_{$categoryId}",
+                            'price' => (int) $category->price,
+                            'quantity' => $tickets->count(),
+                            'name' => "{$order->event->title} - {$category->category_name}"
+                        ];
+                    }
+                }
+
+                // Generate unique order_id for retry (Midtrans requires unique order_id)
+                // Remove previous retry suffix if exists, then add new one
+                $baseOrderNumber = preg_replace('/-R\d+$/', '', $order->order_number);
+                $retryOrderId = $baseOrderNumber . '-R' . time();
+
+                $params = [
+                    'transaction_details' => [
+                        'order_id' => $retryOrderId,
+                        'gross_amount' => (int) $order->total_price,
+                    ],
+                    'customer_details' => [
+                        'first_name' => Auth::user()->name,
+                        'email' => Auth::user()->email,
+                    ],
+                    'item_details' => $itemDetails,
+                ];
+
+                // Get Snap payment token
+                $snapToken = Snap::getSnapToken($params);
+
+                // Update order with new retry order number for callback matching
+                $order->update(['order_number' => $retryOrderId]);
+
+                return response()->json([
+                    'snap_token' => $snapToken,
+                    'order_id' => $order->id,
+                    'mock_mode' => false
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

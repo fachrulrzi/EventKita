@@ -291,6 +291,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('order/mock-success/{orderId}', [OrderController::class, 'mockPaymentSuccess'])->name('order.mock.success');
     Route::get('order/success/{orderId}', [OrderController::class, 'success'])->name('order.success');
     Route::get('order/print/{orderId}', [OrderController::class, 'printTicket'])->name('order.print');
+    Route::get('order/{orderId}', [OrderController::class, 'show'])->name('order.show');
+    Route::post('order/{orderId}/continue-payment', [OrderController::class, 'continuePayment'])->name('order.continue');
     Route::get('my-orders', [OrderController::class, 'myOrders'])->name('my.orders');
     
 
