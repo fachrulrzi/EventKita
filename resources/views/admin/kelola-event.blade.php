@@ -579,29 +579,32 @@
     }
 
     // --- EDIT EVENT LOGIC ---
-    function addEditTicketCategory() {
+   function addEditTicketCategory() {
         const container = document.getElementById('editTicketCategoriesContainer');
-        editTicketCategoryIndex++; // Increment
+        // Menggunakan timestamp agar index dipastikan unik dan tidak bentrok
+        const uniqueIdx = Date.now(); 
         
         const newCategory = `
             <div class="ticket-category-item card border-0 shadow-sm mb-3">
                 <div class="card-body p-3">
-                    <input type="hidden" name="ticket_categories[${editTicketCategoryIndex}][id]" value="">
+                    <input type="hidden" name="ticket_categories[${uniqueIdx}][id]" value="">
                     <div class="row g-2">
                         <div class="col-md-4">
-                            <input type="text" name="ticket_categories[${editTicketCategoryIndex}][name]" class="form-control form-control-sm" placeholder="Nama" required>
+                            <input type="text" name="ticket_categories[${uniqueIdx}][name]" class="form-control form-control-sm" placeholder="Nama Tiket" required>
                         </div>
                         <div class="col-md-3">
-                            <input type="number" name="ticket_categories[${editTicketCategoryIndex}][price]" class="form-control form-control-sm" placeholder="Harga" required>
+                            <input type="number" name="ticket_categories[${uniqueIdx}][price]" class="form-control form-control-sm" placeholder="Harga" required>
                         </div>
                         <div class="col-md-3">
-                            <input type="number" name="ticket_categories[${editTicketCategoryIndex}][stock]" class="form-control form-control-sm" placeholder="Stok">
+                            <input type="number" name="ticket_categories[${uniqueIdx}][stock]" class="form-control form-control-sm" placeholder="Stok">
                         </div>
                         <div class="col-md-2">
-                            <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeEditTicketCategory(this)"><i class="bi bi-trash"></i></button>
+                            <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeEditTicketCategory(this, null)">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </div>
                         <div class="col-12 mt-2">
-                            <input type="text" name="ticket_categories[${editTicketCategoryIndex}][description]" class="form-control form-control-sm" placeholder="Deskripsi">
+                            <input type="text" name="ticket_categories[${uniqueIdx}][description]" class="form-control form-control-sm" placeholder="Deskripsi singkat tiket">
                         </div>
                     </div>
                 </div>
@@ -610,79 +613,89 @@
         container.insertAdjacentHTML('beforeend', newCategory);
     }
 
-    function removeEditTicketCategory(button) {
-        button.closest('.ticket-category-item').remove();
+    function removeEditTicketCategory(button, ticketId) {
+        if (confirm('Hapus kategori tiket ini?')) {
+            if (ticketId) {
+                // Jika ticketId ada, buat input hidden 'delete_categories[]' agar dihapus di server
+                const form = document.getElementById('updateEventForm');
+                const inputDeleted = document.createElement('input');
+                inputDeleted.type = 'hidden';
+                inputDeleted.name = 'delete_categories[]';
+                inputDeleted.value = ticketId;
+                form.appendChild(inputDeleted);
+            }
+            // Hapus elemen dari tampilan
+            button.closest('.ticket-category-item').remove();
+        }
     }
 
     function editEvent(eventId) {
-        console.log('editEvent called with ID:', eventId);
-        console.log('All events data:', eventsData);
-        
         const event = eventsData.find(e => e.id === eventId);
-        console.log('Found event:', event);
-        
         if (!event) return alert('Data event tidak ditemukan!');
-        
+
         try {
-            document.getElementById('updateEventForm').action = `/admin/event/${eventId}`;
+            const form = document.getElementById('updateEventForm');
+            form.action = `/admin/event/${eventId}`;
+            
+            // Hapus input delete_categories dari sisa proses edit sebelumnya
+            form.querySelectorAll('input[name="delete_categories[]"]').forEach(el => el.remove());
+
+            // Populate field dasar
             document.getElementById('edit_title').value = event.title || '';
             document.getElementById('edit_category_id').value = event.category_id || '';
             document.getElementById('edit_date').value = event.date || '';
             document.getElementById('edit_city_id').value = event.city_id || '';
             document.getElementById('edit_location').value = event.location || '';
-            document.getElementById('edit_time_start').value = event.time_start || '';
+            document.getElementById('edit_time_start').value = event.time_start ? event.time_start.substring(0, 5) : '';
             document.getElementById('edit_website_url').value = event.website_url || '';
             document.getElementById('edit_description').value = event.description || '';
-            document.getElementById('edit_is_featured').checked = Boolean(event.is_featured);
+            document.getElementById('edit_is_featured').checked = !!event.is_featured;
+
+            // Populate Ticket Categories
+            const container = document.getElementById('editTicketCategoriesContainer');
+            container.innerHTML = '';
             
-            console.log('Event ID:', eventId, 'is_featured:', event.is_featured, 'Type:', typeof event.is_featured);
-        
-        // Populate Ticket Categories
-        const container = document.getElementById('editTicketCategoriesContainer');
-        container.innerHTML = '';
-        editTicketCategoryIndex = 0; 
-        
-        if (event.ticket_categories && event.ticket_categories.length > 0) {
-            event.ticket_categories.forEach((ticket, index) => {
-                editTicketCategoryIndex = index; 
-                
-                const ticketHtml = `
-                    <div class="ticket-category-item card border-0 shadow-sm mb-3">
-                        <div class="card-body p-3">
-                            <input type="hidden" name="ticket_categories[${index}][id]" value="${ticket.id}">
-                            <div class="row g-2">
-                                <div class="col-md-4">
-                                    <input type="text" name="ticket_categories[${index}][name]" value="${ticket.category_name}" class="form-control form-control-sm" required>
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="number" name="ticket_categories[${index}][price]" value="${ticket.price}" class="form-control form-control-sm" required>
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="number" name="ticket_categories[${index}][stock]" value="${ticket.stock || ''}" class="form-control form-control-sm">
-                                </div>
-                                <div class="col-md-2">
-                                    <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeEditTicketCategory(this)"><i class="bi bi-trash"></i></button>
-                                </div>
-                                <div class="col-12 mt-2">
-                                    <input type="text" name="ticket_categories[${index}][description]" value="${ticket.description || ''}" class="form-control form-control-sm">
+            if (event.ticket_categories && event.ticket_categories.length > 0) {
+                event.ticket_categories.forEach((ticket, index) => {
+                    const ticketHtml = `
+                        <div class="ticket-category-item card border-0 shadow-sm mb-3">
+                            <div class="card-body p-3">
+                                <input type="hidden" name="ticket_categories[${index}][id]" value="${ticket.id}">
+                                <div class="row g-2">
+                                    <div class="col-md-4">
+                                        <input type="text" name="ticket_categories[${index}][name]" value="${ticket.category_name}" class="form-control form-control-sm" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="number" name="ticket_categories[${index}][price]" value="${ticket.price}" class="form-control form-control-sm" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="number" name="ticket_categories[${index}][stock]" value="${ticket.stock || ''}" class="form-control form-control-sm">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeEditTicketCategory(this, ${ticket.id})">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-12 mt-2">
+                                        <input type="text" name="ticket_categories[${index}][description]" value="${ticket.description || ''}" class="form-control form-control-sm">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `;
-                container.insertAdjacentHTML('beforeend', ticketHtml);
-            });
-        }
-        
-        // Use the pre-initialized modal instance
-        if (updateModal) {
-            updateModal.show();
-        } else {
-            new bootstrap.Modal(document.getElementById('updateEventModal')).show();
-        }
+                    `;
+                    container.insertAdjacentHTML('beforeend', ticketHtml);
+                });
+            }
+
+            if (typeof updateModal !== 'undefined') {
+                updateModal.show();
+            } else {
+                new bootstrap.Modal(document.getElementById('updateEventModal')).show();
+            }
+
         } catch (error) {
-            console.error('Error in editEvent:', error);
-            alert('Terjadi kesalahan saat membuka form edit: ' + error.message);
+            console.error('Error:', error);
+            alert('Gagal memuat data edit.');
         }
     }
 </script>
