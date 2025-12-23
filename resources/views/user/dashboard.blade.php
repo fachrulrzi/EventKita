@@ -718,26 +718,47 @@
                                     </div>
                                 </div>
 
-                                <form>
+                                @if(session('success'))
+                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                        <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                @endif
+
+                                @if($errors->any())
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <i class="bi bi-exclamation-triangle me-2"></i>
+                                        <ul class="mb-0">
+                                            @foreach($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                @endif
+
+                                <form action="{{ route('profile.update') }}" method="POST">
+                                    @csrf
                                     <div class="row g-4">
                                         <div class="col-md-6">
                                             <label class="form-label fw-bold small text-muted text-uppercase">Nama Lengkap</label>
-                                            <input type="text" class="form-control form-control-custom" value="{{ Auth::user()->name }}">
+                                            <input type="text" name="name" class="form-control form-control-custom" value="{{ old('name', Auth::user()->name) }}" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label fw-bold small text-muted text-uppercase">Alamat Email</label>
-                                            <input type="email" class="form-control form-control-custom" value="{{ Auth::user()->email }}">
+                                            <input type="email" name="email" class="form-control form-control-custom" value="{{ old('email', Auth::user()->email) }}" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label fw-bold small text-muted text-uppercase">Ubah Kata Sandi</label>
-                                            <input type="password" class="form-control form-control-custom" placeholder="Ketikan sandi baru jika ingin diubah">
+                                            <input type="password" name="password" class="form-control form-control-custom" placeholder="Ketikan sandi baru jika ingin diubah">
+                                            <small class="text-muted">Kosongkan jika tidak ingin mengubah password</small>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label fw-bold small text-muted text-uppercase">Konfirmasi Sandi</label>
-                                            <input type="password" class="form-control form-control-custom" placeholder="Ulangi sandi baru">
+                                            <input type="password" name="password_confirmation" class="form-control form-control-custom" placeholder="Ulangi sandi baru">
                                         </div>
                                         <div class="col-12 text-end mt-5">
-                                            <button type="button" class="btn btn-brand-gradient shadow">
+                                            <button type="submit" class="btn btn-brand-gradient shadow">
                                                 <i class="bi bi-check2-circle me-2"></i> Simpan Perubahan
                                             </button>
                                         </div>

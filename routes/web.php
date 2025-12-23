@@ -303,6 +303,7 @@ Route::get('events/{slug}', function (string $slug) {
 use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProfileController;
 
 Route::middleware(['auth'])->group(function () {
     // Order & Payment Routes
@@ -316,6 +317,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('order/{orderId}/continue-payment', [OrderController::class, 'continuePayment'])->name('order.continue');
     Route::get('my-orders', [OrderController::class, 'myOrders'])->name('my.orders');
     
+    // Profile
+    Route::post('profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
     // Forum Umum
     Route::get('forum', [DiscussionController::class, 'index'])->name('forum.index');
