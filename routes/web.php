@@ -280,7 +280,10 @@ Route::get('search', function () {
                     $q->where('title', 'like', '%' . $query . '%')
                       ->orWhere('description', 'like', '%' . $query . '%')
                       ->orWhere('location', 'like', '%' . $query . '%')
-                      ->orWhere('tags', 'like', '%' . $query . '%');
+                      ->orWhere('tags', 'like', '%' . $query . '%')
+                      ->orWhereHas('cityRelation', function($cityQuery) use ($query) {
+                          $cityQuery->where('name', 'like', '%' . $query . '%');
+                      });
                 })
                 ->with(['category', 'cityRelation'])
                 ->latest()

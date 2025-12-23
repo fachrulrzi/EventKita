@@ -247,6 +247,15 @@
                                     {{ $event->category->name }}
                                 </div>
 
+                                {{-- Floating City Badge --}}
+                                @if($event->cityRelation)
+                                    <div class="position-absolute bottom-0 start-0 m-3">
+                                        <span class="badge bg-dark bg-opacity-75 text-white px-2 py-1 rounded-pill" style="font-size: 0.75rem;">
+                                            <i class="bi bi-geo-alt-fill me-1"></i>{{ $event->cityRelation->name }}
+                                        </span>
+                                    </div>
+                                @endif
+
                                 {{-- Floating Favorite Button --}}
                                 @auth
                                     <div class="favorite-btn-wrapper">
