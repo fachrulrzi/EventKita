@@ -287,7 +287,10 @@
                         <div class="col-12">
                             <hr class="my-3">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <label class="form-label fw-bold mb-0"><i class="bi bi-ticket-perforated-fill text-primary me-2"></i>Kategori Tiket</label>
+                                <div>
+                                    <label class="form-label fw-bold mb-0"><i class="bi bi-ticket-perforated-fill text-primary me-2"></i>Kategori Tiket</label>
+                                    <small class="text-muted d-block">Opsional - kosongkan jika event gratis</small>
+                                </div>
                                 <button type="button" class="btn btn-sm btn-primary rounded-pill" onclick="addTicketCategory()">
                                     <i class="bi bi-plus-lg me-1"></i> Tambah
                                 </button>
@@ -297,11 +300,11 @@
                                     <div class="row g-2">
                                         <div class="col-md-4">
                                             <label class="form-label small">Nama Kategori</label>
-                                            <input type="text" name="ticket_categories[0][name]" class="form-control border-0 bg-white" placeholder="e.g. VIP, Regular" required>
+                                            <input type="text" name="ticket_categories[0][name]" class="form-control border-0 bg-white" placeholder="e.g. VIP, Regular">
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label small">Harga (Rp)</label>
-                                            <input type="number" name="ticket_categories[0][price]" class="form-control border-0 bg-white" placeholder="0" required>
+                                            <input type="number" name="ticket_categories[0][price]" class="form-control border-0 bg-white" placeholder="0">
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label small">Stok</label>
@@ -398,7 +401,10 @@
                         <div class="col-12">
                             <hr class="my-3">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <label class="form-label fw-bold mb-0"><i class="bi bi-ticket-perforated-fill text-primary me-2"></i>Kategori Tiket</label>
+                                <div>
+                                    <label class="form-label fw-bold mb-0"><i class="bi bi-ticket-perforated-fill text-primary me-2"></i>Kategori Tiket</label>
+                                    <small class="text-muted d-block">Opsional - kosongkan jika event gratis</small>
+                                </div>
                                 <button type="button" class="btn btn-sm btn-primary rounded-pill" onclick="addEditTicketCategory()">
                                     <i class="bi bi-plus-lg me-1"></i> Tambah
                                 </button>
@@ -545,11 +551,11 @@ function addTicketCategory() {
             <div class="row g-2">
                 <div class="col-md-4">
                     <label class="form-label small">Nama Kategori</label>
-                    <input type="text" name="ticket_categories[${ticketCategoryIndex}][name]" class="form-control border-0 bg-white" placeholder="e.g. VIP, Regular" required>
+                    <input type="text" name="ticket_categories[${ticketCategoryIndex}][name]" class="form-control border-0 bg-white" placeholder="e.g. VIP, Regular">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small">Harga (Rp)</label>
-                    <input type="number" name="ticket_categories[${ticketCategoryIndex}][price]" class="form-control border-0 bg-white" placeholder="0" required>
+                    <input type="number" name="ticket_categories[${ticketCategoryIndex}][price]" class="form-control border-0 bg-white" placeholder="0">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small">Stok (Opsional)</label>
@@ -588,11 +594,11 @@ function addEditTicketCategory() {
             <div class="row g-2">
                 <div class="col-md-4">
                     <label class="form-label small">Nama Kategori</label>
-                    <input type="text" name="ticket_categories[${editTicketCategoryIndex}][name]" class="form-control border-0 bg-white" placeholder="e.g. VIP, Regular" required>
+                    <input type="text" name="ticket_categories[${editTicketCategoryIndex}][name]" class="form-control border-0 bg-white" placeholder="e.g. VIP, Regular">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small">Harga (Rp)</label>
-                    <input type="number" name="ticket_categories[${editTicketCategoryIndex}][price]" class="form-control border-0 bg-white" placeholder="0" required>
+                    <input type="number" name="ticket_categories[${editTicketCategoryIndex}][price]" class="form-control border-0 bg-white" placeholder="0">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small">Stok (Opsional)</label>
@@ -669,11 +675,11 @@ function editEvent(eventId) {
                     <div class="row g-2">
                         <div class="col-md-4">
                             <label class="form-label small">Nama Kategori</label>
-                            <input type="text" name="ticket_categories[${index}][name]" class="form-control border-0 bg-white" value="${ticket.category_name}" required>
+                            <input type="text" name="ticket_categories[${index}][name]" class="form-control border-0 bg-white" value="${ticket.category_name}">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small">Harga (Rp)</label>
-                            <input type="number" name="ticket_categories[${index}][price]" class="form-control border-0 bg-white" value="${ticket.price}" required>
+                            <input type="number" name="ticket_categories[${index}][price]" class="form-control border-0 bg-white" value="${ticket.price}">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small">Stok (Opsional)</label>

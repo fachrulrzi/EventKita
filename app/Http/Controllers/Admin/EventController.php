@@ -32,6 +32,16 @@ class EventController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // Filter ticket_categories yang kosong (tidak diisi)
+        $ticketCategories = collect($request->input('ticket_categories', []))
+            ->filter(function ($category) {
+                return !empty($category['name']) && isset($category['price']) && $category['price'] !== '';
+            })
+            ->values()
+            ->toArray();
+        
+        $request->merge(['ticket_categories' => $ticketCategories ?: null]);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
@@ -45,7 +55,7 @@ class EventController extends Controller
             'is_featured' => 'nullable|boolean',
             'tags' => 'nullable|string',
             'website_url' => 'nullable|url',
-            'ticket_categories' => 'required|array|min:1',
+            'ticket_categories' => 'nullable|array',
             'ticket_categories.*.name' => 'required|string|max:255',
             'ticket_categories.*.price' => 'required|numeric|min:0',
             'ticket_categories.*.stock' => 'nullable|integer|min:1',
@@ -80,14 +90,17 @@ class EventController extends Controller
             'status' => 'published',
         ]);
 
-        foreach ($validated['ticket_categories'] as $category) {
-            EventTicketCategory::create([
-                'event_id' => $event->id,
-                'category_name' => $category['name'],
-                'price' => $category['price'],
-                'stock' => $category['stock'] ?? null,
-                'description' => $category['description'] ?? null,
-            ]);
+        // Simpan kategori tiket jika ada
+        if (!empty($validated['ticket_categories'])) {
+            foreach ($validated['ticket_categories'] as $category) {
+                EventTicketCategory::create([
+                    'event_id' => $event->id,
+                    'category_name' => $category['name'],
+                    'price' => $category['price'],
+                    'stock' => $category['stock'] ?? null,
+                    'description' => $category['description'] ?? null,
+                ]);
+            }
         }
 
         return redirect()->route('admin.events')
@@ -99,6 +112,16 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event): RedirectResponse
     {
+        // Filter ticket_categories yang kosong (tidak diisi)
+        $ticketCategories = collect($request->input('ticket_categories', []))
+            ->filter(function ($category) {
+                return !empty($category['name']) && isset($category['price']) && $category['price'] !== '';
+            })
+            ->values()
+            ->toArray();
+        
+        $request->merge(['ticket_categories' => $ticketCategories ?: null]);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
@@ -112,7 +135,7 @@ class EventController extends Controller
             'is_featured' => 'nullable|boolean',
             'tags' => 'nullable|string',
             'website_url' => 'nullable|url|max:500',
-            'ticket_categories' => 'required|array|min:1',
+            'ticket_categories' => 'nullable|array',
             'ticket_categories.*.id' => 'nullable|exists:event_ticket_categories,id',
             'ticket_categories.*.name' => 'required|string|max:255',
             'ticket_categories.*.price' => 'required|numeric|min:0',
@@ -159,24 +182,27 @@ class EventController extends Controller
                 ->delete();
         }
 
-        foreach ($validated['ticket_categories'] as $category) {
-            if (!empty($category['id'])) {
-                EventTicketCategory::where('id', $category['id'])
-                    ->where('event_id', $event->id)
-                    ->update([
+        // Update/create kategori tiket jika ada
+        if (!empty($validated['ticket_categories'])) {
+            foreach ($validated['ticket_categories'] as $category) {
+                if (!empty($category['id'])) {
+                    EventTicketCategory::where('id', $category['id'])
+                        ->where('event_id', $event->id)
+                        ->update([
+                            'category_name' => $category['name'],
+                            'price' => $category['price'],
+                            'stock' => $category['stock'] ?? null,
+                            'description' => $category['description'] ?? null,
+                        ]);
+                } else {
+                    EventTicketCategory::create([
+                        'event_id' => $event->id,
                         'category_name' => $category['name'],
                         'price' => $category['price'],
                         'stock' => $category['stock'] ?? null,
                         'description' => $category['description'] ?? null,
                     ]);
-            } else {
-                EventTicketCategory::create([
-                    'event_id' => $event->id,
-                    'category_name' => $category['name'],
-                    'price' => $category['price'],
-                    'stock' => $category['stock'] ?? null,
-                    'description' => $category['description'] ?? null,
-                ]);
+                }
             }
         }
 
