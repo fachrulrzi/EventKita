@@ -184,19 +184,6 @@
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <p class="text-muted small fw-bold text-uppercase mb-1">Draft</p>
-                    <h3 class="fw-bold mb-0 text-secondary">{{ $events->where('status', 'draft')->count() }}</h3>
-                </div>
-                <div class="stat-icon bg-secondary bg-opacity-10 text-secondary">
-                    <i class="bi bi-file-earmark-text-fill"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card stat-card">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
                     <p class="text-muted small fw-bold text-uppercase mb-1">Featured</p>
                     <h3 class="fw-bold mb-0 text-warning">{{ $events->where('is_featured', true)->count() }}</h3>
                 </div>
