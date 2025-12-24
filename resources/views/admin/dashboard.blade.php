@@ -174,39 +174,6 @@
                     Kelola event, pantau statistik, dan moderasi komunitas dalam satu dashboard terintegrasi.
                 </p>
             </div>
-
-            {{-- Productivity Stats --}}
-            <div class="col-lg-5">
-                @php
-                    $totalAllEvents = \App\Models\Event::count();
-                    $activeEvents = \App\Models\Event::where('date', '>=', now()->toDateString())->count();
-                    $activeRate = $totalAllEvents > 0 ? ($activeEvents / $totalAllEvents) * 100 : 0;
-                @endphp
-
-                <div class="bg-white bg-opacity-10 rounded-4 p-4 backdrop-blur">
-                    <div class="d-flex justify-content-between align-items-end mb-3">
-                        <div>
-                            <p class="text-white-50 text-uppercase fw-bold small mb-1">Status Sistem</p>
-                            <h3 class="fw-bold mb-0 text-white">{{ $activeEvents }} <span class="fs-6 text-white-50 fw-normal">Event Aktif</span></h3>
-                        </div>
-                        <div class="text-end">
-                            <span class="display-6 fw-bold text-white">{{ number_format($activeRate, 0) }}%</span>
-                        </div>
-                    </div>
-                    
-                    <div class="progress" style="height: 8px; background: rgba(0,0,0,0.2); border-radius: 10px;">
-                        <div class="progress-bar bg-white" role="progressbar" 
-                             style="width: {{ $activeRate }}%; border-radius: 10px;" 
-                             aria-valuenow="{{ $activeRate }}" aria-valuemin="0" aria-valuemax="100">
-                        </div>
-                    </div>
-                    
-                    <div class="mt-3 d-flex gap-3 text-white-50 small">
-                        <span><i class="bi bi-database me-1"></i> Total Data: <strong>{{ $totalAllEvents }}</strong></span>
-                        <span><i class="bi bi-server me-1"></i> Server: <strong>Online</strong></span>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
