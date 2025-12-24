@@ -336,7 +336,7 @@
     <div class="container py-3">
         <div class="d-flex justify-content-between align-items-end mb-5">
             <div>
-                <h2 class="fw-bold mb-1">Event Pilihan Minggu Ini <span class="text-primary">🔥</span></h2>
+                <h2 class="fw-bold mb-1">Event Tersedia<span class="text-primary">🔥</span></h2>
                 <p class="text-muted mb-0">Jangan lewatkan momen seru bersama teman dan keluarga</p>
             </div>
             {{-- Tombol Lihat Semua (Opsional, visual only) --}}
