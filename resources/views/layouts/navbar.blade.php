@@ -182,9 +182,9 @@
                             @endif
                             
                             {{-- Logic Route Event Favorit (Jika ada) --}}
-                            <a class="dropdown-item" href="#">
-                                <i class="bi bi-heart-fill me-2 text-danger"></i> Event Favorit
-                            </a>
+                            {{-- <a class="dropdown-item" href="#"> --}}
+                                {{-- <i class="bi bi-heart-fill me-2 text-danger"></i> Event Favorit
+                            </a> --}}
 
                             <div class="dropdown-divider my-2"></div>
                             
